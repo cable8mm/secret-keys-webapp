@@ -1,5 +1,6 @@
 <?php
 
+use App\Items\FingerprintDeriver;
 use App\Items\ItemInput;
 use App\Items\ItemManager;
 use App\Records\ProjectSummary;
@@ -8,7 +9,7 @@ use Tests\Support\FakeRecordStore;
 
 function itemManagerWith(FakeRecordStore $store): ItemManager
 {
-    return new ItemManager($store, new ValueProtector);
+    return new ItemManager($store, new ValueProtector, new FingerprintDeriver);
 }
 
 function managerStore(): FakeRecordStore

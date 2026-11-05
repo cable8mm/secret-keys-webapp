@@ -30,6 +30,8 @@ final class FakeRecordStore implements RecordStore
 
     public int $itemCreateCalls = 0;
 
+    public int $itemUpdateCalls = 0;
+
     public function allProjects(): array
     {
         if ($this->failRead) {
@@ -116,13 +118,70 @@ final class FakeRecordStore implements RecordStore
 
         $this->items[] = new ItemRecord(
             $id,
+            $write->projectId,
             $write->name,
             $write->service,
             $write->environment,
             $projectName,
             $write->protectedValue,
+            $write->usageLocation,
+            $write->issuedDate,
+            $write->memo,
         );
 
         return $id;
+    }
+
+    public function findItem(int $id): ?ItemRecord
+    {
+        if ($this->failRead) {
+            throw new RuntimeException('Read failed.');
+        }
+
+        foreach ($this->items as $item) {
+            if ($item->id === $id) {
+                return $item;
+            }
+        }
+
+        return null;
+    }
+
+    public function updateItem(int $id, ItemWrite $write): void
+    {
+        $this->itemUpdateCalls++;
+
+        if ($this->failWrite) {
+            throw new RuntimeException('Write failed.');
+        }
+
+        foreach ($this->items as $index => $item) {
+            if ($item->id === $id) {
+                $projectName = 'Unknown';
+
+                foreach ($this->projects as $project) {
+                    if ($project->id === $write->projectId) {
+                        $projectName = $project->name;
+                    }
+                }
+
+                $this->items[$index] = new ItemRecord(
+                    $id,
+                    $write->projectId,
+                    $write->name,
+                    $write->service,
+                    $write->environment,
+                    $projectName,
+                    $write->protectedValue,
+                    $write->usageLocation,
+                    $write->issuedDate,
+                    $write->memo,
+                );
+
+                return;
+            }
+        }
+
+        throw new RuntimeException('Item not found.');
     }
 }

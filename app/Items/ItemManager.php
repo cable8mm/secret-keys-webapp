@@ -12,9 +12,79 @@ final class ItemManager
     public function __construct(
         private RecordStore $records,
         private ValueProtector $protector,
+        private FingerprintDeriver $fingerprint,
     ) {}
 
     public function create(ItemInput $input): ItemOperationResult
+    {
+        $errors = $this->validate($input);
+
+        if ($errors !== []) {
+            return ItemOperationResult::failure($errors);
+        }
+
+        return $this->persist(null, $input);
+    }
+
+    public function update(int $id, ItemInput $input): ItemOperationResult
+    {
+        $errors = $this->validate($input);
+
+        if ($errors !== []) {
+            return ItemOperationResult::failure($errors);
+        }
+
+        try {
+            if ($this->records->findItem($id) === null) {
+                return ItemOperationResult::failure([
+                    ['code' => 'ERR-007', 'message' => 'The Item could not be saved.'],
+                ]);
+            }
+        } catch (Throwable) {
+            return ItemOperationResult::failure([
+                ['code' => 'ERR-007', 'message' => 'The Item could not be saved.'],
+            ]);
+        }
+
+        return $this->persist($id, $input);
+    }
+
+    public function load(int $id): ItemLoadResult
+    {
+        try {
+            $record = $this->records->findItem($id);
+        } catch (Throwable) {
+            return ItemLoadResult::failure('ERR-008', 'Items could not be loaded.');
+        }
+
+        if ($record === null) {
+            return ItemLoadResult::failure('ERR-008', 'Items could not be loaded.');
+        }
+
+        try {
+            $value = $this->protector->unprotect($record->protectedValue);
+        } catch (Throwable) {
+            return ItemLoadResult::failure('ERR-008', 'Items could not be loaded.');
+        }
+
+        return ItemLoadResult::success(new ItemDetail(
+            $record->id,
+            $record->name,
+            $record->projectId,
+            $record->service ?? '',
+            $record->environment ?? '',
+            $value,
+            $record->usageLocation ?? '',
+            $record->issuedDate ?? '',
+            $record->memo ?? '',
+            $this->fingerprint->derive($value),
+        ));
+    }
+
+    /**
+     * @return list<array{code: string, message: string}>
+     */
+    private function validate(ItemInput $input): array
     {
         $errors = [];
 
@@ -34,27 +104,32 @@ final class ItemManager
                     $errors[] = ['code' => 'ERR-003', 'message' => 'Project is required.'];
                 }
             } catch (Throwable) {
-                return ItemOperationResult::failure([
-                    ['code' => 'ERR-007', 'message' => 'The Item could not be saved.'],
-                ]);
+                $errors[] = ['code' => 'ERR-007', 'message' => 'The Item could not be saved.'];
             }
         }
 
-        if ($errors !== []) {
-            return ItemOperationResult::failure($errors);
-        }
+        return $errors;
+    }
 
+    private function persist(?int $id, ItemInput $input): ItemOperationResult
+    {
         try {
-            $this->records->createItem(new ItemWrite(
-                $input->projectId,
+            $write = new ItemWrite(
+                (int) $input->projectId,
                 $input->name,
                 $this->protector->protect($input->value),
-                $this->blankOrNull($input->service),
-                $this->blankOrNull($input->environment),
-                $this->blankOrNull($input->usageLocation),
-                $this->blankOrNullDate($input->issuedDate),
-                $this->blankOrNull($input->memo),
-            ));
+                $input->service === '' ? null : $input->service,
+                $input->environment === '' ? null : $input->environment,
+                $input->usageLocation === '' ? null : $input->usageLocation,
+                $input->issuedDate === '' ? null : $input->issuedDate,
+                $input->memo === '' ? null : $input->memo,
+            );
+
+            if ($id === null) {
+                $this->records->createItem($write);
+            } else {
+                $this->records->updateItem($id, $write);
+            }
         } catch (Throwable) {
             return ItemOperationResult::failure([
                 ['code' => 'ERR-007', 'message' => 'The Item could not be saved.'],
@@ -62,15 +137,5 @@ final class ItemManager
         }
 
         return ItemOperationResult::success();
-    }
-
-    private function blankOrNull(string $value): ?string
-    {
-        return $value === '' ? null : $value;
-    }
-
-    private function blankOrNullDate(string $value): ?string
-    {
-        return $value === '' ? null : $value;
     }
 }
