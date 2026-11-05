@@ -6,6 +6,7 @@ final readonly class ItemRow
 {
     public function __construct(
         public int $id,
+        public int $projectId,
         public string $name,
         public ?string $service,
         public ?string $environment,

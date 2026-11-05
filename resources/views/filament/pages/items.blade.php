@@ -19,6 +19,22 @@
         </x-filament::input.wrapper>
     </div>
 
+    <div class="mb-6 flex gap-4">
+        <select wire:model.live="projectFilter" data-element="EL-002" class="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm dark:border-white/10 dark:bg-white/5">
+            <option value="">All Projects</option>
+            @foreach ($projects as $project)
+                <option value="{{ $project['id'] }}">{{ $project['name'] }}</option>
+            @endforeach
+        </select>
+
+        <select wire:model.live="environmentFilter" data-element="EL-003" class="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm dark:border-white/10 dark:bg-white/5">
+            <option value="">All Environments</option>
+            @foreach ($environments as $environment)
+                <option value="{{ $environment }}">{{ $environment }}</option>
+            @endforeach
+        </select>
+    </div>
+
     @if (filled($errorMessage))
         <div class="mb-6" data-element="EL-010">
             <x-filament::callout color="danger" icon="heroicon-o-exclamation-triangle" :description="$errorMessage" />
