@@ -14,9 +14,9 @@ class Items extends Page
 
     public ?string $errorMessage = null;
 
-    /**
-     * @var list<array{id: int, name: string, service: ?string, environment: ?string, projectName: string, fingerprint: string}>
-     */
+    public string $search = '';
+
+    /** @var list<mixed> */
     public array $items = [];
 
     public static function getSlug(?Panel $panel = null): string
@@ -34,9 +34,14 @@ class Items extends Page
         $this->loadItems($itemFinder);
     }
 
+    public function updatedSearch(): void
+    {
+        $this->loadItems(app(ItemFinder::class));
+    }
+
     private function loadItems(ItemFinder $itemFinder): void
     {
-        $result = $itemFinder->list();
+        $result = $itemFinder->list($this->search);
 
         if (! $result->success) {
             $this->items = [];
