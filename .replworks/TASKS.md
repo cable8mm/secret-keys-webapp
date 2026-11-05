@@ -1,0 +1,213 @@
+# TASKS
+
+- [ ] T-001 Establish the project foundation
+  - Satisfies: PRODUCT_SPEC.md Constraints; TECH_STACK.md
+  - External boundary: no
+  - Acceptance criteria:
+    - Every constraint in TECH_STACK.md is satisfied.
+    - Every check defined in TECH_STACK.md passes.
+    - The product is reachable only from the computer on which it runs; a connection attempt from another computer does not reach the product.
+    - The product's entry point is reachable in a desktop web browser on the computer on which it runs.
+    - No login page or authentication step is presented before the product is usable.
+
+- [ ] T-002 Verify Clipboard behavior at the external boundary
+  - Satisfies: PRODUCT_SPEC.md External Systems; FR-027; FR-028; FR-031; ERR-006
+  - External boundary: yes
+  - Acceptance criteria:
+    - A live observation report exists at the observation report path defined in AGENTS.md.
+    - The report records the text written to the Clipboard from the product's local origin, the text read back from the Clipboard, whether the write required permission, and how a denied write is reported to the page.
+    - The report records the observed result for text containing leading spaces, trailing spaces, and line breaks.
+    - An executable probe exists at the probe path defined in AGENTS.md and writes that text to the Clipboard, then reads the Clipboard text back.
+    - The probe passes when the read-back text equals the written text exactly.
+    - The probe fails when the Clipboard write is denied or unavailable.
+    - The observed failure behavior distinguishes a Clipboard write failure from a successful write.
+
+- [ ] T-003 Create and list Projects
+  - Satisfies: PRODUCT_SPEC.md FR-001; FR-002; FR-013; ERR-004; ERR-007; SCR-003
+  - External boundary: no
+  - Acceptance criteria:
+    - SCR-003 presents EL-201, EL-202, EL-203, EL-209, EL-210, and EL-211.
+    - The initial SCR-003 state presents EL-201 empty and EL-203 showing every stored Project.
+    - With no Project stored, EL-210 is shown and EL-203 is not shown.
+    - Activating EL-202 with a non-empty EL-201 adds exactly one row to EL-203 for that Project.
+    - Project rows in EL-203 are ordered by Project Name ascending with case-insensitive comparison.
+    - Activating EL-202 with an empty or whitespace-only EL-201 creates no Project and shows the error of ERR-004 in EL-211.
+    - A persistence failure during creation creates no Project, shows the error of ERR-007 in EL-211, and keeps the entered Project Name in EL-201.
+    - A retrieval failure while presenting SCR-003 shows a retrieval error in EL-211 and does not present EL-203.
+    - Activating EL-209 returns to SCR-001.
+    - Every Project created in this task is present after the product is stopped and started.
+    - Unit tests for Project Name validation and Project ordering pass.
+    - All checks defined in TECH_STACK.md pass.
+
+- [ ] T-004 Rename a Project
+  - Satisfies: PRODUCT_SPEC.md FR-003; ERR-004; ERR-007; SCR-003
+  - External boundary: no
+  - Acceptance criteria:
+    - Activating EL-205 after editing EL-204 changes the Project Name shown in EL-203.
+    - Activating EL-205 with an empty or whitespace-only EL-204 changes no Project and shows the error of ERR-004 in EL-211.
+    - A persistence failure during rename changes no Project, shows the error of ERR-007 in EL-211, and keeps the edited name in EL-204.
+    - A rename that targets a Project that no longer exists changes no record and shows the error of ERR-007 in EL-211.
+    - The renamed Project Name is present after the product is stopped and started.
+    - Unit tests for Project Name validation pass.
+    - All checks defined in TECH_STACK.md pass.
+
+- [ ] T-005 Create an Item
+  - Satisfies: PRODUCT_SPEC.md FR-008; FR-009; FR-013; FR-015; FR-016; FR-019; FR-032; FR-033; FR-034; ERR-001; ERR-002; ERR-003; ERR-007; SCR-002; SCR-001
+  - External boundary: no
+  - Acceptance criteria:
+    - Activating EL-006 on SCR-001 opens SCR-002 in create mode with EL-101 through EL-111 empty, EL-105 masked, EL-108 empty, EL-114 not shown, and EL-118 present.
+    - EL-102 lists every stored Project.
+    - With no Project stored, EL-102 has no options and EL-117 is shown.
+    - With at least one Project stored, EL-117 is not shown.
+    - Activating EL-117 opens SCR-003.
+    - Activating EL-113 returns to SCR-001 without storing an Item.
+    - EL-106 switches EL-105 between masked and unmasked in create mode.
+    - Activating EL-112 in create mode with valid Item Name, Project, and Value stores exactly one Item and returns to SCR-001.
+    - The stored Value equals the entered Value exactly, including leading and trailing whitespace and line breaks.
+    - The stored Item appears as one row in EL-004 showing Item Name, Service, Project Name, Environment, and Fingerprint.
+    - The row Fingerprint equals the last 4 characters of the Value after leading and trailing whitespace is removed when at least 8 characters remain.
+    - The row Fingerprint is empty when the Value after leading and trailing whitespace is removed has fewer than 8 characters.
+    - Saving with an empty or whitespace-only Item Name stores nothing, shows the error of ERR-001 in EL-118, remains on SCR-002, and keeps the entered input.
+    - Saving with an empty or whitespace-only Value stores nothing, shows the error of ERR-002 in EL-118, remains on SCR-002, and keeps the entered input.
+    - Saving without a selected Project stores nothing, shows the error of ERR-003 in EL-118, remains on SCR-002, and keeps the entered input.
+    - Saving with a Project selection that names no existing Project stores nothing and shows the error of ERR-003 in EL-118.
+    - A persistence failure during creation stores nothing, shows the error of ERR-007 in EL-118, and keeps the entered input.
+    - No Value is displayed in EL-004.
+    - The persisted data contains no readable plain text of any Value.
+    - No Value appears in application log output after creating an Item.
+    - Every Item created in this task is present after the product is stopped and started.
+    - Unit tests for Fingerprint derivation, Item validation, and Value storage equality pass.
+    - All checks defined in TECH_STACK.md pass.
+
+- [ ] T-006 Edit an Item and reveal its Value
+  - Satisfies: PRODUCT_SPEC.md FR-010; FR-014; FR-015; FR-016; FR-017; FR-032; FR-033; FR-034; ERR-001; ERR-002; ERR-003; ERR-007; SCR-002
+  - External boundary: no
+  - Acceptance criteria:
+    - Activating a row of EL-004 opens SCR-002 in edit mode.
+    - In edit mode, every input shows its stored content, EL-105 is masked, and EL-108 shows the Fingerprint of the stored Value.
+    - Activating EL-106 switches EL-105 between masked and unmasked; activating it twice leaves EL-105 masked.
+    - Opening SCR-002 in edit mode always presents EL-105 masked.
+    - When EL-105 is unmasked, it shows the stored Value exactly as entered, including leading and trailing whitespace and line breaks.
+    - Optional Service (EL-103), Environment (EL-104), Usage Location (EL-109), Issued Date (EL-110), and Memo (EL-111) values are stored and shown again in edit mode.
+    - EL-110 accepts a date and clears the date when requested.
+    - Activating EL-112 in edit mode with valid input updates the Item and returns to SCR-001.
+    - Changing the Value changes the Fingerprint to the derivation of the new Value.
+    - Activating EL-113 in edit mode returns to SCR-001 without changing the stored Item.
+    - Saving with an empty or whitespace-only Item Name stores nothing, shows the error of ERR-001 in EL-118, and keeps the entered input.
+    - Saving with an empty or whitespace-only Value stores nothing, shows the error of ERR-002 in EL-118, and keeps the entered input.
+    - Saving without a selected Project stores nothing, shows the error of ERR-003 in EL-118, and keeps the entered input.
+    - A persistence failure during update stores no change, shows the error of ERR-007 in EL-118, and keeps the entered input.
+    - A retrieval failure while opening SCR-002 in edit mode shows a retrieval error in EL-118 and does not present the data-dependent inputs.
+    - In edit mode, inputs are disabled while the Item is being retrieved.
+    - No Value is displayed on SCR-001 or on SCR-002 while EL-105 is masked.
+    - Unit tests for Fingerprint derivation, Item validation, and exact Value storage pass.
+    - All checks defined in TECH_STACK.md pass.
+
+- [ ] T-007 Search and order the Item list
+  - Satisfies: PRODUCT_SPEC.md FR-018; FR-020; FR-021; FR-022; ERR-008; SCR-001
+  - External boundary: no
+  - Acceptance criteria:
+    - The initial SCR-001 state presents EL-001 empty and EL-004 showing every stored Item.
+    - Rows are ordered by Project Name ascending, then by Item Name ascending, with case-insensitive comparison.
+    - Typing search text in EL-001 restricts EL-004 to rows whose Item Name, Service, Project Name, Environment, Usage Location, or Memo contains the search text case-insensitively.
+    - Search text that matches only the Memo of one Item shows only that Item.
+    - Search text equal to a stored Value and matching no other field shows no rows and shows EL-009.
+    - Search text is used exactly as entered; empty search text matches every stored Item.
+    - Clearing EL-001 restores every stored Item.
+    - With no Item stored, EL-008 is shown, EL-004 is not shown, and EL-006 is enabled.
+    - With at least one Item stored and no matching Item, EL-009 is shown and EL-004 is not shown.
+    - While Items are being retrieved, EL-011 is shown in place of EL-004.
+    - When Items cannot be retrieved, EL-010 shows the error of ERR-008 and EL-004 is not shown.
+    - When a stored Value cannot be converted for Fingerprint derivation, the retrieval error of ERR-008 is shown and no partial list is shown.
+    - EL-004 rows do not show a Value.
+    - Activating EL-007 opens SCR-003; activating EL-209 on SCR-003 returns to SCR-001.
+    - Unit tests for case-insensitive containment and Item ordering pass.
+    - All checks defined in TECH_STACK.md pass.
+
+- [ ] T-008 Filter the Item list by Project and Environment
+  - Satisfies: PRODUCT_SPEC.md FR-002; FR-018; FR-023; FR-024; FR-025; FR-026; SCR-001
+  - External boundary: no
+  - Acceptance criteria:
+    - EL-002 lists every stored Project ordered by Project Name ascending with case-insensitive comparison.
+    - The initial SCR-001 state presents EL-002 and EL-003 with no selection.
+    - With no Project selected and no Environment selected, EL-004 shows every stored Item.
+    - Selecting one Project in EL-002 restricts EL-004 to Items of that Project.
+    - Selecting no Project in EL-002 removes the Project restriction.
+    - EL-003 lists each distinct non-empty Environment value of stored Items once, ordered ascending with case-insensitive comparison.
+    - Selecting one Environment value in EL-003 restricts EL-004 to Items whose Environment equals that value exactly.
+    - Selecting no Environment value in EL-003 removes the Environment restriction.
+    - Search text, Project filter selection, and Environment filter selection combine with logical AND.
+    - When the combined search and filters match no Item, EL-009 is shown and EL-004 is not shown.
+    - A Project created through SCR-003 appears as an option in EL-002.
+    - Unit tests for Environment option derivation and exact Environment equality pass.
+    - All checks defined in TECH_STACK.md pass.
+
+- [ ] T-009 Delete an Item
+  - Satisfies: PRODUCT_SPEC.md FR-011; FR-012; ERR-007; SCR-002; SCR-001
+  - External boundary: no
+  - Acceptance criteria:
+    - In edit mode, EL-114 is shown.
+    - Activating EL-114 shows EL-115 and EL-116 for that Item.
+    - Activating EL-116 removes EL-115 and EL-116, deletes nothing, and remains on SCR-002.
+    - After activating EL-116, the Item remains on SCR-001.
+    - Activating EL-115 deletes the Item and returns to SCR-001.
+    - After activating EL-115, the deleted Item's row is absent from EL-004.
+    - After a successful deletion, the Item remains absent after the product is stopped and started.
+    - A persistence failure during deletion leaves the Item present, shows the error of ERR-007 in the Message Slot, and does not show the deletion as completed.
+    - A deletion that targets an Item that no longer exists changes no record and shows the error of ERR-007 in the Message Slot.
+    - Unit tests for deletion failure handling pass.
+    - All checks defined in TECH_STACK.md pass.
+
+- [ ] T-010 Copy a Value from a list row
+  - Satisfies: PRODUCT_SPEC.md FR-027; FR-028; FR-030; FR-031; ERR-006; SCR-001
+  - External boundary: yes
+  - Acceptance criteria:
+    - The live Clipboard behavior recorded by T-002 is observed at the boundary while the product is running.
+    - A live E2E test exercises the product through the real Clipboard; a simulated Clipboard does not satisfy this criterion.
+    - Activating EL-005 on a row whose Value is ` abc ` leaves the Clipboard text equal to `abc`.
+    - Activating EL-005 on a row whose Value has three lines leaves the Clipboard text with the same three lines and the same line breaks.
+    - Every character between the first and last non-whitespace characters of the Value is preserved in the Clipboard text.
+    - Activating EL-005 does not open SCR-002.
+    - EL-005 is present inside each row of EL-004.
+    - SCR-001 presents EL-006 and EL-007 grouped at the top; EL-001, EL-002, and EL-003 grouped below EL-006 and EL-007; EL-010 above EL-004; and EL-004 below EL-001, EL-002, and EL-003.
+    - After a successful copy, the stored Value is unchanged.
+    - After a successful copy, EL-010 shows a confirmation.
+    - When the Clipboard write fails or is denied, EL-010 shows the error of ERR-006, no confirmation is shown, and no record changes.
+    - Unit tests for Copy Text preparation pass.
+    - All checks defined in TECH_STACK.md pass.
+
+- [ ] T-011 Copy the current form content
+  - Satisfies: PRODUCT_SPEC.md FR-027; FR-028; FR-029; FR-030; FR-031; ERR-006; SCR-002
+  - External boundary: yes
+  - Acceptance criteria:
+    - The live Clipboard behavior recorded by T-002 is observed at the boundary while the product is running.
+    - A live E2E test exercises the product through the real Clipboard; a simulated Clipboard does not satisfy this criterion.
+    - EL-107 is disabled while EL-105 is empty and enabled when EL-105 is not empty.
+    - SCR-002 presents EL-101 through EL-111 in one vertical group in the order EL-101, EL-102, EL-103, EL-104, EL-105, EL-109, EL-110, EL-111; EL-106, EL-107, and EL-108 grouped adjacent to EL-105; EL-112 and EL-113 grouped below the vertical group; EL-114 separated from EL-112 and EL-113; and EL-118 above the vertical group.
+    - In create mode and edit mode, activating EL-107 leaves the Clipboard text equal to the current content of EL-105 with leading and trailing whitespace removed.
+    - Editing EL-105 without saving and then activating EL-107 leaves the Clipboard text equal to the edited content with leading and trailing whitespace removed.
+    - Every character between the first and last non-whitespace characters of the current content is preserved, including line breaks.
+    - After a successful copy, the stored Value and the current screen content are unchanged.
+    - After a successful copy, EL-118 shows a confirmation.
+    - When the Clipboard write fails or is denied, EL-118 shows the error of ERR-006, no confirmation is shown, and no record changes.
+    - Unit tests for Copy Text preparation pass.
+    - All checks defined in TECH_STACK.md pass.
+
+- [ ] T-012 Delete a Project and keep Item association on rename
+  - Satisfies: PRODUCT_SPEC.md FR-004; FR-005; FR-006; FR-007; ERR-005; ERR-007; SCR-003
+  - External boundary: no
+  - Acceptance criteria:
+    - Activating EL-206 shows EL-207 and EL-208 for that Project.
+    - SCR-003 presents EL-201 and EL-202 grouped at the top; EL-203 below EL-201 and EL-202; EL-204, EL-205, and EL-206 inside each row of EL-203; EL-209 above EL-201; and EL-211 above EL-203.
+    - Activating EL-208 removes EL-207 and EL-208 and deletes nothing.
+    - After activating EL-208, the Project remains in EL-203.
+    - Activating EL-207 on a Project with no Item deletes the Project and removes it from EL-203, EL-002, and EL-102.
+    - Activating EL-207 on a Project with at least one Item deletes nothing, keeps the Project in EL-203, and shows the error of ERR-005 in EL-211.
+    - A Project deleted in this task remains absent after the product is stopped and started.
+    - A persistence failure during deletion leaves the Project present and shows the error of ERR-007 in EL-211.
+    - A deletion that targets a Project that no longer exists changes no record and shows the error of ERR-007 in EL-211.
+    - Renaming a Project leaves every Item associated with it.
+    - After a rename, SCR-001 rows for those Items show the new Project Name.
+    - After a rename, searching by the new Project Name finds those Items and filtering by the renamed Project shows those Items.
+    - Unit tests for the Project delete guard pass.
+    - All checks defined in TECH_STACK.md pass.
