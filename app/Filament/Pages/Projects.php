@@ -9,7 +9,7 @@ use Illuminate\Http\RedirectResponse;
 
 class Projects extends Page
 {
-    protected static bool $shouldRegisterNavigation = false;
+    protected static bool $shouldRegisterNavigation = true;
 
     protected static ?string $slug = 'projects';
 
