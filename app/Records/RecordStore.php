@@ -10,4 +10,6 @@ interface RecordStore
     public function allProjects(): array;
 
     public function createProject(string $name): ProjectSummary;
+
+    public function renameProject(int $id, string $name): void;
 }

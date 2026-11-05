@@ -44,4 +44,19 @@ final class ProjectManager
 
         return ProjectOperationResult::success();
     }
+
+    public function rename(int $id, string $name): ProjectOperationResult
+    {
+        if (trim($name) === '') {
+            return ProjectOperationResult::failure('ERR-004', 'Project Name is required.');
+        }
+
+        try {
+            $this->records->renameProject($id, $name);
+        } catch (Throwable) {
+            return ProjectOperationResult::failure('ERR-007', 'The Project could not be saved.');
+        }
+
+        return ProjectOperationResult::success();
+    }
 }

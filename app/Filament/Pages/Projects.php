@@ -18,7 +18,7 @@ class Projects extends Page
     public string $projectName = '';
 
     /**
-     * @var list<array{id: int, name: string}>
+     * @var list<array{id: int, name: string, editedName: string}>
      */
     public array $projects = [];
 
@@ -53,6 +53,36 @@ class Projects extends Page
         return redirect()->to(Items::getUrl());
     }
 
+    public function renameProject(int $projectId, ProjectManager $projectManager): void
+    {
+        $editedName = null;
+
+        foreach ($this->projects as $project) {
+            if ($project['id'] === $projectId) {
+                $editedName = $project['editedName'];
+                break;
+            }
+        }
+
+        if ($editedName === null) {
+            $this->errorCode = 'ERR-007';
+            $this->errorMessage = 'The Project could not be saved.';
+
+            return;
+        }
+
+        $result = $projectManager->rename($projectId, $editedName);
+
+        if (! $result->success) {
+            $this->errorCode = $result->errorCode;
+            $this->errorMessage = $result->error;
+
+            return;
+        }
+
+        $this->loadProjects($projectManager);
+    }
+
     private function loadProjects(ProjectManager $projectManager): void
     {
         $result = $projectManager->list();
@@ -70,6 +100,7 @@ class Projects extends Page
             fn (ProjectSummary $project): array => [
                 'id' => $project->id,
                 'name' => $project->name,
+                'editedName' => $project->name,
             ],
             $result->projects,
         );

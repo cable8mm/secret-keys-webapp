@@ -19,6 +19,8 @@ final class FakeRecordStore implements RecordStore
 
     public int $createCalls = 0;
 
+    public int $renameCalls = 0;
+
     public function allProjects(): array
     {
         if ($this->failRead) {
@@ -40,5 +42,24 @@ final class FakeRecordStore implements RecordStore
         $this->projects[] = $project;
 
         return $project;
+    }
+
+    public function renameProject(int $id, string $name): void
+    {
+        $this->renameCalls++;
+
+        if ($this->failWrite) {
+            throw new RuntimeException('Write failed.');
+        }
+
+        foreach ($this->projects as $index => $project) {
+            if ($project->id === $id) {
+                $this->projects[$index] = new ProjectSummary($id, $name);
+
+                return;
+            }
+        }
+
+        throw new RuntimeException('Project not found.');
     }
 }

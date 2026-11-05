@@ -51,9 +51,26 @@
                 <div data-element="EL-203">
                     <x-filament::section>
                         <ul class="divide-y divide-gray-200 dark:divide-white/10">
-                            @foreach ($projects as $project)
-                                <li class="py-3 text-sm" wire:key="project-{{ $project['id'] }}">
-                                    {{ $project['name'] }}
+                            @foreach ($projects as $index => $project)
+                                <li class="flex items-end gap-4 py-3 text-sm" wire:key="project-{{ $project['id'] }}">
+                                    <div class="flex-1">
+                                        <x-filament::input.wrapper>
+                                            <x-filament::input
+                                                type="text"
+                                                value="{{ $project['editedName'] }}"
+                                                wire:model="projects.{{ $index }}.editedName"
+                                                data-element="EL-204"
+                                            />
+                                        </x-filament::input.wrapper>
+                                    </div>
+
+                                    <x-filament::button
+                                        color="gray"
+                                        wire:click="renameProject({{ $project['id'] }})"
+                                        data-element="EL-205"
+                                    >
+                                        Rename
+                                    </x-filament::button>
                                 </li>
                             @endforeach
                         </ul>
