@@ -1,0 +1,64 @@
+<?php
+
+namespace App\Items;
+
+use App\Records\RecordStore;
+use App\Support\TextComparison;
+use App\Values\ValueProtector;
+use Throwable;
+
+final class ItemFinder
+{
+    public function __construct(
+        private RecordStore $records,
+        private ValueProtector $protector,
+        private FingerprintDeriver $fingerprint,
+        private TextComparison $comparison,
+    ) {}
+
+    public function list(): ItemListResult
+    {
+        try {
+            $records = $this->records->allItems();
+        } catch (Throwable) {
+            return ItemListResult::failure('ERR-008', 'Items could not be loaded.');
+        }
+
+        $rows = [];
+
+        foreach ($records as $record) {
+            try {
+                $value = $this->protector->unprotect($record->protectedValue);
+            } catch (Throwable) {
+                return ItemListResult::failure('ERR-008', 'Items could not be loaded.');
+            }
+
+            $rows[] = new ItemRow(
+                $record->id,
+                $record->name,
+                $record->service,
+                $record->environment,
+                $record->projectName,
+                $this->fingerprint->derive($value),
+            );
+        }
+
+        usort(
+            $rows,
+            fn (ItemRow $left, ItemRow $right): int => $this->compareRows($left, $right),
+        );
+
+        return ItemListResult::success($rows);
+    }
+
+    private function compareRows(ItemRow $left, ItemRow $right): int
+    {
+        $projectOrder = $this->comparison->compare($left->projectName, $right->projectName);
+
+        if ($projectOrder !== 0) {
+            return $projectOrder;
+        }
+
+        return $this->comparison->compare($left->name, $right->name);
+    }
+}

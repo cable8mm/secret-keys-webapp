@@ -27,7 +27,6 @@ class Item extends Model
     protected function casts(): array
     {
         return [
-            'value' => 'encrypted',
             'issued_date' => 'date',
         ];
     }
