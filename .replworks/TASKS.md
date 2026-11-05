@@ -51,7 +51,7 @@
     - Unit tests for Project Name validation pass.
     - All checks defined in TECH_STACK.md pass.
 
-- [ ] T-005 Create an Item
+- [x] T-005 Create an Item
   - Satisfies: PRODUCT_SPEC.md FR-008; FR-009; FR-013; FR-015; FR-016; FR-019; FR-032; FR-033; FR-034; ERR-001; ERR-002; ERR-003; ERR-007; SCR-002; SCR-001
   - External boundary: no
   - Acceptance criteria:

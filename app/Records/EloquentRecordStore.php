@@ -2,6 +2,7 @@
 
 namespace App\Records;
 
+use App\Models\Item;
 use App\Models\Project;
 use RuntimeException;
 
@@ -43,5 +44,45 @@ final class EloquentRecordStore implements RecordStore
 
         $project->name = $name;
         $project->save();
+    }
+
+    public function projectExists(int $id): bool
+    {
+        return Project::query()->whereKey($id)->exists();
+    }
+
+    /**
+     * @return list<ItemRecord>
+     */
+    public function allItems(): array
+    {
+        return Item::query()
+            ->with('project')
+            ->get()
+            ->map(fn (Item $item): ItemRecord => new ItemRecord(
+                (int) $item->getKey(),
+                (string) $item->name,
+                $item->service,
+                $item->environment,
+                (string) $item->project->name,
+                (string) $item->value,
+            ))
+            ->all();
+    }
+
+    public function createItem(ItemWrite $write): int
+    {
+        $item = Item::query()->create([
+            'project_id' => $write->projectId,
+            'name' => $write->name,
+            'service' => $write->service,
+            'environment' => $write->environment,
+            'value' => $write->protectedValue,
+            'usage_location' => $write->usageLocation,
+            'issued_date' => $write->issuedDate,
+            'memo' => $write->memo,
+        ]);
+
+        return (int) $item->getKey();
     }
 }
