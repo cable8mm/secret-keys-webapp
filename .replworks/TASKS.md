@@ -103,7 +103,7 @@
     - Unit tests for Fingerprint derivation, Item validation, and exact Value storage pass.
     - All checks defined in TECH_STACK.md pass.
 
-- [ ] T-007 Search and order the Item list
+- [x] T-007 Search and order the Item list
   - Satisfies: PRODUCT_SPEC.md FR-018; FR-020; FR-021; FR-022; ERR-008; SCR-001
   - External boundary: no
   - Acceptance criteria:

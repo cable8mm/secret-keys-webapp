@@ -11,5 +11,7 @@ final readonly class ItemRow
         public ?string $environment,
         public string $projectName,
         public string $fingerprint,
+        public ?string $usageLocation = null,
+        public ?string $memo = null,
     ) {}
 }

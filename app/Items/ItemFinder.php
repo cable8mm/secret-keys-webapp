@@ -16,7 +16,7 @@ final class ItemFinder
         private TextComparison $comparison,
     ) {}
 
-    public function list(): ItemListResult
+    public function list(?string $search = null): ItemListResult
     {
         try {
             $records = $this->records->allItems();
@@ -40,6 +40,8 @@ final class ItemFinder
                 $record->environment,
                 $record->projectName,
                 $this->fingerprint->derive($value),
+                $record->usageLocation,
+                $record->memo,
             );
         }
 
@@ -48,7 +50,30 @@ final class ItemFinder
             fn (ItemRow $left, ItemRow $right): int => $this->compareRows($left, $right),
         );
 
+        $needle = trim((string) $search);
+
+        if ($needle !== '') {
+            $needle = mb_strtolower($needle, 'UTF-8');
+
+            $rows = array_values(array_filter(
+                $rows,
+                function (ItemRow $row) use ($needle): bool {
+                    return $this->contains($row->name, $needle)
+                        || $this->contains($row->service ?? '', $needle)
+                        || $this->contains($row->projectName, $needle)
+                        || $this->contains($row->environment ?? '', $needle)
+                        || $this->contains($row->usageLocation ?? '', $needle)
+                        || $this->contains($row->memo ?? '', $needle);
+                },
+            ));
+        }
+
         return ItemListResult::success($rows);
+    }
+
+    private function contains(string $haystack, string $needle): bool
+    {
+        return mb_strpos(mb_strtolower($haystack, 'UTF-8'), $needle, 0, 'UTF-8') !== false;
     }
 
     private function compareRows(ItemRow $left, ItemRow $right): int
