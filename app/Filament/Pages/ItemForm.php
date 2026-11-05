@@ -5,6 +5,7 @@ namespace App\Filament\Pages;
 use App\Items\ItemInput;
 use App\Items\ItemManager;
 use App\Projects\ProjectManager;
+use App\Values\CopyTextPreparer;
 use Filament\Pages\Page;
 use Illuminate\Http\RedirectResponse;
 
@@ -38,9 +39,13 @@ class ItemForm extends Page
 
     public string $fingerprint = '';
 
-    public bool $loading = false;
+    public ?string $copyMessage = null;
+
+    public ?string $copyError = null;
 
     public bool $itemLoaded = true;
+
+    public bool $loading = false;
 
     public bool $deleteArmed = false;
 
@@ -166,6 +171,32 @@ class ItemForm extends Page
     public function openProjects(): RedirectResponse
     {
         return redirect()->to(Projects::getUrl());
+    }
+
+    public function copyValue(): void
+    {
+        if (trim($this->value) === '') {
+            $this->copyError = 'Copying failed.';
+            $this->copyMessage = null;
+
+            return;
+        }
+
+        $this->copyError = null;
+        $this->copyMessage = null;
+
+        $this->dispatch('copy-prepared', text: (new CopyTextPreparer)->prepare($this->value));
+    }
+
+    public function reportCopyResult(bool $success): void
+    {
+        if ($success) {
+            $this->copyError = null;
+            $this->copyMessage = 'Copied.';
+        } else {
+            $this->copyError = 'Copying failed.';
+            $this->copyMessage = null;
+        }
     }
 
     public function toggleReveal(): void
