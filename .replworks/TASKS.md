@@ -22,7 +22,7 @@
     - The probe fails when the Clipboard write is denied or unavailable.
     - The observed failure behavior distinguishes a Clipboard write failure from a successful write.
 
-- [ ] T-003 Create and list Projects
+- [x] T-003 Create and list Projects
   - Satisfies: PRODUCT_SPEC.md FR-001; FR-002; FR-013; ERR-004; ERR-007; SCR-003
   - External boundary: no
   - Acceptance criteria:

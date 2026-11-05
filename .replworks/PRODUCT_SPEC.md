@@ -71,13 +71,13 @@
 - Offline behavior: None stated.
 - Accessibility: None stated.
 
-## External Systems [UNVERIFIED]
+## External Systems
 
 - Clipboard of the operating system.
 - Behavior relied on: the product writes text to the Clipboard and the user pastes that text into another application.
 - Dependent IDs: FR-027, FR-028, FR-029, FR-031, EL-005, EL-107, ERR-006.
 
-## User Interface [UNVERIFIED]
+## User Interface
 
 Global rules:
 
@@ -217,7 +217,7 @@ Global rules:
   - activate EL-207 -> the Project is deleted per FR-005 and FR-006
   - activate EL-208 -> no deletion occurs per FR-007
 
-## Functional Requirements [UNVERIFIED]
+## Functional Requirements
 
 Projects:
 
@@ -274,7 +274,7 @@ Value display:
 - FR-033: Activating EL-106 MUST switch EL-105 between masked and unmasked.
 - FR-034: The product MUST NOT display a Value on any screen except in EL-105 while EL-105 is unmasked.
 
-## User Flows [UNVERIFIED]
+## User Flows
 
 - UF-001: Find and copy a Value
   - open SCR-001 -> EL-004 shows Items per FR-018
@@ -302,7 +302,7 @@ Value display:
   - edit EL-204 and activate EL-205 -> the Project is renamed per FR-003
   - activate EL-206 then EL-207 -> the Project is deleted per FR-005 when no Item belongs to it
 
-## Error Conditions [UNVERIFIED]
+## Error Conditions
 
 - ERR-001: Item Name is empty when EL-112 is activated.
   - The product MUST NOT store the Item.
@@ -342,7 +342,7 @@ Value display:
 - Access from a phone or a tablet.
 - Deployment to any host other than the user's own computer.
 
-## Acceptance Criteria [UNVERIFIED]
+## Acceptance Criteria
 
 - AC-001: Creating a Project named alpha on SCR-003 results in a row for alpha in EL-203, an option in EL-002, and an option in EL-102. (FR-001, FR-002, SCR-003)
 - AC-002: Renaming the Project alpha to beta results in EL-203 showing beta and every Item of alpha showing Project Name beta on SCR-001. (FR-003, FR-004)
