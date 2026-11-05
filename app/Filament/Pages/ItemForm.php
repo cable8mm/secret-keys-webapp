@@ -42,6 +42,8 @@ class ItemForm extends Page
 
     public bool $itemLoaded = true;
 
+    public bool $deleteArmed = false;
+
     /**
      * @var list<array{code: string, message: string}>
      */
@@ -169,6 +171,34 @@ class ItemForm extends Page
     public function toggleReveal(): void
     {
         $this->revealed = ! $this->revealed;
+    }
+
+    public function armDelete(): void
+    {
+        $this->deleteArmed = true;
+    }
+
+    public function cancelDelete(): void
+    {
+        $this->deleteArmed = false;
+    }
+
+    public function confirmDelete(ItemManager $itemManager): ?RedirectResponse
+    {
+        if ($this->itemId === null) {
+            return null;
+        }
+
+        $result = $itemManager->delete($this->itemId);
+
+        if (! $result->success) {
+            $this->deleteArmed = true;
+            $this->formErrors = $result->errors;
+
+            return null;
+        }
+
+        return redirect()->to(Items::getUrl());
     }
 
     public function isCreateModeProperty(): bool

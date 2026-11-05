@@ -133,4 +133,13 @@ final class EloquentRecordStore implements RecordStore
         $item->memo = $write->memo;
         $item->save();
     }
+
+    public function deleteItem(int $id): void
+    {
+        $deleted = Item::query()->whereKey($id)->delete();
+
+        if ($deleted === 0) {
+            throw new RuntimeException('Item not found.');
+        }
+    }
 }

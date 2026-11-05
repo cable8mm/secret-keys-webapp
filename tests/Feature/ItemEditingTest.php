@@ -199,6 +199,8 @@ it('shows a retrieval error when a value cannot be converted', function () {
         }
 
         public function updateItem(int $id, ItemWrite $write): void {}
+
+        public function deleteItem(int $id): void {}
     });
 
     Livewire::test(ItemForm::class, ['itemId' => 1])

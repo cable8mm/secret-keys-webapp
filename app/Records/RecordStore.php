@@ -25,4 +25,6 @@ interface RecordStore
     public function createItem(ItemWrite $write): int;
 
     public function updateItem(int $id, ItemWrite $write): void;
+
+    public function deleteItem(int $id): void;
 }

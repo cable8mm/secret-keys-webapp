@@ -32,6 +32,8 @@ final class FakeRecordStore implements RecordStore
 
     public int $itemUpdateCalls = 0;
 
+    public int $itemDeleteCalls = 0;
+
     public function allProjects(): array
     {
         if ($this->failRead) {
@@ -177,6 +179,25 @@ final class FakeRecordStore implements RecordStore
                     $write->issuedDate,
                     $write->memo,
                 );
+
+                return;
+            }
+        }
+
+        throw new RuntimeException('Item not found.');
+    }
+
+    public function deleteItem(int $id): void
+    {
+        $this->itemDeleteCalls++;
+
+        if ($this->failWrite) {
+            throw new RuntimeException('Write failed.');
+        }
+
+        foreach ($this->items as $index => $item) {
+            if ($item->id === $id) {
+                array_splice($this->items, $index, 1);
 
                 return;
             }

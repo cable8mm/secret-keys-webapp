@@ -142,7 +142,7 @@
     - Unit tests for Environment option derivation and exact Environment equality pass.
     - All checks defined in TECH_STACK.md pass.
 
-- [ ] T-009 Delete an Item
+- [x] T-009 Delete an Item
   - Satisfies: PRODUCT_SPEC.md FR-011; FR-012; ERR-007; SCR-002; SCR-001
   - External boundary: no
   - Acceptance criteria:

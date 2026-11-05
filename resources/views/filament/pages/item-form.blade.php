@@ -73,8 +73,15 @@
 
             @if ($itemId !== null)
                 <div class="mt-4" data-element="EL-114">
-                    <x-filament::button color="danger" data-element="EL-114">Delete Item</x-filament::button>
+                    <x-filament::button color="danger" data-element="EL-114" wire:click="armDelete">Delete Item</x-filament::button>
                 </div>
+
+                @if ($deleteArmed)
+                    <div class="mt-2 flex gap-2" data-element="EL-115-116 group">
+                        <x-filament::button color="danger" wire:click="confirmDelete" data-element="EL-115">Confirm Delete</x-filament::button>
+                        <x-filament::button color="gray" wire:click="cancelDelete" data-element="EL-116">Cancel Delete</x-filament::button>
+                    </div>
+                @endif
             @endif
 
             @if ($itemId === null && $projects === [])

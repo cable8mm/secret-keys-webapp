@@ -49,6 +49,31 @@ final class ItemManager
         return $this->persist($id, $input);
     }
 
+    public function delete(int $id): ItemOperationResult
+    {
+        try {
+            if ($this->records->findItem($id) === null) {
+                return ItemOperationResult::failure([
+                    ['code' => 'ERR-007', 'message' => 'The Item could not be saved.'],
+                ]);
+            }
+        } catch (Throwable) {
+            return ItemOperationResult::failure([
+                ['code' => 'ERR-007', 'message' => 'The Item could not be saved.'],
+            ]);
+        }
+
+        try {
+            $this->records->deleteItem($id);
+        } catch (Throwable) {
+            return ItemOperationResult::failure([
+                ['code' => 'ERR-007', 'message' => 'The Item could not be saved.'],
+            ]);
+        }
+
+        return ItemOperationResult::success();
+    }
+
     public function load(int $id): ItemLoadResult
     {
         try {
