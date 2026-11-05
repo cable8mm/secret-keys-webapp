@@ -59,4 +59,17 @@ final class ProjectManager
 
         return ProjectOperationResult::success();
     }
+
+    public function delete(int $id): ProjectOperationResult
+    {
+        try {
+            $this->records->deleteProject($id);
+        } catch (ProjectHasItems) {
+            return ProjectOperationResult::failure('ERR-005', 'The Project has Items.');
+        } catch (Throwable) {
+            return ProjectOperationResult::failure('ERR-007', 'The Project could not be saved.');
+        }
+
+        return ProjectOperationResult::success();
+    }
 }

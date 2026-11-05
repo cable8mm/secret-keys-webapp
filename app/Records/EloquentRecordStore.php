@@ -4,6 +4,7 @@ namespace App\Records;
 
 use App\Models\Item;
 use App\Models\Project;
+use App\Projects\ProjectHasItems;
 use Illuminate\Support\Carbon;
 use RuntimeException;
 
@@ -45,6 +46,21 @@ final class EloquentRecordStore implements RecordStore
 
         $project->name = $name;
         $project->save();
+    }
+
+    public function deleteProject(int $id): void
+    {
+        $project = Project::query()->withCount('items')->find($id);
+
+        if ($project === null) {
+            throw new RuntimeException('Project not found.');
+        }
+
+        if ($project->items_count > 0) {
+            throw new ProjectHasItems('Project has Items.');
+        }
+
+        $project->delete();
     }
 
     public function projectExists(int $id): bool

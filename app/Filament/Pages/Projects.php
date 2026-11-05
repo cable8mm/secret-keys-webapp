@@ -28,6 +28,8 @@ class Projects extends Page
 
     public bool $projectsVisible = true;
 
+    public ?int $pendingDeleteProjectId = null;
+
     public function mount(ProjectManager $projectManager): void
     {
         $this->loadProjects($projectManager);
@@ -51,6 +53,38 @@ class Projects extends Page
     public function back(): RedirectResponse
     {
         return redirect()->to(Items::getUrl());
+    }
+
+    public function armDeleteProject(int $projectId): void
+    {
+        $this->pendingDeleteProjectId = $projectId;
+    }
+
+    public function cancelDeleteProject(): void
+    {
+        $this->pendingDeleteProjectId = null;
+    }
+
+    public function confirmDeleteProject(ProjectManager $projectManager): void
+    {
+        if ($this->pendingDeleteProjectId === null) {
+            return;
+        }
+
+        $projectId = $this->pendingDeleteProjectId;
+
+        $result = $projectManager->delete($projectId);
+
+        if (! $result->success) {
+            $this->pendingDeleteProjectId = $projectId;
+            $this->errorCode = $result->errorCode;
+            $this->errorMessage = $result->error;
+
+            return;
+        }
+
+        $this->pendingDeleteProjectId = null;
+        $this->loadProjects($projectManager);
     }
 
     public function renameProject(int $projectId, ProjectManager $projectManager): void
