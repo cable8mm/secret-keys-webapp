@@ -16,6 +16,8 @@ class ItemForm extends Page
 
     protected string $view = 'filament.pages.item-form';
 
+    public ?int $itemId = null;
+
     public string $itemName = '';
 
     public string $projectId = '';
@@ -36,6 +38,10 @@ class ItemForm extends Page
 
     public string $fingerprint = '';
 
+    public bool $loading = false;
+
+    public bool $itemLoaded = true;
+
     /**
      * @var list<array{code: string, message: string}>
      */
@@ -46,8 +52,12 @@ class ItemForm extends Page
      */
     public array $projects = [];
 
-    public function mount(ProjectManager $projectManager): void
+    public function mount(ProjectManager $projectManager, ItemManager $itemManager, ?int $itemId = null): void
     {
+        if ($itemId !== null) {
+            $this->itemId = $itemId;
+        }
+
         $result = $projectManager->list();
 
         if ($result->success) {
@@ -64,22 +74,51 @@ class ItemForm extends Page
                 'message' => $result->error,
             ]];
         }
+
+        if ($this->itemId !== null) {
+            $this->loading = true;
+            $this->revealed = false;
+            $loadResult = $itemManager->load($this->itemId);
+
+            if (! $loadResult->success) {
+                $this->itemLoaded = false;
+                $this->loading = false;
+                $this->formErrors = [[
+                    'code' => $loadResult->errorCode,
+                    'message' => $loadResult->error,
+                ]];
+
+                return;
+            }
+
+            $detail = $loadResult->detail;
+
+            $this->itemName = $detail->name;
+            $this->projectId = (string) $detail->projectId;
+            $this->service = $detail->service;
+            $this->environment = $detail->environment;
+            $this->value = $detail->value;
+            $this->usageLocation = $detail->usageLocation;
+            $this->issuedDate = $detail->issuedDate;
+            $this->memo = $detail->memo;
+            $this->fingerprint = $detail->fingerprint;
+            $this->loading = false;
+            $this->itemLoaded = true;
+        }
     }
 
     public function save(ItemManager $itemManager): ?RedirectResponse
     {
-        $projectId = $this->projectId === '' ? null : (int) $this->projectId;
+        if ($this->itemId === null) {
+            return $this->storeCreate($itemManager);
+        }
 
-        $result = $itemManager->create(new ItemInput(
-            $this->itemName,
-            $projectId,
-            $this->service,
-            $this->environment,
-            $this->value,
-            $this->usageLocation,
-            $this->issuedDate,
-            $this->memo,
-        ));
+        return $this->storeUpdate($itemManager);
+    }
+
+    private function storeCreate(ItemManager $itemManager): ?RedirectResponse
+    {
+        $result = $itemManager->create($this->toInput());
 
         if (! $result->success) {
             $this->formErrors = $result->errors;
@@ -88,6 +127,33 @@ class ItemForm extends Page
         }
 
         return redirect()->to(Items::getUrl());
+    }
+
+    private function storeUpdate(ItemManager $itemManager): ?RedirectResponse
+    {
+        $result = $itemManager->update((int) $this->itemId, $this->toInput());
+
+        if (! $result->success) {
+            $this->formErrors = $result->errors;
+
+            return null;
+        }
+
+        return redirect()->to(Items::getUrl());
+    }
+
+    private function toInput(): ItemInput
+    {
+        return new ItemInput(
+            $this->itemName,
+            $this->projectId === '' ? null : (int) $this->projectId,
+            $this->service,
+            $this->environment,
+            $this->value,
+            $this->usageLocation,
+            $this->issuedDate,
+            $this->memo,
+        );
     }
 
     public function cancel(): RedirectResponse
@@ -103,6 +169,11 @@ class ItemForm extends Page
     public function toggleReveal(): void
     {
         $this->revealed = ! $this->revealed;
+    }
+
+    public function isCreateModeProperty(): bool
+    {
+        return $this->itemId === null;
     }
 
     public function getProjectsAvailableProperty(): bool

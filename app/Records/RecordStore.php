@@ -15,10 +15,14 @@ interface RecordStore
 
     public function projectExists(int $id): bool;
 
+    public function findItem(int $id): ?ItemRecord;
+
     /**
      * @return list<ItemRecord>
      */
     public function allItems(): array;
 
     public function createItem(ItemWrite $write): int;
+
+    public function updateItem(int $id, ItemWrite $write): void;
 }

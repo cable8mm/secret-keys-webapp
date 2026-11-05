@@ -79,7 +79,7 @@
     - Unit tests for Fingerprint derivation, Item validation, and Value storage equality pass.
     - All checks defined in TECH_STACK.md pass.
 
-- [ ] T-006 Edit an Item and reveal its Value
+- [x] T-006 Edit an Item and reveal its Value
   - Satisfies: PRODUCT_SPEC.md FR-010; FR-014; FR-015; FR-016; FR-017; FR-032; FR-033; FR-034; ERR-001; ERR-002; ERR-003; ERR-007; SCR-002
   - External boundary: no
   - Acceptance criteria:

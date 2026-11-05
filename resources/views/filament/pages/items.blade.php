@@ -18,7 +18,9 @@
                     <tbody class="divide-y divide-gray-200 dark:divide-white/10">
                         @foreach ($items as $item)
                             <tr data-item-id="{{ $item['id'] }}">
-                                <td class="py-2">{{ $item['name'] }}</td>
+                                <td class="py-2">
+                                    <a data-element="EL-004-row-link" href="{{ \App\Filament\Pages\ItemForm::getUrl(['item' => $item['id']]) }}">{{ $item['name'] }}</a>
+                                </td>
                                 <td class="py-2">{{ $item['service'] }}</td>
                                 <td class="py-2">{{ $item['projectName'] }}</td>
                                 <td class="py-2">{{ $item['environment'] }}</td>

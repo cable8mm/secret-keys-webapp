@@ -4,6 +4,7 @@ namespace App\Records;
 
 use App\Models\Item;
 use App\Models\Project;
+use Illuminate\Support\Carbon;
 use RuntimeException;
 
 final class EloquentRecordStore implements RecordStore
@@ -51,6 +52,28 @@ final class EloquentRecordStore implements RecordStore
         return Project::query()->whereKey($id)->exists();
     }
 
+    public function findItem(int $id): ?ItemRecord
+    {
+        $item = Item::query()->with('project')->find($id);
+
+        if ($item === null) {
+            return null;
+        }
+
+        return new ItemRecord(
+            (int) $item->getKey(),
+            (int) $item->project_id,
+            (string) $item->name,
+            $item->service,
+            $item->environment,
+            (string) $item->project->name,
+            (string) $item->value,
+            $item->usage_location,
+            $item->issued_date?->toDateString(),
+            $item->memo,
+        );
+    }
+
     /**
      * @return list<ItemRecord>
      */
@@ -61,11 +84,15 @@ final class EloquentRecordStore implements RecordStore
             ->get()
             ->map(fn (Item $item): ItemRecord => new ItemRecord(
                 (int) $item->getKey(),
+                (int) $item->project_id,
                 (string) $item->name,
                 $item->service,
                 $item->environment,
                 (string) $item->project->name,
                 (string) $item->value,
+                $item->usage_location,
+                $item->issued_date?->toDateString(),
+                $item->memo,
             ))
             ->all();
     }
@@ -84,5 +111,26 @@ final class EloquentRecordStore implements RecordStore
         ]);
 
         return (int) $item->getKey();
+    }
+
+    public function updateItem(int $id, ItemWrite $write): void
+    {
+        $item = Item::query()->find($id);
+
+        if ($item === null) {
+            throw new RuntimeException('Item not found.');
+        }
+
+        $item->project_id = $write->projectId;
+        $item->name = $write->name;
+        $item->service = $write->service;
+        $item->environment = $write->environment;
+        $item->value = $write->protectedValue;
+        $item->usage_location = $write->usageLocation;
+        $item->issued_date = $write->issuedDate === null
+            ? null
+            : new Carbon($write->issuedDate);
+        $item->memo = $write->memo;
+        $item->save();
     }
 }
