@@ -39,7 +39,7 @@
     - Unit tests for Project Name validation and Project ordering pass.
     - All checks defined in TECH_STACK.md pass.
 
-- [ ] T-004 Rename a Project
+- [x] T-004 Rename a Project
   - Satisfies: PRODUCT_SPEC.md FR-003; ERR-004; ERR-007; SCR-003
   - External boundary: no
   - Acceptance criteria:
