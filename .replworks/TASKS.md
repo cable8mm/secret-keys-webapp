@@ -124,7 +124,7 @@
     - Unit tests for case-insensitive containment and Item ordering pass.
     - All checks defined in TECH_STACK.md pass.
 
-- [ ] T-008 Filter the Item list by Project and Environment
+- [x] T-008 Filter the Item list by Project and Environment
   - Satisfies: PRODUCT_SPEC.md FR-002; FR-018; FR-023; FR-024; FR-025; FR-026; SCR-001
   - External boundary: no
   - Acceptance criteria:

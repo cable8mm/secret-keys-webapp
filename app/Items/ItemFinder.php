@@ -2,6 +2,7 @@
 
 namespace App\Items;
 
+use App\Records\ItemRecord;
 use App\Records\RecordStore;
 use App\Support\TextComparison;
 use App\Values\ValueProtector;
@@ -16,7 +17,7 @@ final class ItemFinder
         private TextComparison $comparison,
     ) {}
 
-    public function list(?string $search = null): ItemListResult
+    public function list(?string $search = null, ?int $projectId = null, ?string $environment = null): ItemListResult
     {
         try {
             $records = $this->records->allItems();
@@ -35,6 +36,7 @@ final class ItemFinder
 
             $rows[] = new ItemRow(
                 $record->id,
+                $record->projectId,
                 $record->name,
                 $record->service,
                 $record->environment,
@@ -49,6 +51,20 @@ final class ItemFinder
             $rows,
             fn (ItemRow $left, ItemRow $right): int => $this->compareRows($left, $right),
         );
+
+        if ($projectId !== null) {
+            $rows = array_values(array_filter(
+                $rows,
+                fn (ItemRow $row): bool => $row->projectId === $projectId,
+            ));
+        }
+
+        if ($environment !== null && $environment !== '') {
+            $rows = array_values(array_filter(
+                $rows,
+                fn (ItemRow $row): bool => ($row->environment ?? '') === $environment,
+            ));
+        }
 
         $needle = trim((string) $search);
 
@@ -69,6 +85,31 @@ final class ItemFinder
         }
 
         return ItemListResult::success($rows);
+    }
+
+    /**
+     * @param  list<ItemRecord>|null  $records
+     * @return list<string>
+     */
+    public function distinctEnvironments(?array $records = null): array
+    {
+        $all = $records ?? $this->records->allItems();
+        $values = [];
+
+        foreach ($all as $record) {
+            if (filled($record->environment ?? '')) {
+                $values[$record->environment] = true;
+            }
+        }
+
+        $environments = array_keys($values);
+
+        usort(
+            $environments,
+            fn (string $left, string $right): int => $this->comparison->compare($left, $right),
+        );
+
+        return $environments;
     }
 
     private function contains(string $haystack, string $needle): bool
