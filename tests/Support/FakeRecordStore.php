@@ -2,6 +2,7 @@
 
 namespace Tests\Support;
 
+use App\Projects\ProjectHasItems;
 use App\Records\ItemRecord;
 use App\Records\ItemWrite;
 use App\Records\ProjectSummary;
@@ -27,6 +28,8 @@ final class FakeRecordStore implements RecordStore
     public int $createCalls = 0;
 
     public int $renameCalls = 0;
+
+    public int $deleteProjectCalls = 0;
 
     public int $itemCreateCalls = 0;
 
@@ -204,5 +207,30 @@ final class FakeRecordStore implements RecordStore
         }
 
         throw new RuntimeException('Item not found.');
+    }
+
+    public function deleteProject(int $id): void
+    {
+        $this->deleteProjectCalls++;
+
+        if ($this->failWrite) {
+            throw new RuntimeException('Write failed.');
+        }
+
+        foreach ($this->projects as $index => $project) {
+            if ($project->id === $id) {
+                foreach ($this->items as $item) {
+                    if ($item->projectId === $id) {
+                        throw new ProjectHasItems('Project has Items.');
+                    }
+                }
+
+                array_splice($this->projects, $index, 1);
+
+                return;
+            }
+        }
+
+        throw new RuntimeException('Project not found.');
     }
 }

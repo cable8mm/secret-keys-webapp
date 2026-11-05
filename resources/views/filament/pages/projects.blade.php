@@ -71,6 +71,21 @@
                                     >
                                         Rename
                                     </x-filament::button>
+
+                                    <x-filament::button
+                                        color="danger"
+                                        wire:click="armDeleteProject({{ $project['id'] }})"
+                                        data-element="EL-206"
+                                    >
+                                        Delete
+                                    </x-filament::button>
+
+                                    @if ($pendingDeleteProjectId === $project['id'])
+                                        <div class="flex gap-2">
+                                            <x-filament::button color="danger" wire:click="confirmDeleteProject" data-element="EL-207">Confirm</x-filament::button>
+                                            <x-filament::button color="gray" wire:click="cancelDeleteProject" data-element="EL-208">Cancel</x-filament::button>
+                                        </div>
+                                    @endif
                                 </li>
                             @endforeach
                         </ul>

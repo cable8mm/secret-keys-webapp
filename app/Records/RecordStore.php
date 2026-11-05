@@ -13,6 +13,8 @@ interface RecordStore
 
     public function renameProject(int $id, string $name): void;
 
+    public function deleteProject(int $id): void;
+
     public function projectExists(int $id): bool;
 
     public function findItem(int $id): ?ItemRecord;

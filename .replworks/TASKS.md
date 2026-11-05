@@ -193,7 +193,7 @@
     - Unit tests for Copy Text preparation pass.
     - All checks defined in TECH_STACK.md pass.
 
-- [ ] T-012 Delete a Project and keep Item association on rename
+- [x] T-012 Delete a Project and keep Item association on rename
   - Satisfies: PRODUCT_SPEC.md FR-004; FR-005; FR-006; FR-007; ERR-005; ERR-007; SCR-003
   - External boundary: no
   - Acceptance criteria:
