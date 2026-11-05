@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Clipboard Probe</title>
+    <style>
+        body { font-family: system-ui, sans-serif; margin: 2rem; max-width: 60rem; }
+        button { margin: 0.25rem; padding: 0.5rem 1rem; }
+        pre { background: #f4f4f4; padding: 1rem; overflow: auto; white-space: pre-wrap; }
+        .pass { color: #0a7a2f; font-weight: 700; }
+        .fail { color: #b00020; font-weight: 700; }
+    </style>
+</head>
+<body>
+    <h1>Clipboard Probe</h1>
+    <p>Origin: <code id="origin"></code></p>
+    <div id="buttons"></div>
+    <p>Result: <span id="summary">not run</span></p>
+    <pre id="results">No observation yet.</pre>
+    <script src="probe.js"></script>
+</body>
+</html>

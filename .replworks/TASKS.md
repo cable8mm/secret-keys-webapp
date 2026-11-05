@@ -10,7 +10,7 @@
     - The product's entry point is reachable in a desktop web browser on the computer on which it runs.
     - No login page or authentication step is presented before the product is usable.
 
-- [ ] T-002 Verify Clipboard behavior at the external boundary
+- [x] T-002 Verify Clipboard behavior at the external boundary
   - Satisfies: PRODUCT_SPEC.md External Systems; FR-027; FR-028; FR-031; ERR-006
   - External boundary: yes
   - Acceptance criteria:
