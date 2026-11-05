@@ -46,6 +46,9 @@
                         <x-filament::button color="gray" wire:click="toggleReveal" data-element="EL-106">
                             {{ $revealed ? 'Hide' : 'Show' }}
                         </x-filament::button>
+                        <x-filament::button color="gray" wire:click="copyValue" data-element="EL-107">
+                            Copy
+                        </x-filament::button>
                     </div>
                 </x-filament::fieldset>
                 <div data-element="EL-108">{{ $fingerprint }}</div>

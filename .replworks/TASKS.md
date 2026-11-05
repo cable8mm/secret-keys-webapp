@@ -176,7 +176,7 @@
     - Unit tests for Copy Text preparation pass.
     - All checks defined in TECH_STACK.md pass.
 
-- [ ] T-011 Copy the current form content
+- [x] T-011 Copy the current form content
   - Satisfies: PRODUCT_SPEC.md FR-027; FR-028; FR-029; FR-030; FR-031; ERR-006; SCR-002
   - External boundary: yes
   - Acceptance criteria:
