@@ -1,6 +1,6 @@
 # TASKS
 
-- [ ] T-001 Establish the project foundation
+- [x] T-001 Establish the project foundation
   - Satisfies: PRODUCT_SPEC.md Constraints; TECH_STACK.md
   - External boundary: no
   - Acceptance criteria:
