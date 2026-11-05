@@ -1,4 +1,10 @@
 <x-filament-panels::page>
+    @if (filled($errorMessage) || filled($message))
+        <div class="mb-6" data-element="EL-010">
+            <x-filament::callout color="{{ filled($errorMessage) ? 'danger' : 'success' }}" icon="heroicon-o-clipboard-document-check" :description="$errorMessage ?: $message" />
+        </div>
+    @endif
+
     <div class="mb-6 flex gap-2">
         <x-filament::button tag="a" :href="\App\Filament\Pages\ItemForm::getUrl()" data-element="EL-006">
             New Item
@@ -35,41 +41,61 @@
         </select>
     </div>
 
-    @if (filled($errorMessage))
-        <div class="mb-6" data-element="EL-010">
-            <x-filament::callout color="danger" icon="heroicon-o-exclamation-triangle" :description="$errorMessage" />
+    @if (count($items) === 0 && $search === '' && $projectFilter === '' && $environmentFilter === '')
+        <div data-element="EL-008">
+            <x-filament::empty-state heading="No Items yet." :contained="false" />
+        </div>
+    @elseif (count($items) === 0)
+        <div data-element="EL-009">
+            <x-filament::empty-state heading="No matching Items." :contained="false" />
+        </div>
+    @else
+        <div data-element="EL-004">
+            <x-filament::section>
+                <table class="min-w-full text-sm divide-y divide-gray-200 dark:divide-white/10">
+                    <tbody class="divide-y divide-gray-200 dark:divide-white/10">
+                        @foreach ($items as $item)
+                            <tr data-item-id="{{ $item['id'] }}">
+                                <td class="py-2">
+                                    <a data-element="EL-004-row-link" href="{{ \App\Filament\Pages\ItemForm::getUrl(['item' => $item['id']]) }}">{{ $item['name'] }}</a>
+                                </td>
+                                <td class="py-2">{{ $item['service'] }}</td>
+                                <td class="py-2">{{ $item['projectName'] }}</td>
+                                <td class="py-2">{{ $item['environment'] }}</td>
+                                <td class="py-2">{{ $item['fingerprint'] }}</td>
+                                <td class="py-2">
+                                    <x-filament::button color="gray" wire:click="copyValue({{ $item['id'] }})" data-element="EL-005">Copy</x-filament::button>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </x-filament::section>
         </div>
     @endif
 
-    @if (! filled($errorMessage))
-        @if (count($items) === 0 && $search === '')
-            <div data-element="EL-008">
-                <x-filament::empty-state heading="No Items yet." :contained="false" />
-            </div>
-        @elseif (count($items) === 0)
-            <div data-element="EL-009">
-                <x-filament::empty-state heading="No matching Items." :contained="false" />
-            </div>
-        @else
-            <div data-element="EL-004">
-                <x-filament::section>
-                    <table class="min-w-full text-sm divide-y divide-gray-200 dark:divide-white/10">
-                        <tbody class="divide-y divide-gray-200 dark:divide-white/10">
-                            @foreach ($items as $item)
-                                <tr data-item-id="{{ $item['id'] }}">
-                                    <td class="py-2">
-                                        <a data-element="EL-004-row-link" href="{{ \App\Filament\Pages\ItemForm::getUrl(['item' => $item['id']]) }}">{{ $item['name'] }}</a>
-                                    </td>
-                                    <td class="py-2">{{ $item['service'] }}</td>
-                                    <td class="py-2">{{ $item['projectName'] }}</td>
-                                    <td class="py-2">{{ $item['environment'] }}</td>
-                                    <td class="py-2">{{ $item['fingerprint'] }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </x-filament::section>
-            </div>
-        @endif
-    @endif
+    <div wire:ignore>
+        <script>
+            window.addEventListener('copy-prepared', async (event) => {
+                const text = event.detail.text;
+                const host = document.querySelector('[wire\\:id]');
+                const componentId = host ? host.getAttribute('wire:id') : null;
+                let success = true;
+
+                try {
+                    await navigator.clipboard.writeText(text);
+                } catch (e) {
+                    success = false;
+                }
+
+                if (componentId && window.Livewire) {
+                    const component = window.Livewire.find(componentId);
+
+                    if (component) {
+                        component.call('reportCopyResult', success);
+                    }
+                }
+            });
+        </script>
+    </div>
 </x-filament-panels::page>
