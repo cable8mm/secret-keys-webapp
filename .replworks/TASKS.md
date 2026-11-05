@@ -158,7 +158,7 @@
     - Unit tests for deletion failure handling pass.
     - All checks defined in TECH_STACK.md pass.
 
-- [ ] T-010 Copy a Value from a list row
+- [x] T-010 Copy a Value from a list row
   - Satisfies: PRODUCT_SPEC.md FR-027; FR-028; FR-030; FR-031; ERR-006; SCR-001
   - External boundary: yes
   - Acceptance criteria:

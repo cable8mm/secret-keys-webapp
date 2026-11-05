@@ -4,6 +4,7 @@ namespace App\Items;
 
 use App\Records\ItemWrite;
 use App\Records\RecordStore;
+use App\Values\CopyTextPreparer;
 use App\Values\ValueProtector;
 use Throwable;
 
@@ -49,31 +50,6 @@ final class ItemManager
         return $this->persist($id, $input);
     }
 
-    public function delete(int $id): ItemOperationResult
-    {
-        try {
-            if ($this->records->findItem($id) === null) {
-                return ItemOperationResult::failure([
-                    ['code' => 'ERR-007', 'message' => 'The Item could not be saved.'],
-                ]);
-            }
-        } catch (Throwable) {
-            return ItemOperationResult::failure([
-                ['code' => 'ERR-007', 'message' => 'The Item could not be saved.'],
-            ]);
-        }
-
-        try {
-            $this->records->deleteItem($id);
-        } catch (Throwable) {
-            return ItemOperationResult::failure([
-                ['code' => 'ERR-007', 'message' => 'The Item could not be saved.'],
-            ]);
-        }
-
-        return ItemOperationResult::success();
-    }
-
     public function load(int $id): ItemLoadResult
     {
         try {
@@ -104,6 +80,52 @@ final class ItemManager
             $record->memo ?? '',
             $this->fingerprint->derive($value),
         ));
+    }
+
+    public function delete(int $id): ItemOperationResult
+    {
+        try {
+            if ($this->records->findItem($id) === null) {
+                return ItemOperationResult::failure([
+                    ['code' => 'ERR-007', 'message' => 'The Item could not be saved.'],
+                ]);
+            }
+        } catch (Throwable) {
+            return ItemOperationResult::failure([
+                ['code' => 'ERR-007', 'message' => 'The Item could not be saved.'],
+            ]);
+        }
+
+        try {
+            $this->records->deleteItem($id);
+        } catch (Throwable) {
+            return ItemOperationResult::failure([
+                ['code' => 'ERR-007', 'message' => 'The Item could not be saved.'],
+            ]);
+        }
+
+        return ItemOperationResult::success();
+    }
+
+    public function copyText(int $id): ?string
+    {
+        try {
+            $record = $this->records->findItem($id);
+        } catch (Throwable) {
+            return null;
+        }
+
+        if ($record === null) {
+            return null;
+        }
+
+        try {
+            $value = $this->protector->unprotect($record->protectedValue);
+        } catch (Throwable) {
+            return null;
+        }
+
+        return (new CopyTextPreparer)->prepare($value);
     }
 
     /**

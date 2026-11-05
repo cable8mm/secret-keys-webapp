@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Items\ItemFinder;
+use App\Items\ItemManager;
 use App\Projects\ProjectManager;
 use Filament\Pages\Page;
 use Filament\Panel;
@@ -14,6 +15,8 @@ class Items extends Page
     protected string $view = 'filament.pages.items';
 
     public ?string $errorMessage = null;
+
+    public ?string $message = null;
 
     public string $search = '';
 
@@ -71,6 +74,34 @@ class Items extends Page
     public function updatedEnvironmentFilter(): void
     {
         $this->reload();
+    }
+
+    public function copyValue(int $id): void
+    {
+        $text = app(ItemManager::class)->copyText($id);
+
+        if ($text === null) {
+            $this->errorMessage = 'Copying failed.';
+            $this->message = null;
+
+            return;
+        }
+
+        $this->errorMessage = null;
+        $this->message = null;
+
+        $this->dispatch('copy-prepared', text: $text);
+    }
+
+    public function reportCopyResult(bool $success): void
+    {
+        if ($success) {
+            $this->errorMessage = null;
+            $this->message = 'Copied.';
+        } else {
+            $this->errorMessage = 'Copying failed.';
+            $this->message = null;
+        }
     }
 
     private function reload(): void
