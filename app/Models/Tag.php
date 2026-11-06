@@ -20,7 +20,7 @@ class Tag extends Model
     }
 
     /**
-     * @param list<string> $names
+     * @param  list<string>  $names
      * @return list<int>
      */
     public static function idsForNames(array $names): array
