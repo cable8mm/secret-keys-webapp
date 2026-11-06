@@ -16,7 +16,7 @@ it('stores values encrypted at rest and returns them exactly', function () {
         'value' => $protector->protect($value),
     ]);
 
-    $raw = DB::table('items')->where('id', $item->id)->value('value');
+    $raw = DB::table('project_items')->where('id', $item->id)->value('value');
 
     expect($raw)->toBeString()
         ->and($raw)->not->toContain('s3cr3t')

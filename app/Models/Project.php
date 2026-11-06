@@ -29,10 +29,10 @@ class Project extends Model
     }
 
     /**
-     * @return HasMany<Item, $this>
+     * @return HasMany<ProjectItem, $this>
      */
     public function items(): HasMany
     {
-        return $this->hasMany(Item::class);
+        return $this->hasMany(ProjectItem::class);
     }
 }

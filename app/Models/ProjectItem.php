@@ -10,8 +10,10 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $issued_date
  * @property Carbon|null $expires_at
  */
-class Item extends Model
+class ProjectItem extends Model
 {
+    protected $table = 'project_items';
+
     /**
      * @var list<string>
      */

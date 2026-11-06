@@ -2,6 +2,8 @@
 
 namespace App\Filament\Pages;
 
+use App\Items\AiItemManager;
+use App\Items\InfraItemManager;
 use App\Items\ItemFinder;
 use App\Items\ItemManager;
 use App\Projects\ProjectManager;
@@ -35,7 +37,7 @@ class Items extends Page
     public array $environments = [];
 
     /**
-     * @var list<array{id: int, projectId: int, name: string, service: ?string, environment: ?string, projectName: string, fingerprint: string, usageLocation: ?string, memo: ?string}>
+     * @var list<array{id: int, projectId: ?int, name: string, service: ?string, environment: ?string, projectName: string, fingerprint: string, usageLocation: ?string, memo: ?string, type: string}>
      */
     public array $items = [];
 
@@ -76,9 +78,13 @@ class Items extends Page
         $this->reload();
     }
 
-    public function copyValue(int $id): void
+    public function copyValue(string $type, int $id): void
     {
-        $text = app(ItemManager::class)->copyText($id);
+        $text = match ($type) {
+            'ai' => app(AiItemManager::class)->copyText($id),
+            'infra' => app(InfraItemManager::class)->copyText($id),
+            default => app(ItemManager::class)->copyText($id),
+        };
 
         if ($text === null) {
             $this->errorMessage = 'Copying failed.';
@@ -147,6 +153,7 @@ class Items extends Page
                 'fingerprint' => $row->fingerprint,
                 'usageLocation' => $row->usageLocation,
                 'memo' => $row->memo,
+                'type' => $row->type,
             ],
             $result->rows,
         );

@@ -10,11 +10,21 @@
     @if ($itemLoaded || $itemId === null)
         <div class="space-y-6">
             <div class="space-y-4">
+                @if ($itemId === null)
+                    <x-filament::fieldset label="Container">
+                        <select wire:model.live="itemType" class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm dark:border-white/10 dark:bg-white/5">
+                            <option value="project">Project</option>
+                            <option value="ai">AI</option>
+                            <option value="infra">Infra</option>
+                        </select>
+                    </x-filament::fieldset>
+                @endif
                 <x-filament::fieldset label="Item Name">
                     <x-filament::input.wrapper>
                         <x-filament::input type="text" wire:model="itemName" data-element="EL-101" @disabled($loading) />
                     </x-filament::input.wrapper>
                 </x-filament::fieldset>
+                @if ($itemType === 'project')
                 <x-filament::fieldset label="Project">
                     <select wire:model="projectId" data-element="EL-102" @disabled($loading) class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm dark:border-white/10 dark:bg-white/5">
                         <option value="">Select a Project</option>
@@ -23,6 +33,7 @@
                         @endforeach
                     </select>
                 </x-filament::fieldset>
+                @endif
                 <x-filament::fieldset label="Service">
                     <x-filament::input.wrapper>
                         <x-filament::input type="text" wire:model="service" data-element="EL-103" list="service-options" @disabled($loading) />
@@ -33,6 +44,7 @@
                         </datalist>
                     </x-filament::input.wrapper>
                 </x-filament::fieldset>
+                @if ($itemType === 'project')
                 <x-filament::fieldset label="Environment">
                     <select wire:model="environment" data-element="EL-104" @disabled($loading) class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm dark:border-white/10 dark:bg-white/5">
                         <option value="">Select an Environment</option>
@@ -51,6 +63,7 @@
                         <option value="other">other</option>
                     </select>
                 </x-filament::fieldset>
+                @endif
                 <x-filament::fieldset label="Value">
                     <textarea
                         wire:model="value"
@@ -70,6 +83,7 @@
                     </div>
                 </x-filament::fieldset>
                 <div data-element="EL-108">{{ $fingerprint }}</div>
+                @if ($itemType === 'project')
                 <x-filament::fieldset label="Usage Location">
                     <x-filament::input.wrapper>
                         <x-filament::input type="text" wire:model="usageLocation" data-element="EL-109" @disabled($loading) />
@@ -95,6 +109,7 @@
                         <x-filament::input type="date" wire:model="expiresAt" data-element="EL-121" @disabled($loading) />
                     </x-filament::input.wrapper>
                 </x-filament::fieldset>
+                @endif
             </div>
 
             <div class="flex gap-2">
@@ -115,7 +130,7 @@
                 @endif
             @endif
 
-            @if ($itemId === null && ! $hasUserProjects)
+            @if ($itemId === null && ! $hasUserProjects && $itemType === 'project')
                 <div class="mt-4" data-element="EL-117">
                     <x-filament::button color="gray" wire:click="openProjects">Manage Projects</x-filament::button>
                 </div>

@@ -6,7 +6,7 @@ final readonly class ItemRow
 {
     public function __construct(
         public int $id,
-        public int $projectId,
+        public ?int $projectId,
         public string $name,
         public ?string $service,
         public ?string $environment,
@@ -14,5 +14,6 @@ final readonly class ItemRow
         public string $fingerprint,
         public ?string $usageLocation = null,
         public ?string $memo = null,
+        public string $type = 'project',
     ) {}
 }
