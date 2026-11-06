@@ -1,0 +1,58 @@
+<?php
+
+namespace App\Filament\Resources\ProjectItems\Schemas;
+
+use App\Filament\Resources\SecretCopy;
+use App\Items\ServiceOptions;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Schema;
+
+class ProjectItemForm
+{
+    public static function configure(Schema $schema): Schema
+    {
+        return $schema
+            ->components([
+                Select::make('project_id')
+                    ->relationship('project', 'name')
+                    ->required(),
+                TextInput::make('name')
+                    ->required(),
+                TextInput::make('service')
+                    ->datalist(ServiceOptions::all()),
+                Select::make('environment')
+                    ->options([
+                        'live' => 'live',
+                        'test' => 'test',
+                        'dev' => 'dev',
+                        'none' => 'none',
+                    ]),
+                Select::make('kind')
+                    ->options([
+                        'token' => 'token',
+                        'password' => 'password',
+                        'pem' => 'pem',
+                        'other' => 'other',
+                    ]),
+                Textarea::make('value')
+                    ->required()
+                    ->rows(4)
+                    ->columnSpanFull()
+                    ->dehydrateStateUsing(fn (?string $state): ?string => SecretCopy::encryptForStorage($state))
+                    ->afterStateHydrated(function (Textarea $component, ?string $state): void {
+                        $component->state(SecretCopy::decryptForForm($state));
+                    }),
+                Textarea::make('usage_location')
+                    ->columnSpanFull(),
+                DatePicker::make('issued_date'),
+                DatePicker::make('expires_at'),
+                Textarea::make('memo')
+                    ->columnSpanFull(),
+                Textarea::make('tags')
+                    ->columnSpanFull(),
+            ]);
+    }
+}

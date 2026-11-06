@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasSecretValue;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
@@ -12,6 +13,13 @@ use Illuminate\Support\Carbon;
  */
 class ProjectItem extends Model
 {
+    use HasSecretValue;
+
+    public function secretKind(): ?string
+    {
+        return $this->kind;
+    }
+
     protected $table = 'project_items';
 
     /**
