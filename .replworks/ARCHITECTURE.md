@@ -17,6 +17,7 @@ infra_items (standalone, always in the Infra container)
 | id         | id      |                                |
 | name       | string  | required                       |
 | note       | text    | nullable                       |
+| url        | string  | nullable, project homepage     |
 | archived   | boolean | default false                  |
 | timestamps |         |                                |
 

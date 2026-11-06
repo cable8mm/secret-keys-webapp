@@ -14,6 +14,9 @@ class ProjectForm
             ->components([
                 TextInput::make('name')
                     ->required(),
+                TextInput::make('url')
+                    ->placeholder('https://…')
+                    ->columnSpanFull(),
                 Textarea::make('note')
                     ->columnSpanFull(),
             ]);
