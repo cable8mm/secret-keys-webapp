@@ -2,7 +2,7 @@
 
 namespace App\Providers\Filament;
 
-use App\Filament\Pages\Items;
+use App\Filament\Resources\Projects\ProjectResource;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Panel;
@@ -30,13 +30,27 @@ class AdminPanelProvider extends PanelProvider
                 'primary' => Color::Amber,
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
-            ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
-            ->homeUrl(fn (): string => Items::getUrl())
+            ->homeUrl(fn (): string => ProjectResource::getUrl('index'))
             ->viteTheme('resources/css/filament/admin/theme.css')
             ->sidebarCollapsibleOnDesktop()
             ->sidebarWidth('16rem')
             ->maxContentWidth(Width::Full)
             ->renderHook(PanelsRenderHook::TOPBAR_END, fn (): string => Blade::render('<x-filament-panels::theme-switcher />'))
+            ->renderHook(PanelsRenderHook::BODY_END, fn (): string => Blade::render(<<<'BLADE'
+                <script>
+                    window.addEventListener('copy-prepared', async (event) => {
+                        try {
+                            await navigator.clipboard.writeText(event.detail.text);
+                            new FilamentNotification().title('Copied.').success().send();
+                        } catch (error) {
+                            new FilamentNotification().title('Copying failed.').danger().send();
+                        }
+                    });
+                    window.addEventListener('copy-failed', () => {
+                        new FilamentNotification().title('Copying failed.').danger().send();
+                    });
+                </script>
+                BLADE))
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([])
             ->middleware([
