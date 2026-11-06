@@ -19,6 +19,11 @@ class ItemsRelationManager extends RelationManager
 
     protected static bool $isLazy = false;
 
+    public function isReadOnly(): bool
+    {
+        return false;
+    }
+
     public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
     {
         return true;
