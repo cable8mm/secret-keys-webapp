@@ -17,11 +17,10 @@ infra_items (standalone, always in the Infra container)
 | id         | id      |                                |
 | name       | string  | required                       |
 | note       | text    | nullable                       |
-| is_fixed   | boolean | default false; true for Infra, AI |
 | archived   | boolean | default false                  |
 | timestamps |         |                                |
 
-Seed rows: `Infra` and `AI` with `is_fixed = true`. They are never renamed, deleted, or archived.
+AI and Infra items live in their own tables (`ai_items`, `infra_items`) with name, value, and service only.
 
 ## project_items
 

@@ -12,7 +12,6 @@ class Project extends Model
      */
     protected $fillable = [
         'name',
-        'is_fixed',
         'archived',
         'note',
     ];
@@ -23,7 +22,6 @@ class Project extends Model
     protected function casts(): array
     {
         return [
-            'is_fixed' => 'boolean',
             'archived' => 'boolean',
         ];
     }

@@ -3,9 +3,8 @@
 ## Purpose
 
 - A single-user vault for secret credentials used by the user's software services.
-- Items are grouped by container. Every Item belongs to exactly one container.
+- Items are grouped by container: user Projects, plus separate AI and Infra item tables.
 - Project Items use the full field set below. AI and Infra Items use name, value, and service only.
-- Infra and AI are fixed containers. They exist from the first run and cannot be renamed, deleted, or archived. Items inside them behave like ordinary Items.
 - Other containers are user-created Projects (e.g. one per repository).
 - Archived Projects are hidden from the default list, shown in an archive area, and can be restored. Their Items still appear in search.
 
