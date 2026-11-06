@@ -13,6 +13,7 @@ class Project extends Model
     protected $fillable = [
         'name',
         'is_fixed',
+        'archived',
     ];
 
     /**
@@ -22,6 +23,7 @@ class Project extends Model
     {
         return [
             'is_fixed' => 'boolean',
+            'archived' => 'boolean',
         ];
     }
 

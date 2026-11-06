@@ -289,3 +289,33 @@ it('rejects deleting a fixed container', function () {
         ->and($result->errorCode)->toBe('ERR-007')
         ->and(Project::query()->whereKey($infra->getKey())->exists())->toBeTrue();
 });
+
+it('archives a project and hides it from the default list', function () {
+    $project = Project::create(['name' => 'alpha']);
+
+    Livewire::test(Projects::class)
+        ->call('archiveProject', $project->id)
+        ->assertSee('Project archived.')
+        ->assertDontSeeHtml('data-element="EL-206"')
+        ->assertSee('Archived')
+        ->assertSee('alpha');
+
+    expect(Project::query()->whereKey($project->id)->value('archived'))->toBeTrue();
+});
+
+it('restores an archived project to the default list', function () {
+    $project = Project::create(['name' => 'alpha', 'archived' => true]);
+
+    Livewire::test(Projects::class)
+        ->call('restoreProject', $project->id)
+        ->assertSee('Project restored.')
+        ->assertSeeHtml('data-element="EL-206"');
+
+    expect(Project::query()->whereKey($project->id)->value('archived'))->toBeFalse();
+});
+
+it('offers no archive control for fixed containers', function () {
+    Livewire::test(Projects::class)
+        ->assertDontSee('Archive')
+        ->assertDontSee('Restore');
+});

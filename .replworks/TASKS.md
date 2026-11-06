@@ -229,7 +229,7 @@
     - Unit tests for fixed-container immutability pass.
     - All checks defined in TECH_STACK.md pass.
 
-- [ ] T-014 Archive and restore Projects
+- [x] T-014 Archive and restore Projects
   - Satisfies: PRODUCT_SPEC.md FR-036; FR-037; SCR-003; SCR-001
   - External boundary: no
   - Acceptance criteria:

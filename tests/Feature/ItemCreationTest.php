@@ -42,7 +42,7 @@ it('lists fixed containers in EL-102 and shows EL-117 when no user project exist
         ->assertSee('AI')
         ->assertSeeHtml('data-element="EL-117"');
 
-    Project::create(['name' => 'Payments']);
+    $project = Project::create(['name' => 'Payments']);
 
     Livewire::test(ItemForm::class)
         ->assertSee('Payments')
@@ -54,13 +54,13 @@ it('opens the form from the items screen through EL-006', function () {
 });
 
 it('creates an item with the full value and lists its fingerprint', function () {
-    Project::create(['name' => 'Payments']);
+    $project = Project::create(['name' => 'Payments']);
 
     $value = "  first line\nsecond line  ";
 
     Livewire::test(ItemForm::class)
         ->set('itemName', ' API Key ')
-        ->set('projectId', '1')
+        ->set('projectId', (string) $project->id)
         ->set('service', 'Stripe')
         ->set('environment', 'production')
         ->set('value', $value)
@@ -90,11 +90,11 @@ it('creates an item with the full value and lists its fingerprint', function () 
 });
 
 it('produces an empty fingerprint for short values', function () {
-    Project::create(['name' => 'Payments']);
+    $project = Project::create(['name' => 'Payments']);
 
     Livewire::test(ItemForm::class)
         ->set('itemName', 'API key')
-        ->set('projectId', '1')
+        ->set('projectId', (string) $project->id)
         ->set('value', 'short')
         ->call('save');
 
@@ -109,11 +109,11 @@ it('produces an empty fingerprint for short values', function () {
 });
 
 it('shows raw text is not stored in the database', function () {
-    Project::create(['name' => 'Payments']);
+    $project = Project::create(['name' => 'Payments']);
 
     Livewire::test(ItemForm::class)
         ->set('itemName', 'API key')
-        ->set('projectId', '1')
+        ->set('projectId', (string) $project->id)
         ->set('value', 'super-secret-value-1234')
         ->call('save');
 
@@ -123,11 +123,11 @@ it('shows raw text is not stored in the database', function () {
 });
 
 it('reports ERR-001 for an empty item name and keeps entered input', function () {
-    Project::create(['name' => 'Payments']);
+    $project = Project::create(['name' => 'Payments']);
 
     Livewire::test(ItemForm::class)
         ->set('itemName', '   ')
-        ->set('projectId', '1')
+        ->set('projectId', (string) $project->id)
         ->set('value', 'secret')
         ->call('save')
         ->assertSee('Item Name is required.')
@@ -138,11 +138,11 @@ it('reports ERR-001 for an empty item name and keeps entered input', function ()
 });
 
 it('reports ERR-002 for an empty or whitespace-only value', function () {
-    Project::create(['name' => 'Payments']);
+    $project = Project::create(['name' => 'Payments']);
 
     Livewire::test(ItemForm::class)
         ->set('itemName', 'API key')
-        ->set('projectId', '1')
+        ->set('projectId', (string) $project->id)
         ->set('value', '   ')
         ->call('save')
         ->assertSee('Value is required.')
@@ -152,7 +152,7 @@ it('reports ERR-002 for an empty or whitespace-only value', function () {
 });
 
 it('reports ERR-003 when no project is selected', function () {
-    Project::create(['name' => 'Payments']);
+    $project = Project::create(['name' => 'Payments']);
 
     Livewire::test(ItemForm::class)
         ->set('itemName', 'API key')
@@ -166,7 +166,7 @@ it('reports ERR-003 when no project is selected', function () {
 });
 
 it('reports ERR-003 for a project that no longer exists', function () {
-    Project::create(['name' => 'Payments']);
+    $project = Project::create(['name' => 'Payments']);
 
     Livewire::test(ItemForm::class)
         ->set('itemName', 'API key')
@@ -234,11 +234,11 @@ it('opens project management when no project exists', function () {
 });
 
 it('persists an item through a fresh finder', function () {
-    Project::create(['name' => 'Payments']);
+    $project = Project::create(['name' => 'Payments']);
 
     Livewire::test(ItemForm::class)
         ->set('itemName', 'API key')
-        ->set('projectId', '1')
+        ->set('projectId', (string) $project->id)
         ->set('value', 'secret')
         ->call('save');
 
@@ -250,4 +250,19 @@ it('persists an item through a fresh finder', function () {
     expect($result->success)->toBeTrue()
         ->and($result->rows)->toHaveCount(1)
         ->and($result->rows[0]->name)->toBe('API key');
+});
+
+it('shows items of archived projects in search results', function () {
+    $project = Project::create(['name' => 'Payments', 'archived' => true]);
+
+    Livewire::test(ItemForm::class)
+        ->set('itemName', 'API key')
+        ->set('projectId', (string) $project->id)
+        ->set('value', 'super-secret-value-1234')
+        ->call('save')
+        ->assertRedirect(Items::getUrl());
+
+    Livewire::test(Items::class)
+        ->assertSee('API key')
+        ->assertSee('Payments');
 });

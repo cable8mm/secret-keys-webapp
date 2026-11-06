@@ -22,6 +22,7 @@ final class EloquentRecordStore implements RecordStore
                 (int) $project->getKey(),
                 (string) $project->name,
                 (bool) $project->is_fixed,
+                (bool) $project->archived,
             ))
             ->all();
     }
@@ -76,6 +77,22 @@ final class EloquentRecordStore implements RecordStore
     public function projectExists(int $id): bool
     {
         return Project::query()->whereKey($id)->exists();
+    }
+
+    public function setProjectArchived(int $id, bool $archived): void
+    {
+        $project = Project::query()->find($id);
+
+        if ($project === null) {
+            throw new RuntimeException('Project not found.');
+        }
+
+        if ((bool) $project->is_fixed) {
+            throw new ProjectIsFixed('Project is fixed.');
+        }
+
+        $project->archived = $archived;
+        $project->save();
     }
 
     public function findItem(int $id): ?ItemRecord
