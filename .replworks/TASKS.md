@@ -242,11 +242,12 @@
     - Unit tests for archive and restore pass.
     - All checks defined in TECH_STACK.md pass.
 
-- [ ] T-015 Item kind and pem copy rule
+- [x] T-015 Item kind and pem copy rule
   - Satisfies: PRODUCT_SPEC.md FR-027; FR-028; FR-030; FR-031; FR-038; ERR-006; SCR-002; SCR-001
   - External boundary: yes
   - Acceptance criteria:
     - SCR-002 offers Item Kind as one of token, password, pem, other, or no selection.
+    - SCR-002 presents EL-119 after EL-104 and before EL-105.
     - The selected Kind is stored and shown again in edit mode.
     - Copying an Item whose kind is pem removes leading and trailing whitespace, converts CR and CRLF line breaks to LF, and ends the Clipboard text with exactly one newline.
     - Copying an Item whose kind is not pem produces the same Clipboard text as before.

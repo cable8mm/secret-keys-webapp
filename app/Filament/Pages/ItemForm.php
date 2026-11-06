@@ -27,6 +27,8 @@ class ItemForm extends Page
 
     public string $environment = '';
 
+    public string $kind = '';
+
     public string $value = '';
 
     public string $usageLocation = '';
@@ -107,6 +109,7 @@ class ItemForm extends Page
             $this->projectId = (string) $detail->projectId;
             $this->service = $detail->service;
             $this->environment = $detail->environment;
+            $this->kind = $detail->kind;
             $this->value = $detail->value;
             $this->usageLocation = $detail->usageLocation;
             $this->issuedDate = $detail->issuedDate;
@@ -163,6 +166,7 @@ class ItemForm extends Page
             $this->usageLocation,
             $this->issuedDate,
             $this->memo,
+            $this->kind,
         );
     }
 
@@ -188,7 +192,7 @@ class ItemForm extends Page
         $this->copyError = null;
         $this->copyMessage = null;
 
-        $this->dispatch('copy-prepared', text: (new CopyTextPreparer)->prepare($this->value));
+        $this->dispatch('copy-prepared', text: (new CopyTextPreparer)->prepare($this->value, $this->kind === '' ? null : $this->kind));
     }
 
     public function reportCopyResult(bool $success): void

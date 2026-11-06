@@ -102,3 +102,27 @@ it('reports ERR-007 when persistence fails', function () {
         ->and($store->itemCreateCalls)->toBe(1)
         ->and($store->items)->toBe([]);
 });
+
+it('returns pem-normalized copy text for a pem item', function () {
+    $store = new FakeRecordStore;
+    $store->projects[] = new ProjectSummary(1, 'Infra');
+
+    $manager = itemManagerWith($store);
+    $createResult = $manager->create(new ItemInput(
+        'Deploy Key',
+        1,
+        '',
+        '',
+        "  line1\r\nline2  ",
+        '',
+        '',
+        '',
+        'pem',
+    ));
+
+    expect($createResult->success)->toBeTrue();
+
+    $result = $manager->copyText(1);
+
+    expect($result)->toBe("line1\nline2\n");
+});

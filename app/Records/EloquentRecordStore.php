@@ -114,6 +114,7 @@ final class EloquentRecordStore implements RecordStore
             $item->usage_location,
             $item->issued_date?->toDateString(),
             $item->memo,
+            $item->kind,
         );
     }
 
@@ -136,6 +137,7 @@ final class EloquentRecordStore implements RecordStore
                 $item->usage_location,
                 $item->issued_date?->toDateString(),
                 $item->memo,
+                $item->kind,
             ))
             ->all();
     }
@@ -147,6 +149,7 @@ final class EloquentRecordStore implements RecordStore
             'name' => $write->name,
             'service' => $write->service,
             'environment' => $write->environment,
+            'kind' => $write->kind,
             'value' => $write->protectedValue,
             'usage_location' => $write->usageLocation,
             'issued_date' => $write->issuedDate,
@@ -168,6 +171,7 @@ final class EloquentRecordStore implements RecordStore
         $item->name = $write->name;
         $item->service = $write->service;
         $item->environment = $write->environment;
+        $item->kind = $write->kind;
         $item->value = $write->protectedValue;
         $item->usage_location = $write->usageLocation;
         $item->issued_date = $write->issuedDate === null

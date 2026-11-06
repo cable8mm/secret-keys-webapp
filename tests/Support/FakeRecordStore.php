@@ -158,6 +158,7 @@ final class FakeRecordStore implements RecordStore
             $write->usageLocation,
             $write->issuedDate,
             $write->memo,
+            $write->kind,
         );
 
         return $id;
@@ -207,6 +208,7 @@ final class FakeRecordStore implements RecordStore
                     $write->usageLocation,
                     $write->issuedDate,
                     $write->memo,
+                    $write->kind,
                 );
 
                 return;

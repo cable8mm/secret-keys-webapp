@@ -140,7 +140,7 @@ Global rules:
 - Purpose: create an Item, edit an Item, reveal and copy a Value, delete an Item.
 - Modes: create, edit.
 - Arrangement:
-  - EL-101 through EL-111 are arranged in one vertical group in this order: EL-101, EL-102, EL-103, EL-104, EL-105, EL-109, EL-110, EL-111.
+  - EL-101 through EL-111 and EL-119 are arranged in one vertical group in this order: EL-101, EL-102, EL-103, EL-104, EL-119, EL-105, EL-109, EL-110, EL-111.
   - EL-106, EL-107, EL-108 are grouped adjacent to EL-105.
   - EL-112 and EL-113 are grouped below the vertical group.
   - EL-114 is separated from EL-112 and EL-113.
@@ -150,6 +150,7 @@ Global rules:
   - EL-102: Project selection; purpose: choose the Project of the Item; user actions: select one Project.
   - EL-103: Service input; purpose: enter Service; user actions: type text.
   - EL-104: Environment input; purpose: enter Environment; user actions: type text.
+  - EL-119: Kind selection; purpose: choose the Kind of the Item; user actions: select one Kind or no Kind.
   - EL-105: Value input; purpose: enter Value; user actions: type text, paste text.
   - EL-106: reveal toggle; purpose: switch EL-105 between masked and unmasked; user actions: activate.
   - EL-107: Value copy control; purpose: copy the content of EL-105; user actions: activate.
@@ -181,7 +182,7 @@ Global rules:
 - Interactions:
   - open SCR-002 -> EL-105 is masked
   - activate EL-106 -> EL-105 changes between masked and unmasked
-  - activate EL-107 -> the Clipboard receives the content of EL-105 per FR-027, FR-028, FR-029; EL-118 shows the confirmation of FR-031
+  - activate EL-107 -> the Clipboard receives the content of EL-105 per FR-027, FR-028, FR-029, FR-038; EL-118 shows the confirmation of FR-031
   - activate EL-112 with invalid input -> the matching ERR is shown
   - activate EL-114 -> EL-115 and EL-116 are shown
   - activate EL-115 -> the Item is deleted per FR-011
@@ -194,7 +195,9 @@ Global rules:
 - Arrangement (List mode):
   - EL-201 and EL-202 are grouped at the top.
   - EL-203 is placed below EL-201 and EL-202.
-  - EL-206 is placed inside each row of EL-203.
+  - EL-206 and EL-212 are placed inside each row of EL-203.
+  - The archive area is placed below EL-203.
+  - EL-213 is placed inside each row of the archive area.
 - Arrangement (Create mode):
   - EL-201 is placed at the top.
   - EL-202 is placed below EL-201.
@@ -204,18 +207,20 @@ Global rules:
 - Elements:
   - EL-201: new Project Name input; purpose: enter the Project Name of a new Project; user actions: type text.
   - EL-202: create control; purpose: store the new Project; user actions: activate.
-  - EL-203: Project row list; purpose: show every Project; user actions: none.
+  - EL-203: Project row list; purpose: show every non-archived Project; user actions: none.
   - EL-204: edit Project Name input; purpose: edit the Project Name; user actions: type text.
   - EL-205: update control; purpose: store the edited Project Name; user actions: activate.
   - EL-206: row delete control; purpose: delete the Project; user actions: activate; shown inside each row of EL-203.
   - EL-207: delete confirm control; purpose: confirm deletion; user actions: activate; shown after EL-206 is activated.
   - EL-208: delete cancel control; purpose: abort deletion; user actions: activate; shown after EL-206 is activated.
-  - EL-210: no-Projects message slot; purpose: indicate that no Project exists; user actions: none.
+  - EL-212: row archive control; purpose: archive the Project; user actions: activate; shown inside each row of EL-203 except for Infra and AI.
+  - EL-213: row restore control; purpose: restore the archived Project; user actions: activate; shown inside each row of the archive area.
+  - EL-210: no-Projects message slot; purpose: indicate that no user-created Project exists; user actions: none.
   - EL-211: Message Slot; purpose: show validation errors and persistence errors; user actions: none.
 - States:
   - Initial: EL-201 is empty; EL-203 shows every Project.
   - Empty: no user-created Project exists; EL-210 is shown; EL-203 shows only Infra and AI.
-  - Populated: EL-203 shows one row per Project.
+  - Populated: EL-203 shows one row per non-archived Project.
   - Error: a validation error or persistence error is shown in EL-211.
   - Disabled: none.
 - Navigation:
@@ -224,6 +229,8 @@ Global rules:
   - activate EL-206 -> EL-207 and EL-208 are shown for that Project.
   - activate EL-207 -> the Project is deleted per FR-005 and FR-006.
   - activate EL-208 -> nothing is deleted per FR-007.
+  - activate EL-212 -> the Project is archived per FR-036.
+  - activate EL-213 -> the Project is restored per FR-036.
 - Interactions:
   - activate EL-202 with an empty or whitespace-only EL-201 -> creates no Project and shows the error of ERR-004 in EL-211.
   - activate EL-205 with an empty or whitespace-only EL-204 -> changes no Project and shows the error of ERR-004 in EL-211.

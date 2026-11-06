@@ -19,6 +19,7 @@ class Item extends Model
         'name',
         'service',
         'environment',
+        'kind',
         'value',
         'usage_location',
         'issued_date',
