@@ -154,3 +154,33 @@ it('rejects deleting a fixed container', function () {
     expect($result->success)->toBeFalse()
         ->and($result->errorCode)->toBe('ERR-007');
 });
+
+it('archives and restores a project', function () {
+    $store = new FakeRecordStore;
+    $store->projects = [new ProjectSummary(1, 'alpha')];
+
+    expect(projectManagerWith($store)->archive(1)->success)->toBeTrue()
+        ->and($store->projects[0]->isArchived)->toBeTrue();
+
+    expect(projectManagerWith($store)->restore(1)->success)->toBeTrue()
+        ->and($store->projects[0]->isArchived)->toBeFalse();
+});
+
+it('rejects archiving a fixed container', function () {
+    $store = new FakeRecordStore;
+    $store->projects = [new ProjectSummary(1, 'Infra', true)];
+
+    $result = projectManagerWith($store)->archive(1);
+
+    expect($result->success)->toBeFalse()
+        ->and($result->errorCode)->toBe('ERR-007');
+});
+
+it('returns a persistence failure when archiving a missing project', function () {
+    $store = new FakeRecordStore;
+
+    $result = projectManagerWith($store)->archive(404);
+
+    expect($result->success)->toBeFalse()
+        ->and($result->errorCode)->toBe('ERR-007');
+});

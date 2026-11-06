@@ -17,6 +17,8 @@ interface RecordStore
 
     public function projectExists(int $id): bool;
 
+    public function setProjectArchived(int $id, bool $archived): void;
+
     public function findItem(int $id): ?ItemRecord;
 
     /**

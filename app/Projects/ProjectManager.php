@@ -76,4 +76,30 @@ final class ProjectManager
 
         return ProjectOperationResult::success();
     }
+
+    public function archive(int $id): ProjectOperationResult
+    {
+        try {
+            $this->records->setProjectArchived($id, true);
+        } catch (ProjectIsFixed) {
+            return ProjectOperationResult::failure('ERR-007', 'The Project could not be saved.');
+        } catch (Throwable) {
+            return ProjectOperationResult::failure('ERR-007', 'The Project could not be saved.');
+        }
+
+        return ProjectOperationResult::success();
+    }
+
+    public function restore(int $id): ProjectOperationResult
+    {
+        try {
+            $this->records->setProjectArchived($id, false);
+        } catch (ProjectIsFixed) {
+            return ProjectOperationResult::failure('ERR-007', 'The Project could not be saved.');
+        } catch (Throwable) {
+            return ProjectOperationResult::failure('ERR-007', 'The Project could not be saved.');
+        }
+
+        return ProjectOperationResult::success();
+    }
 }

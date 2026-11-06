@@ -99,6 +99,27 @@ final class FakeRecordStore implements RecordStore
         return false;
     }
 
+    public function setProjectArchived(int $id, bool $archived): void
+    {
+        if ($this->failWrite) {
+            throw new RuntimeException('Write failed.');
+        }
+
+        foreach ($this->projects as $index => $project) {
+            if ($project->id === $id) {
+                if ($project->isFixed) {
+                    throw new ProjectIsFixed('Project is fixed.');
+                }
+
+                $this->projects[$index] = new ProjectSummary($id, $project->name, $project->isFixed, $archived);
+
+                return;
+            }
+        }
+
+        throw new RuntimeException('Project not found.');
+    }
+
     public function allItems(): array
     {
         if ($this->failRead) {

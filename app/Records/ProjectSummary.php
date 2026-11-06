@@ -8,5 +8,6 @@ final readonly class ProjectSummary
         public int $id,
         public string $name,
         public bool $isFixed = false,
+        public bool $isArchived = false,
     ) {}
 }
