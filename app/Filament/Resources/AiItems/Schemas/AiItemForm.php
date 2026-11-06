@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\AiItems\Schemas;
 
 use App\Filament\Resources\SecretCopy;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
