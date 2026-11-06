@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Concerns\HasSecretValue;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class AiItem extends Model
 {
@@ -17,6 +18,14 @@ class AiItem extends Model
     protected $fillable = [
         'name',
         'value',
-        'service',
+        'service_id',
     ];
+
+    /**
+     * @return BelongsTo<Service, $this>
+     */
+    public function service(): BelongsTo
+    {
+        return $this->belongsTo(Service::class);
+    }
 }

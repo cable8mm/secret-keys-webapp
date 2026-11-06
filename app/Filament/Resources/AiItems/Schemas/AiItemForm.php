@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\AiItems\Schemas;
 
 use App\Filament\Resources\SecretCopy;
-use App\Items\ServiceOptions;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
@@ -16,8 +15,10 @@ class AiItemForm
             ->components([
                 TextInput::make('name')
                     ->required(),
-                TextInput::make('service')
-                    ->datalist(ServiceOptions::all()),
+                Select::make('service_id')
+                    ->relationship('service', 'name', modifyQueryUsing: fn ($query) => $query->where('is_ai', true))
+                    ->searchable()
+                    ->preload(),
                 Textarea::make('value')
                     ->required()
                     ->rows(4)

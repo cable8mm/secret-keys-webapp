@@ -19,7 +19,7 @@ class ProjectItemsTable
                     ->searchable(),
                 TextColumn::make('name')
                     ->searchable(),
-                TextColumn::make('service')
+                TextColumn::make('service.name')
                     ->searchable(),
                 TextColumn::make('environment')
                     ->badge(),

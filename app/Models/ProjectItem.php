@@ -23,7 +23,7 @@ class ProjectItem extends Model
     protected $fillable = [
         'project_id',
         'name',
-        'service',
+        'service_id',
         'environment',
         'kind',
         'tags',
@@ -51,5 +51,13 @@ class ProjectItem extends Model
     public function project(): BelongsTo
     {
         return $this->belongsTo(Project::class);
+    }
+
+    /**
+     * @return BelongsTo<Service, $this>
+     */
+    public function service(): BelongsTo
+    {
+        return $this->belongsTo(Service::class);
     }
 }

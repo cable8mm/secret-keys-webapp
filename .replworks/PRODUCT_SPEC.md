@@ -13,7 +13,7 @@
 - name (required): shown in the list.
 - value (required): the secret. Never shown in lists; never stored as readable plain text in earlier product versions (research tool: plain storage is acceptable while iterating on structure).
 - kind (optional): token, password, pem, or other. Decides the copy rule.
-- service (optional): chosen from a fixed suggestion list, free text also allowed.
+- service (optional): chosen from the Services list. Each service opts in per container type.
 - environment (optional): live, test, dev, none, or unset.
 - tags (optional): free text, e.g. `scope:deploy`, `server:prod-1`.
 - usage location, issued date, expiry date, memo, note (all optional).

@@ -15,7 +15,7 @@ class ProjectItemInfolist
                 TextEntry::make('name'),
                 TextEntry::make('project.name')
                     ->label('Project'),
-                TextEntry::make('service'),
+                TextEntry::make('service.name'),
                 TextEntry::make('environment')
                     ->badge(),
                 TextEntry::make('kind')
