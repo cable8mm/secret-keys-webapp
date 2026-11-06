@@ -5,7 +5,9 @@ namespace App\Filament\Resources\ProjectItems;
 use App\Filament\Resources\ProjectItems\Pages\CreateProjectItem;
 use App\Filament\Resources\ProjectItems\Pages\EditProjectItem;
 use App\Filament\Resources\ProjectItems\Pages\ListProjectItems;
+use App\Filament\Resources\ProjectItems\Pages\ViewProjectItem;
 use App\Filament\Resources\ProjectItems\Schemas\ProjectItemForm;
+use App\Filament\Resources\ProjectItems\Schemas\ProjectItemInfolist;
 use App\Filament\Resources\ProjectItems\Tables\ProjectItemsTable;
 use App\Models\ProjectItem;
 use BackedEnum;
@@ -34,6 +36,11 @@ class ProjectItemResource extends Resource
         return ProjectItemsTable::configure($table);
     }
 
+    public static function infolist(Schema $schema): Schema
+    {
+        return ProjectItemInfolist::configure($schema);
+    }
+
     public static function getRelations(): array
     {
         return [
@@ -46,6 +53,7 @@ class ProjectItemResource extends Resource
         return [
             'index' => ListProjectItems::route('/'),
             'create' => CreateProjectItem::route('/create'),
+            'view' => ViewProjectItem::route('/{record}'),
             'edit' => EditProjectItem::route('/{record}/edit'),
         ];
     }

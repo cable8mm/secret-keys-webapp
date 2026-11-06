@@ -4,6 +4,7 @@ namespace App\Filament\Resources\AiItems\Tables;
 
 use App\Filament\Resources\SecretCopy;
 use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -26,6 +27,7 @@ class AiItemsTable
             ])
             ->recordActions([
                 SecretCopy::copyAction(),
+                ViewAction::make(),
                 EditAction::make(),
             ])
             ->toolbarActions([]);

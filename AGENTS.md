@@ -37,9 +37,8 @@ Documents do not drive development.
 
 ## VERIFICATION
 
-- Verify through execution whenever reasonable: run code, tests, and sanity checks.
-- After behavior changes: `pint`, Larastan, and the full test suite must pass.
-- CI must pass before merging.
+- Verify through execution only when asked. The human does the testing.
+- Do not run tests, pint, Larastan, or CI watches unless explicitly requested.
 
 ---
 
@@ -53,11 +52,13 @@ Documents do not drive development.
 
 ## DELIVERY
 
-- Work on a branch, open a PR, squash-merge only after CI passes, then pull main.
+- Never commit, push, open a PR, or merge unless the human explicitly asks for it.
+- When asked to commit: work on a branch, open a PR, squash-merge only after CI passes, then pull main.
 - Commit author/committer: the agent that wrote the code (name + noreply email).
 - Add a `Co-authored-by` trailer for the human account only when the human specified the change or answered a question about it.
 - PR creator / assignee and merger: as confirmed with the human.
 - Human-requested changes are committed only after human review of the diff and test results.
+- Testing is done by the human. Do not run tests, pint, phpstan, or CI watches unless asked.
 
 ---
 

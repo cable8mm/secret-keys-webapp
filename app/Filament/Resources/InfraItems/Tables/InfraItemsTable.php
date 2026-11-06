@@ -4,6 +4,7 @@ namespace App\Filament\Resources\InfraItems\Tables;
 
 use App\Filament\Resources\SecretCopy;
 use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -26,6 +27,7 @@ class InfraItemsTable
             ])
             ->recordActions([
                 SecretCopy::copyAction(),
+                ViewAction::make(),
                 EditAction::make(),
             ])
             ->toolbarActions([]);

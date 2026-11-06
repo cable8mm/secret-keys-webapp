@@ -5,7 +5,9 @@ namespace App\Filament\Resources\AiItems;
 use App\Filament\Resources\AiItems\Pages\CreateAiItem;
 use App\Filament\Resources\AiItems\Pages\EditAiItem;
 use App\Filament\Resources\AiItems\Pages\ListAiItems;
+use App\Filament\Resources\AiItems\Pages\ViewAiItem;
 use App\Filament\Resources\AiItems\Schemas\AiItemForm;
+use App\Filament\Resources\AiItems\Schemas\AiItemInfolist;
 use App\Filament\Resources\AiItems\Tables\AiItemsTable;
 use App\Models\AiItem;
 use BackedEnum;
@@ -34,6 +36,11 @@ class AiItemResource extends Resource
         return AiItemsTable::configure($table);
     }
 
+    public static function infolist(Schema $schema): Schema
+    {
+        return AiItemInfolist::configure($schema);
+    }
+
     public static function getRelations(): array
     {
         return [
@@ -46,6 +53,7 @@ class AiItemResource extends Resource
         return [
             'index' => ListAiItems::route('/'),
             'create' => CreateAiItem::route('/create'),
+            'view' => ViewAiItem::route('/{record}'),
             'edit' => EditAiItem::route('/{record}/edit'),
         ];
     }

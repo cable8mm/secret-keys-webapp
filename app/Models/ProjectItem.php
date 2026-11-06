@@ -15,11 +15,6 @@ class ProjectItem extends Model
 {
     use HasSecretValue;
 
-    public function secretKind(): ?string
-    {
-        return $this->kind;
-    }
-
     protected $table = 'project_items';
 
     /**

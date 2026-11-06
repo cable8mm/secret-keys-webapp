@@ -10,9 +10,4 @@ trait HasSecretValue
     {
         return app(ValueProtector::class)->unprotect($this->value);
     }
-
-    public function secretKind(): ?string
-    {
-        return null;
-    }
 }
