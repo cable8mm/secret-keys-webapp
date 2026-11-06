@@ -9,9 +9,9 @@ interface RecordStore
      */
     public function allProjects(): array;
 
-    public function createProject(string $name): ProjectSummary;
+    public function createProject(string $name, ?string $note = null): ProjectSummary;
 
-    public function renameProject(int $id, string $name): void;
+    public function renameProject(int $id, string $name, ?string $note = null): void;
 
     public function deleteProject(int $id): void;
 

@@ -35,7 +35,11 @@ class ItemForm extends Page
 
     public string $issuedDate = '';
 
+    public string $expiresAt = '';
+
     public string $memo = '';
+
+    public string $tags = '';
 
     public bool $revealed = false;
 
@@ -113,7 +117,9 @@ class ItemForm extends Page
             $this->value = $detail->value;
             $this->usageLocation = $detail->usageLocation;
             $this->issuedDate = $detail->issuedDate;
+            $this->expiresAt = $detail->expiresAt;
             $this->memo = $detail->memo;
+            $this->tags = $detail->tags;
             $this->fingerprint = $detail->fingerprint;
             $this->loading = false;
             $this->itemLoaded = true;
@@ -167,6 +173,8 @@ class ItemForm extends Page
             $this->issuedDate,
             $this->memo,
             $this->kind,
+            $this->tags,
+            $this->expiresAt,
         );
     }
 

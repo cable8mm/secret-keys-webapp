@@ -319,3 +319,23 @@ it('offers no archive control for fixed containers', function () {
         ->assertDontSee('Archive')
         ->assertDontSee('Restore');
 });
+
+it('stores the project note and shows it in edit mode', function () {
+    Livewire::test(ProjectsCreate::class)
+        ->set('projectName', 'alpha')
+        ->set('projectNote', 'Billing service.')
+        ->call('createProject')
+        ->assertRedirect();
+
+    $project = Project::query()->firstWhere('name', 'alpha');
+
+    expect($project->note)->toBe('Billing service.');
+
+    Livewire::test(ProjectsEdit::class, ['project' => $project])
+        ->assertSet('projectNote', 'Billing service.')
+        ->set('projectNote', 'Changed note.')
+        ->call('updateProject')
+        ->assertRedirect();
+
+    expect(Project::query()->whereKey($project->id)->value('note'))->toBe('Changed note.');
+});

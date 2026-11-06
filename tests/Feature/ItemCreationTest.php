@@ -330,3 +330,37 @@ it('shows a copy error when the row item cannot be read', function () {
         ->assertSee('Copying failed.')
         ->assertSeeHtml('data-element="EL-010"');
 });
+
+it('stores tags and expiry date and shows them in edit mode', function () {
+    $project = Project::create(['name' => 'Payments']);
+
+    Livewire::test(ItemForm::class)
+        ->set('itemName', 'API key')
+        ->set('projectId', (string) $project->id)
+        ->set('value', 'secret-value-1234')
+        ->set('tags', 'scope:deploy, server:prod-1')
+        ->set('expiresAt', '2027-01-31')
+        ->call('save')
+        ->assertRedirect(Items::getUrl());
+
+    $item = Item::query()->firstWhere('name', 'API key');
+
+    expect($item->tags)->toBe('scope:deploy, server:prod-1')
+        ->and($item->expires_at?->toDateString())->toBe('2027-01-31');
+
+    Livewire::test(ItemForm::class, ['itemId' => $item->id])
+        ->assertSet('tags', 'scope:deploy, server:prod-1')
+        ->assertSet('expiresAt', '2027-01-31');
+});
+
+it('offers the fixed service suggestions and environment choices', function () {
+    Livewire::test(ItemForm::class)
+        ->assertSeeHtml('data-element="EL-120"')
+        ->assertSeeHtml('data-element="EL-121"')
+        ->assertSeeHtml('<option value="live">live</option>')
+        ->assertSeeHtml('<option value="test">test</option>')
+        ->assertSeeHtml('<option value="dev">dev</option>')
+        ->assertSeeHtml('<option value="none">none</option>')
+        ->assertSeeHtml('<datalist id="service-options">')
+        ->assertSeeHtml('<option value="GitHub"></option>');
+});

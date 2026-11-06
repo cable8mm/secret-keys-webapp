@@ -11,6 +11,11 @@
                 <x-filament::input type="text" wire:model="projectName" data-element="EL-201" placeholder="e.g. Payments" />
             </x-filament::input.wrapper>
         </x-filament::fieldset>
+        <x-filament::fieldset label="Project Note">
+            <x-filament::input.wrapper>
+                <x-filament::input type="text" wire:model="projectNote" data-element="EL-214" />
+            </x-filament::input.wrapper>
+        </x-filament::fieldset>
     </x-filament::section>
 
     <div class="mt-6">

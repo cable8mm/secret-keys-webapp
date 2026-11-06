@@ -47,7 +47,7 @@ final class FakeRecordStore implements RecordStore
         return $this->projects;
     }
 
-    public function createProject(string $name): ProjectSummary
+    public function createProject(string $name, ?string $note = null): ProjectSummary
     {
         $this->createCalls++;
 
@@ -61,7 +61,7 @@ final class FakeRecordStore implements RecordStore
         return $project;
     }
 
-    public function renameProject(int $id, string $name): void
+    public function renameProject(int $id, string $name, ?string $note = null): void
     {
         $this->renameCalls++;
 
@@ -159,6 +159,8 @@ final class FakeRecordStore implements RecordStore
             $write->issuedDate,
             $write->memo,
             $write->kind,
+            $write->tags,
+            $write->expiresAt,
         );
 
         return $id;
@@ -209,6 +211,8 @@ final class FakeRecordStore implements RecordStore
                     $write->issuedDate,
                     $write->memo,
                     $write->kind,
+                    $write->tags,
+                    $write->expiresAt,
                 );
 
                 return;

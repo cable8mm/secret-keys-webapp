@@ -19,6 +19,8 @@ class ProjectsEdit extends Page
 
     public string $projectName = '';
 
+    public string $projectNote = '';
+
     public ?string $errorMessage = null;
 
     public ?string $errorCode = null;
@@ -31,6 +33,7 @@ class ProjectsEdit extends Page
 
         $this->project = $project;
         $this->projectName = $project->name;
+        $this->projectNote = (string) ($project->note ?? '');
 
         return null;
     }
@@ -46,7 +49,7 @@ class ProjectsEdit extends Page
             return null;
         }
 
-        $result = $projectManager->rename($projectId, $this->projectName);
+        $result = $projectManager->rename($projectId, $this->projectName, $this->projectNote);
 
         if (! $result->success) {
             $this->errorCode = $result->errorCode;

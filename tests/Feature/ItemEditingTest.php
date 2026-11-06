@@ -171,12 +171,12 @@ it('shows a retrieval error when a value cannot be converted', function () {
             return [];
         }
 
-        public function createProject(string $name): ProjectSummary
+        public function createProject(string $name, ?string $note = null): ProjectSummary
         {
             return new ProjectSummary(1, $name);
         }
 
-        public function renameProject(int $id, string $name): void {}
+        public function renameProject(int $id, string $name, ?string $note = null): void {}
 
         public function projectExists(int $id): bool
         {

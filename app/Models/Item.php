@@ -8,6 +8,7 @@ use Illuminate\Support\Carbon;
 
 /**
  * @property Carbon|null $issued_date
+ * @property Carbon|null $expires_at
  */
 class Item extends Model
 {
@@ -20,9 +21,11 @@ class Item extends Model
         'service',
         'environment',
         'kind',
+        'tags',
         'value',
         'usage_location',
         'issued_date',
+        'expires_at',
         'memo',
     ];
 
@@ -33,6 +36,7 @@ class Item extends Model
     {
         return [
             'issued_date' => 'date',
+            'expires_at' => 'date',
         ];
     }
 

@@ -14,6 +14,7 @@ class Project extends Model
         'name',
         'is_fixed',
         'archived',
+        'note',
     ];
 
     /**
