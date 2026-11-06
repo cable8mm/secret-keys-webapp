@@ -29,7 +29,9 @@ class ProjectItemInfolist
                     ->date(),
                 TextEntry::make('memo')
                     ->columnSpanFull(),
-                TextEntry::make('tags')
+                TextEntry::make('tags.name')
+                    ->label('Tags')
+                    ->badge()
                     ->columnSpanFull(),
             ]);
     }
