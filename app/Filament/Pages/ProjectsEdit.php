@@ -23,10 +23,16 @@ class ProjectsEdit extends Page
 
     public ?string $errorCode = null;
 
-    public function mount(Project $project, ProjectManager $projectManager): void
+    public function mount(Project $project, ProjectManager $projectManager): ?RedirectResponse
     {
+        if ((bool) $project->is_fixed) {
+            return redirect()->to(Projects::getUrl());
+        }
+
         $this->project = $project;
         $this->projectName = $project->name;
+
+        return null;
     }
 
     public function updateProject(ProjectManager $projectManager): ?RedirectResponse

@@ -53,6 +53,8 @@ final class ProjectManager
 
         try {
             $this->records->renameProject($id, $name);
+        } catch (ProjectIsFixed) {
+            return ProjectOperationResult::failure('ERR-007', 'The Project could not be saved.');
         } catch (Throwable) {
             return ProjectOperationResult::failure('ERR-007', 'The Project could not be saved.');
         }
@@ -66,6 +68,8 @@ final class ProjectManager
             $this->records->deleteProject($id);
         } catch (ProjectHasItems) {
             return ProjectOperationResult::failure('ERR-005', 'The Project has Items.');
+        } catch (ProjectIsFixed) {
+            return ProjectOperationResult::failure('ERR-007', 'The Project could not be saved.');
         } catch (Throwable) {
             return ProjectOperationResult::failure('ERR-007', 'The Project could not be saved.');
         }

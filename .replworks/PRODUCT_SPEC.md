@@ -11,6 +11,8 @@
 - Message Slot: a region of a screen that displays a confirmation or error message.
 - Persisted: available after the product is stopped and started again.
 - The product stores Items grouped by Project.
+- Container: Infra, AI, or a user-created Project. Every Item belongs to exactly one Container.
+- Infra and AI are fixed Containers. They exist from the first run and cannot be renamed, deleted, or archived. Items inside them behave like ordinary Items.
 - The product finds Items by text and by filter.
 - The product displays the Fingerprint of each Item.
 - The product copies a Value to the Clipboard.
@@ -38,13 +40,18 @@
 ## Inputs
 
 - Project Name: single-line text; required.
+- Project Note: multi-line text; optional.
+- Project Archive action: archive or restore; Infra and AI cannot be archived.
 - Item Name: single-line text; required.
 - Item Project: one existing Project; required.
-- Item Service: single-line text; optional.
-- Item Environment: single-line text; optional.
+- Item Kind: one of token, password, pem, other; optional. When not set, the non-pem copy rule applies.
+- Item Service: chosen from a fixed set that the user can extend; optional.
+- Item Environment: one of live, test, dev, none; optional.
 - Item Value: multi-line text with any characters; required.
+- Item Tags: free text tags; optional. Tags carry no product-defined meaning.
 - Item Usage Location: multi-line text; optional.
 - Item Issued Date: calendar date; optional.
+- Item Expiry Date: calendar date; optional. Recorded and viewed only; no badge and no notification.
 - Item Memo: multi-line text; optional.
 - Search text: single-line text; optional.
 - Project filter selection: one Project or no selection.
@@ -155,7 +162,7 @@ Global rules:
   - EL-114: delete control; purpose: start deleting the Item; user actions: activate; shown in edit mode only.
   - EL-115: delete confirm control; purpose: confirm deletion; user actions: activate; shown after EL-114 is activated.
   - EL-116: delete cancel control; purpose: abort deletion; user actions: activate; shown after EL-114 is activated.
-  - EL-117: Projects control; purpose: open Project management; user actions: activate; shown only when no Project exists.
+  - EL-117: Projects control; purpose: open Project management; user actions: activate; shown only when no user-created Project exists.
   - EL-118: Message Slot; purpose: show copy confirmation, copy error, validation errors, persistence errors; user actions: none.
 - States:
   - Initial in create mode: every input is empty; EL-105 is masked; EL-108 shows nothing; EL-114 is not shown.
@@ -163,7 +170,7 @@ Global rules:
   - Revealed: EL-105 is unmasked.
   - Loading: in edit mode, inputs are disabled while the Item is being retrieved.
   - Error: a validation error or persistence error is shown in EL-118; entered input content is kept.
-  - No Project: no Project exists; EL-102 has no options; EL-117 is shown.
+  - No Project: no user-created Project exists; EL-102 lists Infra and AI; EL-117 is shown.
   - Disabled: EL-107 is disabled while EL-105 is empty.
 - Navigation:
   - activate EL-112 and the Item is stored -> SCR-001
@@ -207,7 +214,7 @@ Global rules:
   - EL-211: Message Slot; purpose: show validation errors and persistence errors; user actions: none.
 - States:
   - Initial: EL-201 is empty; EL-203 shows every Project.
-  - Empty: no Project exists; EL-210 is shown; EL-203 is not shown.
+  - Empty: no user-created Project exists; EL-210 is shown; EL-203 shows only Infra and AI.
   - Populated: EL-203 shows one row per Project.
   - Error: a validation error or persistence error is shown in EL-211.
   - Disabled: none.
@@ -230,9 +237,9 @@ Projects:
 
 - FR-001: The product MUST create a Project when the user enters a Project Name in EL-201 and activates EL-202.
 - FR-002: A created Project MUST appear in EL-203, EL-002, and EL-102.
-- FR-003: The product MUST change the Project Name of a Project when the user edits EL-204 and activates EL-205.
+- FR-003: The product MUST change the Project Name of a Project when the user edits EL-204 and activates EL-205. This does not apply to Infra and AI.
 - FR-004: A renamed Project MUST keep every Item associated with it.
-- FR-005: The product MUST delete a Project when the user activates EL-206 and then EL-207.
+- FR-005: The product MUST delete a Project when the user activates EL-206 and then EL-207. This does not apply to Infra and AI.
 - FR-006: The product MUST NOT delete a Project that has at least one Item.
 - FR-007: The product MUST NOT delete a Project when the user activates EL-208.
 
@@ -269,8 +276,8 @@ Search and filters:
 
 Copy:
 
-- FR-027: The Clipboard MUST receive the Value with leading and trailing whitespace removed.
-- FR-028: The Clipboard text MUST preserve every character between the first and last non-whitespace characters of the Value, including line breaks.
+- FR-027: For an Item whose kind is not pem, the Clipboard MUST receive the Value with leading and trailing whitespace removed.
+- FR-028: For an Item whose kind is not pem, the Clipboard text MUST preserve every character between the first and last non-whitespace characters of the Value, including line breaks.
 - FR-029: Activating EL-107 MUST copy the current content of EL-105, including unsaved edits.
 - FR-030: Copying MUST NOT change the stored Value.
 - FR-031: After a successful copy, a Message Slot MUST show a confirmation.
@@ -280,6 +287,16 @@ Value display:
 - FR-032: EL-105 MUST be masked each time SCR-002 is opened.
 - FR-033: Activating EL-106 MUST switch EL-105 between masked and unmasked.
 - FR-034: The product MUST NOT display a Value on any screen except in EL-105 while EL-105 is unmasked.
+
+Containers:
+
+- FR-035: Infra and AI MUST exist from the first run and MUST NOT be renamed, deleted, or archived.
+- FR-036: An archived Project MUST be hidden from the default Project list and shown in an archive area. Restoring it MUST return it to the default list. Archiving or restoring MUST change no Project Name and no Item.
+- FR-037: Items of an archived Project MUST still appear in search results.
+
+Item kinds:
+
+- FR-038: For an Item whose kind is pem, the Clipboard MUST receive the Value with leading and trailing whitespace removed, every CR and CRLF line break converted to LF, and exactly one trailing newline.
 
 ## User Flows
 
@@ -348,6 +365,11 @@ Value display:
 - Synchronization across devices or platforms.
 - Access from a phone or a tablet.
 - Deployment to any host other than the user's own computer.
+- Expiry badges and expiry notifications for Item Expiry Date.
+- Recording of when a Value was last copied, and ordering by recent use.
+- Showing Items linked by `project:` tags together on a Project screen.
+- A repository URL field on Projects.
+- Hierarchies deeper than two levels, such as Environment or Folder layers.
 
 ## Acceptance Criteria
 
@@ -386,7 +408,13 @@ Value display:
 - AC-033: Deleting an Item through EL-114 and EL-115 removes its row from SCR-001. (FR-011)
 - AC-034: Activating EL-116 leaves the Item on SCR-001. (FR-012)
 - AC-035: With no stored Item, SCR-001 shows EL-008 and hides EL-004. (SCR-001)
-- AC-036: With no Project, SCR-003 shows EL-210. (SCR-003)
-- AC-037: With no Project, SCR-002 shows EL-117 and EL-102 has no options. (SCR-002)
+- AC-036: With no user-created Project, SCR-003 shows EL-210 and EL-203 shows only Infra and AI. (SCR-003)
+- AC-037: With no user-created Project, SCR-002 shows EL-117 and EL-102 lists Infra and AI. (SCR-002)
 - AC-038: Opening the Persisted data shows no Value as readable plain text. (Constraints)
 - AC-039: A request from a computer other than the one running the product does not reach the product. (Constraints)
+- AC-040: Infra and AI exist from the first run, and no rename, delete, or archive control is offered for them. (FR-035)
+- AC-041: Copying an Item whose kind is pem removes leading and trailing whitespace, converts CR and CRLF line breaks to LF, and ends the Clipboard text with exactly one newline. The stored Value is unchanged. (FR-038, FR-030)
+- AC-042: Copying an Item whose kind is not pem produces the same result as before. (FR-027, FR-028)
+- AC-043: An Item Expiry Date can be entered and viewed. No badge and no notification is shown for it. (Inputs)
+- AC-044: Archiving a Project removes it from the default Project list and shows it in the archive area; restoring returns it. Items of the archived Project still appear in search results. (FR-036, FR-037)
+- AC-045: No archive control is offered for the Infra and AI containers. (FR-035)

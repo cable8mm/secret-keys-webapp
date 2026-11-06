@@ -36,9 +36,10 @@ it('opens the create form empty with every field and no EL-114', function () {
         ->assertDontSeeHtml('data-element="EL-118"');
 });
 
-it('lists every stored project in EL-102 and shows EL-117 when none exist', function () {
+it('lists fixed containers in EL-102 and shows EL-117 when no user project exists', function () {
     Livewire::test(ItemForm::class)
-        ->assertDontSeeHtml('value="1"')
+        ->assertSee('Infra')
+        ->assertSee('AI')
         ->assertSeeHtml('data-element="EL-117"');
 
     Project::create(['name' => 'Payments']);

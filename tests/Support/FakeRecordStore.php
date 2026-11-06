@@ -3,6 +3,7 @@
 namespace Tests\Support;
 
 use App\Projects\ProjectHasItems;
+use App\Projects\ProjectIsFixed;
 use App\Records\ItemRecord;
 use App\Records\ItemWrite;
 use App\Records\ProjectSummary;
@@ -70,7 +71,11 @@ final class FakeRecordStore implements RecordStore
 
         foreach ($this->projects as $index => $project) {
             if ($project->id === $id) {
-                $this->projects[$index] = new ProjectSummary($id, $name);
+                if ($project->isFixed) {
+                    throw new ProjectIsFixed('Project is fixed.');
+                }
+
+                $this->projects[$index] = new ProjectSummary($id, $name, $project->isFixed);
 
                 return;
             }
@@ -219,6 +224,10 @@ final class FakeRecordStore implements RecordStore
 
         foreach ($this->projects as $index => $project) {
             if ($project->id === $id) {
+                if ($project->isFixed) {
+                    throw new ProjectIsFixed('Project is fixed.');
+                }
+
                 foreach ($this->items as $item) {
                     if ($item->projectId === $id) {
                         throw new ProjectHasItems('Project has Items.');

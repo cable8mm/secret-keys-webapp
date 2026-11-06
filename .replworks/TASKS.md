@@ -28,7 +28,7 @@
   - Acceptance criteria:
     - SCR-003 presents EL-201, EL-202, EL-203, EL-204, EL-205, EL-206.
     - The initial SCR-003 state presents EL-201 empty and EL-203 showing every stored Project.
-    - With no Project stored, EL-210 is shown and EL-203 is not shown.
+    - With no user-created Project stored, EL-210 is shown and EL-203 shows only Infra and AI.
     - Activating EL-202 with a non-empty EL-201 adds exactly one row to EL-203 for that Project.
     - Project rows in EL-203 are ordered by Project Name ascending with case-insensitive comparison.
     - Activating EL-202 with an empty or whitespace-only EL-201 creates no Project and shows the error of ERR-004 in EL-211.
@@ -61,7 +61,7 @@
   - Acceptance criteria:
     - Activating EL-006 on SCR-001 opens SCR-002 in create mode with EL-101 through EL-111 empty, EL-105 masked, EL-108 empty, EL-114 not shown, and EL-118 present.
     - EL-102 lists every stored Project.
-    - With no Project stored, EL-102 has no options and EL-117 is shown.
+    - With no user-created Project stored, EL-117 is shown and EL-102 lists Infra and AI.
     - With at least one Project stored, EL-117 is not shown.
     - Activating EL-117 opens SCR-003.
     - Activating EL-113 returns to SCR-001 without storing an Item.
@@ -214,4 +214,58 @@
     - After a rename, SCR-001 rows for those Items show the new Project Name.
     - After a rename, searching by the new Project Name finds those Items and filtering by the renamed Project shows those Items.
     - Unit tests for the Project delete guard pass.
+    - All checks defined in TECH_STACK.md pass.
+
+- [x] T-013 Fixed Infra and AI containers
+  - Satisfies: PRODUCT_SPEC.md FR-035; SCR-003
+  - External boundary: no
+  - Acceptance criteria:
+    - On the first run with no stored data, the Infra and AI containers exist and appear in EL-203, EL-002, and EL-102.
+    - No rename control is offered for Infra and AI.
+    - No delete control is offered for Infra and AI.
+    - No archive control is offered for Infra and AI.
+    - Items can be added, edited, and deleted inside Infra and AI like in any other Project.
+    - Infra and AI remain present after the product is stopped and started.
+    - Unit tests for fixed-container immutability pass.
+    - All checks defined in TECH_STACK.md pass.
+
+- [ ] T-014 Archive and restore Projects
+  - Satisfies: PRODUCT_SPEC.md FR-036; FR-037; SCR-003; SCR-001
+  - External boundary: no
+  - Acceptance criteria:
+    - An archive control is offered for every Project except Infra and AI.
+    - Archiving a Project removes it from the default EL-203 list and shows it in an archive area.
+    - Restoring an archived Project returns it to the default EL-203 list.
+    - Archiving or restoring changes no Project Name and no Item.
+    - Items of an archived Project still appear in EL-004 search results.
+    - Archived state remains present after the product is stopped and started.
+    - Unit tests for archive and restore pass.
+    - All checks defined in TECH_STACK.md pass.
+
+- [ ] T-015 Item kind and pem copy rule
+  - Satisfies: PRODUCT_SPEC.md FR-027; FR-028; FR-030; FR-031; FR-038; ERR-006; SCR-002; SCR-001
+  - External boundary: yes
+  - Acceptance criteria:
+    - SCR-002 offers Item Kind as one of token, password, pem, other, or no selection.
+    - The selected Kind is stored and shown again in edit mode.
+    - Copying an Item whose kind is pem removes leading and trailing whitespace, converts CR and CRLF line breaks to LF, and ends the Clipboard text with exactly one newline.
+    - Copying an Item whose kind is not pem produces the same Clipboard text as before.
+    - After a pem copy, the stored Value is unchanged, and EL-010 or EL-118 shows a confirmation.
+    - When the Clipboard write fails or is denied for a pem Item, the error of ERR-006 is shown, no confirmation is shown, and no record changes.
+    - A live E2E test exercises pem copy through the real Clipboard; a simulated Clipboard does not satisfy this criterion.
+    - Unit tests for the pem copy rule pass.
+    - All checks defined in TECH_STACK.md pass.
+
+- [ ] T-016 Item and Project metadata fields
+  - Satisfies: PRODUCT_SPEC.md Inputs; FR-025; SCR-002; SCR-003; SCR-001
+  - External boundary: no
+  - Acceptance criteria:
+    - SCR-002 offers Item Tags input, Item Expiry Date input, and Project Note input on SCR-003.
+    - Item Service is chosen from a fixed set that the user can extend.
+    - Item Environment is chosen from live, test, dev, none, or no selection.
+    - Tags, Expiry Date, Project Note, Service, and Environment values are stored and shown again in edit mode.
+    - An Item Expiry Date can be entered and viewed. No badge and no notification is shown for it.
+    - Search behavior for Service, Environment, Usage Location, and Memo is unchanged.
+    - EL-003 behavior is unchanged.
+    - Unit tests for the new field storage pass.
     - All checks defined in TECH_STACK.md pass.

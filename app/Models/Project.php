@@ -12,7 +12,18 @@ class Project extends Model
      */
     protected $fillable = [
         'name',
+        'is_fixed',
     ];
+
+    /**
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'is_fixed' => 'boolean',
+        ];
+    }
 
     /**
      * @return HasMany<Item, $this>
