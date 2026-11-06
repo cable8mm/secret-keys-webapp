@@ -4,6 +4,7 @@ namespace App\Filament\Resources\ProjectItems\Tables;
 
 use App\Filament\Resources\SecretCopy;
 use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -21,8 +22,6 @@ class ProjectItemsTable
                 TextColumn::make('service')
                     ->searchable(),
                 TextColumn::make('environment')
-                    ->badge(),
-                TextColumn::make('kind')
                     ->badge(),
                 TextColumn::make('fingerprint')
                     ->getStateUsing(fn ($record): string => SecretCopy::fingerprint($record))
@@ -43,6 +42,7 @@ class ProjectItemsTable
                     ]),
             ])
             ->recordActions([
+                ViewAction::make(),
                 SecretCopy::copyAction(),
                 EditAction::make(),
             ])

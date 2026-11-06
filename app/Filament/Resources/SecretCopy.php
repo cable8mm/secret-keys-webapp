@@ -6,7 +6,6 @@ use App\Items\FingerprintDeriver;
 use App\Models\AiItem;
 use App\Models\InfraItem;
 use App\Models\ProjectItem;
-use App\Values\CopyTextPreparer;
 use App\Values\ValueProtector;
 use Filament\Actions\Action;
 use Throwable;
@@ -20,15 +19,12 @@ final class SecretCopy
             ->icon('heroicon-o-clipboard-document')
             ->action(function (ProjectItem|AiItem|InfraItem $record, $livewire): void {
                 try {
-                    $value = $record->secretValue();
+                    $text = $record->secretValue();
                 } catch (Throwable) {
                     $livewire->dispatch('copy-failed');
 
                     return;
                 }
-
-                $kind = $record->secretKind();
-                $text = (new CopyTextPreparer)->prepare($value, $kind ?: null);
 
                 $livewire->dispatch('copy-prepared', text: $text);
             });

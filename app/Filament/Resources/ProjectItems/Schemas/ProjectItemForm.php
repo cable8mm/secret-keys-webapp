@@ -16,27 +16,8 @@ class ProjectItemForm
     {
         return $schema
             ->components([
-                Select::make('project_id')
-                    ->relationship('project', 'name')
-                    ->required(),
                 TextInput::make('name')
                     ->required(),
-                TextInput::make('service')
-                    ->datalist(ServiceOptions::all()),
-                Select::make('environment')
-                    ->options([
-                        'live' => 'live',
-                        'test' => 'test',
-                        'dev' => 'dev',
-                        'none' => 'none',
-                    ]),
-                Select::make('kind')
-                    ->options([
-                        'token' => 'token',
-                        'password' => 'password',
-                        'pem' => 'pem',
-                        'other' => 'other',
-                    ]),
                 Textarea::make('value')
                     ->required()
                     ->rows(4)
@@ -45,6 +26,20 @@ class ProjectItemForm
                     ->afterStateHydrated(function (Textarea $component, ?string $state): void {
                         $component->state(SecretCopy::decryptForForm($state));
                     }),
+                Select::make('project_id')
+                    ->relationship('project', 'name')
+                    ->default(fn (): ?string => request()->query('project'))
+                    ->required(),
+                TextInput::make('service')
+                    ->datalist(ServiceOptions::all()),
+                Select::make('environment')
+                    ->default('none')
+                    ->options([
+                        'live' => 'live',
+                        'test' => 'test',
+                        'dev' => 'dev',
+                        'none' => 'none',
+                    ]),
                 Textarea::make('usage_location')
                     ->columnSpanFull(),
                 DatePicker::make('issued_date'),

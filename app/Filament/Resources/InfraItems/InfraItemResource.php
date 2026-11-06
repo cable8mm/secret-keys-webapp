@@ -5,7 +5,9 @@ namespace App\Filament\Resources\InfraItems;
 use App\Filament\Resources\InfraItems\Pages\CreateInfraItem;
 use App\Filament\Resources\InfraItems\Pages\EditInfraItem;
 use App\Filament\Resources\InfraItems\Pages\ListInfraItems;
+use App\Filament\Resources\InfraItems\Pages\ViewInfraItem;
 use App\Filament\Resources\InfraItems\Schemas\InfraItemForm;
+use App\Filament\Resources\InfraItems\Schemas\InfraItemInfolist;
 use App\Filament\Resources\InfraItems\Tables\InfraItemsTable;
 use App\Models\InfraItem;
 use BackedEnum;
@@ -34,6 +36,11 @@ class InfraItemResource extends Resource
         return InfraItemsTable::configure($table);
     }
 
+    public static function infolist(Schema $schema): Schema
+    {
+        return InfraItemInfolist::configure($schema);
+    }
+
     public static function getRelations(): array
     {
         return [
@@ -46,6 +53,7 @@ class InfraItemResource extends Resource
         return [
             'index' => ListInfraItems::route('/'),
             'create' => CreateInfraItem::route('/create'),
+            'view' => ViewInfraItem::route('/{record}'),
             'edit' => EditInfraItem::route('/{record}/edit'),
         ];
     }

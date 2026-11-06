@@ -2,8 +2,10 @@
 
 namespace App\Filament\Resources\Projects\Tables;
 
+use App\Filament\Resources\ProjectItems\ProjectItemResource;
 use Filament\Actions\Action;
 use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Notifications\Notification;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -31,7 +33,13 @@ class ProjectsTable
                 TernaryFilter::make('archived'),
             ])
             ->recordActions([
+                ViewAction::make(),
                 EditAction::make(),
+                Action::make('addItem')
+                    ->iconButton()
+                    ->icon('heroicon-o-plus')
+                    ->tooltip('New item in this project')
+                    ->url(fn ($record): string => ProjectItemResource::getUrl('create', ['project' => $record->getKey()])),
                 Action::make('archive')
                     ->iconButton()
                     ->icon('heroicon-o-archive-box')
