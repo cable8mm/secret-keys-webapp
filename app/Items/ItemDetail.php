@@ -15,5 +15,6 @@ final readonly class ItemDetail
         public string $issuedDate,
         public string $memo,
         public string $fingerprint,
+        public string $kind = '',
     ) {}
 }

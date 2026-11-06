@@ -13,5 +13,6 @@ final readonly class ItemInput
         public string $usageLocation,
         public string $issuedDate,
         public string $memo,
+        public string $kind = '',
     ) {}
 }

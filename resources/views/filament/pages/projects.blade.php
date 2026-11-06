@@ -46,7 +46,7 @@
                             <td class="px-4 text-right space-x-2">
                                 @if (! $project['is_fixed'])
                                     <a href="{{ \App\Filament\Pages\ProjectsEdit::getUrl(['project' => $project['id']]) }}" class="text-sm text-primary-600 hover:underline">Edit</a>
-                                    <x-filament::button color="gray" size="sm" wire:click="archiveProject({{ $project['id'] }})">Archive</x-filament::button>
+                                    <x-filament::button color="gray" size="sm" wire:click="archiveProject({{ $project['id'] }})" data-element="EL-212">Archive</x-filament::button>
                                     <x-filament::button color="danger" size="sm" wire:click="mountAction('delete', {project: {{ $project['id'] }}})" data-element="EL-206">Delete</x-filament::button>
                                 @endif
                             </td>
@@ -74,7 +74,7 @@
                         <tr class="py-4" wire:key="archived-project-{{ $project['id'] }}">
                             <td class="px-4">{{ $project['name'] }}</td>
                             <td class="px-4 text-right space-x-2">
-                                <x-filament::button color="gray" size="sm" wire:click="restoreProject({{ $project['id'] }})">Restore</x-filament::button>
+                                <x-filament::button color="gray" size="sm" wire:click="restoreProject({{ $project['id'] }})" data-element="EL-213">Restore</x-filament::button>
                                 <x-filament::button color="danger" size="sm" wire:click="mountAction('delete', {project: {{ $project['id'] }}})">Delete</x-filament::button>
                             </td>
                         </tr>

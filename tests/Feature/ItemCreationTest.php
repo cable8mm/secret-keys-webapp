@@ -5,6 +5,8 @@ use App\Filament\Pages\Items;
 use App\Filament\Pages\Projects;
 use App\Items\FingerprintDeriver;
 use App\Items\ItemFinder;
+use App\Items\ItemInput;
+use App\Items\ItemManager;
 use App\Models\Item;
 use App\Models\Project;
 use App\Records\ProjectSummary;
@@ -265,4 +267,66 @@ it('shows items of archived projects in search results', function () {
     Livewire::test(Items::class)
         ->assertSee('API key')
         ->assertSee('Payments');
+});
+
+it('stores the selected kind and shows it in edit mode', function () {
+    $project = Project::create(['name' => 'Payments']);
+
+    Livewire::test(ItemForm::class)
+        ->set('itemName', 'Deploy Key')
+        ->set('projectId', (string) $project->id)
+        ->set('kind', 'pem')
+        ->set('value', "line1\r\nline2")
+        ->call('save')
+        ->assertRedirect(Items::getUrl());
+
+    $item = Item::query()->firstWhere('name', 'Deploy Key');
+
+    expect($item->kind)->toBe('pem');
+
+    Livewire::test(ItemForm::class, ['itemId' => $item->id])
+        ->assertSet('kind', 'pem');
+});
+
+it('dispatches pem-normalized text when copying from the form', function () {
+    $project = Project::create(['name' => 'Payments']);
+
+    Livewire::test(ItemForm::class)
+        ->set('itemName', 'Deploy Key')
+        ->set('projectId', (string) $project->id)
+        ->set('kind', 'pem')
+        ->set('value', "  line1\r\nline2  ")
+        ->call('copyValue')
+        ->assertDispatched('copy-prepared', text: "line1\nline2\n");
+});
+
+it('dispatches pem-normalized text when copying from a list row', function () {
+    $project = Project::create(['name' => 'Payments']);
+
+    $result = app(ItemManager::class)->create(new ItemInput(
+        'Deploy Key',
+        $project->id,
+        '',
+        '',
+        "  line1\r\nline2  ",
+        '',
+        '',
+        '',
+        'pem',
+    ));
+
+    expect($result->success)->toBeTrue();
+
+    $item = Item::query()->firstWhere('name', 'Deploy Key');
+
+    Livewire::test(Items::class)
+        ->call('copyValue', $item->id)
+        ->assertDispatched('copy-prepared', text: "line1\nline2\n");
+});
+
+it('shows a copy error when the row item cannot be read', function () {
+    Livewire::test(Items::class)
+        ->call('copyValue', 999999)
+        ->assertSee('Copying failed.')
+        ->assertSeeHtml('data-element="EL-010"');
 });

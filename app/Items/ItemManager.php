@@ -79,6 +79,7 @@ final class ItemManager
             $record->issuedDate ?? '',
             $record->memo ?? '',
             $this->fingerprint->derive($value),
+            $record->kind ?? '',
         ));
     }
 
@@ -125,7 +126,7 @@ final class ItemManager
             return null;
         }
 
-        return (new CopyTextPreparer)->prepare($value);
+        return (new CopyTextPreparer)->prepare($value, $record->kind);
     }
 
     /**
@@ -170,6 +171,7 @@ final class ItemManager
                 $input->usageLocation === '' ? null : $input->usageLocation,
                 $input->issuedDate === '' ? null : $input->issuedDate,
                 $input->memo === '' ? null : $input->memo,
+                $input->kind === '' ? null : $input->kind,
             );
 
             if ($id === null) {

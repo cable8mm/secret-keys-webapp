@@ -33,6 +33,15 @@
                         <x-filament::input type="text" wire:model="environment" data-element="EL-104" @disabled($loading) />
                     </x-filament::input.wrapper>
                 </x-filament::fieldset>
+                <x-filament::fieldset label="Kind">
+                    <select wire:model="kind" data-element="EL-119" @disabled($loading) class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm dark:border-white/10 dark:bg-white/5">
+                        <option value="">Select a Kind</option>
+                        <option value="token">token</option>
+                        <option value="password">password</option>
+                        <option value="pem">pem</option>
+                        <option value="other">other</option>
+                    </select>
+                </x-filament::fieldset>
                 <x-filament::fieldset label="Value">
                     <textarea
                         wire:model="value"
