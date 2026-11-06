@@ -33,10 +33,9 @@ AI and Infra items live in their own tables (`ai_items`, `infra_items`) with nam
 | service_id   | FK      | nullable, references services, null on delete |
 | environment  | string  | nullable, one of live / test / dev / none    |
 | kind         | string  | nullable, one of token / password / pem / other |
-| tags         | text    | nullable, free text                          |
+| tags         | text    | nullable, free text, comma-separated        |
 | value        | text    | required, the secret                         |
-| usage_location | text  | nullable                                     |
-| issued_date  | date    | nullable                                     |
+| url | text | nullable, URL |
 | expires_at   | date    | nullable, record only                        |
 | memo         | text    | nullable                                     |
 | timestamps   |         |                                              |
@@ -44,12 +43,14 @@ AI and Infra items live in their own tables (`ai_items`, `infra_items`) with nam
 ## ai_items / infra_items
 
 Minimal shape: name and value required, service optional, nothing else.
+`ai_items` additionally has nullable `url`.
 
 | Column     | Type   | Notes                              |
 | ---------- | ------ | ---------------------------------- |
 | id         | id     |                                    |
 | name       | string | required                           |
 | value      | text   | required, the secret               |
+| url        | text   | nullable, ai_items only            |
 | service_id | FK     | nullable, references services, null on delete |
 | timestamps |        |                                    |
 
@@ -70,4 +71,4 @@ Minimal shape: name and value required, service optional, nothing else.
 - Every Item belongs to exactly one Project.
 - A Project with Items cannot be deleted.
 - Archived Projects are hidden from the default list; their Items remain searchable.
-- Fingerprint and Copy Text are derived at read time, never stored.
+- Copy Text is derived at read time, never stored.

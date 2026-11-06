@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources;
 
-use App\Items\FingerprintDeriver;
 use App\Models\AiItem;
 use App\Models\InfraItem;
 use App\Models\ProjectItem;
@@ -28,17 +27,6 @@ final class SecretCopy
 
                 $livewire->dispatch('copy-prepared', text: $text);
             });
-    }
-
-    public static function fingerprint(ProjectItem|AiItem|InfraItem $record): string
-    {
-        try {
-            $value = $record->secretValue();
-        } catch (Throwable) {
-            return '';
-        }
-
-        return app(FingerprintDeriver::class)->derive($value);
     }
 
     public static function decryptForForm(?string $state): ?string

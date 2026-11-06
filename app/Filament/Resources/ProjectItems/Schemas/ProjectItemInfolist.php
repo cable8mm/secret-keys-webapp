@@ -18,22 +18,18 @@ class ProjectItemInfolist
                 TextEntry::make('service.name'),
                 TextEntry::make('environment')
                     ->badge(),
-                TextEntry::make('kind')
-                    ->badge(),
                 TextEntry::make('value')
                     ->getStateUsing(fn ($record): ?string => SecretCopy::decryptForForm($record->value))
                     ->copyable()
                     ->columnSpanFull(),
-                TextEntry::make('fingerprint')
-                    ->getStateUsing(fn ($record): string => SecretCopy::fingerprint($record)),
-                TextEntry::make('usage_location'),
-                TextEntry::make('issued_date')
-                    ->date(),
+                TextEntry::make('url'),
                 TextEntry::make('expires_at')
                     ->date(),
                 TextEntry::make('memo')
                     ->columnSpanFull(),
-                TextEntry::make('tags')
+                TextEntry::make('tags.name')
+                    ->label('Tags')
+                    ->badge()
                     ->columnSpanFull(),
             ]);
     }

@@ -5,10 +5,10 @@ namespace App\Models;
 use App\Models\Concerns\HasSecretValue;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Carbon;
 
 /**
- * @property Carbon|null $issued_date
  * @property Carbon|null $expires_at
  */
 class ProjectItem extends Model
@@ -26,10 +26,8 @@ class ProjectItem extends Model
         'service_id',
         'environment',
         'kind',
-        'tags',
         'value',
-        'usage_location',
-        'issued_date',
+        'url',
         'expires_at',
         'memo',
     ];
@@ -40,7 +38,6 @@ class ProjectItem extends Model
     protected function casts(): array
     {
         return [
-            'issued_date' => 'date',
             'expires_at' => 'date',
         ];
     }
@@ -51,6 +48,14 @@ class ProjectItem extends Model
     public function project(): BelongsTo
     {
         return $this->belongsTo(Project::class);
+    }
+
+    /**
+     * @return BelongsToMany<Tag, $this>
+     */
+    public function tags(): BelongsToMany
+    {
+        return $this->belongsToMany(Tag::class, 'project_item_tag');
     }
 
     /**
