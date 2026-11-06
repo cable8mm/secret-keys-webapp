@@ -18,6 +18,7 @@ class AiItem extends Model
     protected $fillable = [
         'name',
         'value',
+        'url',
         'service_id',
     ];
 

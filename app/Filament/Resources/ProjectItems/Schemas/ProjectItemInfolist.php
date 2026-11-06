@@ -22,8 +22,6 @@ class ProjectItemInfolist
                     ->getStateUsing(fn ($record): ?string => SecretCopy::decryptForForm($record->value))
                     ->copyable()
                     ->columnSpanFull(),
-                TextEntry::make('fingerprint')
-                    ->getStateUsing(fn ($record): string => SecretCopy::fingerprint($record)),
                 TextEntry::make('url'),
                 TextEntry::make('expires_at')
                     ->date(),

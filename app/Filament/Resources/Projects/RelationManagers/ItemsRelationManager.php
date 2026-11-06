@@ -38,9 +38,6 @@ class ItemsRelationManager extends RelationManager
                     ->searchable(),
                 TextColumn::make('service.name')
                     ->searchable(),
-                TextColumn::make('fingerprint')
-                    ->getStateUsing(fn ($record): string => SecretCopy::fingerprint($record))
-                    ->label('Fingerprint'),
             ])
             ->headerActions([
                 CreateAction::make(),

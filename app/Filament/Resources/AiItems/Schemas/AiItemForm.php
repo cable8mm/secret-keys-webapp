@@ -38,6 +38,9 @@ class AiItemForm
                     ->afterStateHydrated(function (Textarea $component, ?string $state): void {
                         $component->state(SecretCopy::decryptForForm($state));
                     }),
+                TextInput::make('url')
+                    ->label('URL')
+                    ->columnSpanFull(),
             ]);
     }
 }

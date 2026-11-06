@@ -23,9 +23,6 @@ class ProjectItemsTable
                     ->searchable(),
                 TextColumn::make('environment')
                     ->badge(),
-                TextColumn::make('fingerprint')
-                    ->getStateUsing(fn ($record): string => SecretCopy::fingerprint($record))
-                    ->label('Fingerprint'),
                 TextColumn::make('expires_at')
                     ->date()
                     ->sortable(),

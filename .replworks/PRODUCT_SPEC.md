@@ -17,7 +17,6 @@
 - tags (optional): free text, comma-separated.
 - url, expiry date, memo, note (all optional).
 - Projects have an optional note.
-- fingerprint (derived, never stored): last 4 characters of the trimmed Value; empty when fewer than 8 characters remain.
 
 ## Copy
 
