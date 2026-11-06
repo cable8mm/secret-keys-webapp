@@ -21,6 +21,9 @@ class ProjectsTable
                 TextColumn::make('note')
                     ->limit(50)
                     ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('url')
+                    ->limit(50)
+                    ->toggleable(isToggledHiddenByDefault: true),
                 IconColumn::make('archived')
                     ->boolean(),
             ])
