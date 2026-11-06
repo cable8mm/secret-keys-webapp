@@ -26,15 +26,19 @@
   - Satisfies: PRODUCT_SPEC.md FR-001; FR-002; FR-013; ERR-004; ERR-007; SCR-003
   - External boundary: no
   - Acceptance criteria:
-    - SCR-003 presents EL-201, EL-202, EL-203, EL-209, EL-210, and EL-211.
+    - SCR-003 presents EL-201, EL-202, EL-203, EL-204, EL-205, EL-206.
     - The initial SCR-003 state presents EL-201 empty and EL-203 showing every stored Project.
     - With no Project stored, EL-210 is shown and EL-203 is not shown.
     - Activating EL-202 with a non-empty EL-201 adds exactly one row to EL-203 for that Project.
     - Project rows in EL-203 are ordered by Project Name ascending with case-insensitive comparison.
     - Activating EL-202 with an empty or whitespace-only EL-201 creates no Project and shows the error of ERR-004 in EL-211.
     - A persistence failure during creation creates no Project, shows the error of ERR-007 in EL-211, and keeps the entered Project Name in EL-201.
-    - A retrieval failure while presenting SCR-003 shows a retrieval error in EL-211 and does not present EL-203.
-    - Activating EL-209 returns to SCR-001.
+    - Activating EL-205 with a non-empty EL-204 changes the Project Name shown in EL-203.
+    - Activating EL-205 with an empty or whitespace-only EL-204 changes no Project and shows the error of ERR-004 in EL-211.
+    - A persistence failure during rename changes no Project, shows the error of ERR-007 in EL-211, and keeps the edited Project Name in EL-204.
+    - Activating EL-206 deletes the Project and removes it from EL-203.
+    - A deletion that targets a Project that has at least one Item deletes nothing, keeps the Project in EL-203, and shows the error of ERR-005 in EL-211.
+    - A persistence failure during deletion leaves the Project present and shows the error of ERR-007 in EL-211.
     - Every Project created in this task is present after the product is stopped and started.
     - Unit tests for Project Name validation and Project ordering pass.
     - All checks defined in TECH_STACK.md pass.
@@ -120,7 +124,7 @@
     - When Items cannot be retrieved, EL-010 shows the error of ERR-008 and EL-004 is not shown.
     - When a stored Value cannot be converted for Fingerprint derivation, the retrieval error of ERR-008 is shown and no partial list is shown.
     - EL-004 rows do not show a Value.
-    - Activating EL-007 opens SCR-003; activating EL-209 on SCR-003 returns to SCR-001.
+    - Activating EL-007 opens SCR-003.
     - Unit tests for case-insensitive containment and Item ordering pass.
     - All checks defined in TECH_STACK.md pass.
 
@@ -198,7 +202,7 @@
   - External boundary: no
   - Acceptance criteria:
     - Activating EL-206 shows EL-207 and EL-208 for that Project.
-    - SCR-003 presents EL-201 and EL-202 grouped at the top; EL-203 below EL-201 and EL-202; EL-204, EL-205, and EL-206 inside each row of EL-203; EL-209 above EL-201; and EL-211 above EL-203.
+    - SCR-003 presents EL-201 and EL-202 grouped at the top; EL-203 below EL-201 and EL-202; EL-204, EL-205, and EL-206 inside each row of EL-203; and EL-211 above EL-203.
     - Activating EL-208 removes EL-207 and EL-208 and deletes nothing.
     - After activating EL-208, the Project remains in EL-203.
     - Activating EL-207 on a Project with no Item deletes the Project and removes it from EL-203, EL-002, and EL-102.

@@ -1,97 +1,57 @@
 <x-filament-panels::page>
-    <div class="mb-6">
-        <x-filament::button
-            color="gray"
-            icon="heroicon-m-arrow-left"
-            wire:click="back"
-            data-element="EL-209"
-        >
-            Back to Items
-        </x-filament::button>
-    </div>
-
     @if (filled($errorMessage))
         <div class="mb-6" data-element="EL-211" data-error-code="{{ $errorCode }}">
-            <x-filament::callout
-                color="danger"
-                icon="heroicon-o-exclamation-triangle"
-                :description="$errorMessage"
-            />
+            <x-filament::callout color="danger" icon="heroicon-o-exclamation-triangle" :description="$errorMessage" />
         </div>
     @endif
 
-    <x-filament::section>
-        <div class="flex items-end gap-4">
-            <div class="flex-1">
-                <x-filament::fieldset label="Project Name">
-                    <x-filament::input.wrapper>
-                        <x-filament::input
-                            id="project-name"
-                            type="text"
-                            wire:model="projectName"
-                            data-element="EL-201"
-                        />
-                    </x-filament::input.wrapper>
-                </x-filament::fieldset>
-            </div>
+    @if (filled($successMessage))
+        <div class="mb-6" data-element="EL-211" data-error-code="success">
+            <x-filament::callout color="success" icon="heroicon-o-check-circle" :description="$successMessage" />
+        </div>
+    @endif
 
+    <div class="flex justify-between items-end gap-4 mb-6">
+        <div>
+            <h2 class="text-xl font-semibold">Projects</h2>
+            @if (count($projects) === 0)
+                <p class="text-sm text-gray-500" data-element="EL-210">No projects yet.</p>
+            @endif
+        </div>
+
+        <div class="flex items-end gap-2">
+            <x-filament::input.wrapper class="w-64">
+                <x-filament::input type="text" wire:model="projectName" data-element="EL-201" placeholder="Project Name" />
+            </x-filament::input.wrapper>
             <x-filament::button wire:click="createProject" data-element="EL-202">
                 Create Project
             </x-filament::button>
         </div>
-    </x-filament::section>
+    </div>
 
-    @if ($projectsVisible)
-        <div class="mt-6">
-            @if (count($projects) === 0)
-                <div data-element="EL-210">
-                    <x-filament::empty-state heading="No Projects yet." :contained="false" />
-                </div>
-            @else
-                <div data-element="EL-203">
-                    <x-filament::section>
-                        <ul class="divide-y divide-gray-200 dark:divide-white/10">
-                            @foreach ($projects as $index => $project)
-                                <li class="flex items-end gap-4 py-3 text-sm" wire:key="project-{{ $project['id'] }}">
-                                    <div class="flex-1">
-                                        <x-filament::input.wrapper>
-                                            <x-filament::input
-                                                type="text"
-                                                value="{{ $project['editedName'] }}"
-                                                wire:model="projects.{{ $index }}.editedName"
-                                                data-element="EL-204"
-                                            />
-                                        </x-filament::input.wrapper>
-                                    </div>
-
-                                    <x-filament::button
-                                        color="gray"
-                                        wire:click="renameProject({{ $project['id'] }})"
-                                        data-element="EL-205"
-                                    >
-                                        Rename
-                                    </x-filament::button>
-
-                                    <x-filament::button
-                                        color="danger"
-                                        wire:click="armDeleteProject({{ $project['id'] }})"
-                                        data-element="EL-206"
-                                    >
-                                        Delete
-                                    </x-filament::button>
-
-                                    @if ($pendingDeleteProjectId === $project['id'])
-                                        <div class="flex gap-2">
-                                            <x-filament::button color="danger" wire:click="confirmDeleteProject" data-element="EL-207">Confirm</x-filament::button>
-                                            <x-filament::button color="gray" wire:click="cancelDeleteProject" data-element="EL-208">Cancel</x-filament::button>
-                                        </div>
-                                    @endif
-                                </li>
-                            @endforeach
-                        </ul>
-                    </x-filament::section>
-                </div>
-            @endif
-        </div>
+    @if (count($projects) > 0)
+    <div data-element="EL-203">
+        <x-filament::section>
+            <table class="min-w-full divide-y divide-gray-200 dark:divide-white/10">
+                <thead>
+                    <tr>
+                        <th class="px-4 py-2 text-left text-sm font-medium">Project Name</th>
+                        <th class="px-4 py-2 text-right text-sm font-medium">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200 dark:divide-white/10">
+                    @foreach ($projects as $project)
+                        <tr class="py-4" wire:key="project-{{ $project['id'] }}">
+                            <td class="px-4">{{ $project['name'] }}</td>
+                            <td class="px-4 text-right space-x-2">
+                                <a href="{{ \App\Filament\Pages\ProjectsEdit::getUrl(['project' => $project['id']]) }}" class="text-sm text-primary-600 hover:underline">Edit</a>
+                                <x-filament::button color="danger" size="sm" wire:click="mountAction('delete', {project: {{ $project['id'] }}})" data-element="EL-206">Delete</x-filament::button>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </x-filament::section>
+    </div>
     @endif
 </x-filament-panels::page>

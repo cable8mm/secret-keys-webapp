@@ -4,6 +4,7 @@ namespace App\Filament\Pages;
 
 use App\Projects\ProjectManager;
 use App\Records\ProjectSummary;
+use Filament\Actions\Action;
 use Filament\Pages\Page;
 use Illuminate\Http\RedirectResponse;
 
@@ -17,25 +18,56 @@ class Projects extends Page
 
     public string $projectName = '';
 
-    /**
-     * @var list<array{id: int, name: string, editedName: string}>
-     */
-    public array $projects = [];
+    public ?string $errorMessage = null;
 
     public ?string $errorCode = null;
 
-    public ?string $errorMessage = null;
+    public ?string $successMessage = null;
 
-    public bool $projectsVisible = true;
+    public function deleteAction(): Action
+    {
+        return Action::make('delete')
+            ->requiresConfirmation()
+            ->modalHeading('Delete project')
+            ->modalDescription(function (array $arguments): string {
+                $name = collect($this->projects)->firstWhere('id', (int) ($arguments['project'] ?? 0))['name'] ?? '';
 
-    public ?int $pendingDeleteProjectId = null;
+                return $name === ''
+                    ? 'Delete this project?'
+                    : "Delete project \"{$name}\"?";
+            })
+            ->modalSubmitActionLabel('Delete')
+            ->color('danger')
+            ->action(function (array $arguments): void {
+                $projectManager = app(ProjectManager::class);
+                $result = $projectManager->delete((int) $arguments['project']);
+
+                if (! $result->success) {
+                    $this->errorCode = $result->errorCode;
+                    $this->errorMessage = $result->error;
+
+                    return;
+                }
+
+                $this->successMessage = 'Project deleted.';
+                $this->errorCode = null;
+                $this->errorMessage = null;
+
+                $this->loadProjects($projectManager);
+            });
+    }
+
+    /**
+     * @var list<array{id: int, name: string}>
+     */
+    public array $projects = [];
 
     public function mount(ProjectManager $projectManager): void
     {
         $this->loadProjects($projectManager);
     }
 
-    public function createProject(ProjectManager $projectManager): void
+    public function createProject(ProjectManager $projectManager): ?RedirectResponse
     {
         $result = $projectManager->create($this->projectName);
 
@@ -43,78 +75,17 @@ class Projects extends Page
             $this->errorCode = $result->errorCode;
             $this->errorMessage = $result->error;
 
-            return;
+            return null;
         }
 
         $this->projectName = '';
-        $this->loadProjects($projectManager);
-    }
-
-    public function back(): RedirectResponse
-    {
-        return redirect()->to(Items::getUrl());
-    }
-
-    public function armDeleteProject(int $projectId): void
-    {
-        $this->pendingDeleteProjectId = $projectId;
-    }
-
-    public function cancelDeleteProject(): void
-    {
-        $this->pendingDeleteProjectId = null;
-    }
-
-    public function confirmDeleteProject(ProjectManager $projectManager): void
-    {
-        if ($this->pendingDeleteProjectId === null) {
-            return;
-        }
-
-        $projectId = $this->pendingDeleteProjectId;
-
-        $result = $projectManager->delete($projectId);
-
-        if (! $result->success) {
-            $this->pendingDeleteProjectId = $projectId;
-            $this->errorCode = $result->errorCode;
-            $this->errorMessage = $result->error;
-
-            return;
-        }
-
-        $this->pendingDeleteProjectId = null;
-        $this->loadProjects($projectManager);
-    }
-
-    public function renameProject(int $projectId, ProjectManager $projectManager): void
-    {
-        $editedName = null;
-
-        foreach ($this->projects as $project) {
-            if ($project['id'] === $projectId) {
-                $editedName = $project['editedName'];
-                break;
-            }
-        }
-
-        if ($editedName === null) {
-            $this->errorCode = 'ERR-007';
-            $this->errorMessage = 'The Project could not be saved.';
-
-            return;
-        }
-
-        $result = $projectManager->rename($projectId, $editedName);
-
-        if (! $result->success) {
-            $this->errorCode = $result->errorCode;
-            $this->errorMessage = $result->error;
-
-            return;
-        }
+        $this->successMessage = 'Project created.';
+        $this->errorCode = null;
+        $this->errorMessage = null;
 
         $this->loadProjects($projectManager);
+
+        return null;
     }
 
     private function loadProjects(ProjectManager $projectManager): void
@@ -123,7 +94,6 @@ class Projects extends Page
 
         if (! $result->success) {
             $this->projects = [];
-            $this->projectsVisible = false;
             $this->errorCode = $result->errorCode;
             $this->errorMessage = $result->error;
 
@@ -134,11 +104,9 @@ class Projects extends Page
             fn (ProjectSummary $project): array => [
                 'id' => $project->id,
                 'name' => $project->name,
-                'editedName' => $project->name,
             ],
             $result->projects,
         );
-        $this->projectsVisible = true;
         $this->errorCode = null;
         $this->errorMessage = null;
     }
