@@ -16,7 +16,7 @@ class AiItemsTable
             ->columns([
                 TextColumn::make('name')
                     ->searchable(),
-                TextColumn::make('service')
+                TextColumn::make('service.name')
                     ->searchable(),
                 TextColumn::make('fingerprint')
                     ->getStateUsing(fn ($record): string => SecretCopy::fingerprint($record))

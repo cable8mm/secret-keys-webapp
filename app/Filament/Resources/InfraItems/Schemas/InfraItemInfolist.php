@@ -13,7 +13,7 @@ class InfraItemInfolist
         return $schema
             ->components([
                 TextEntry::make('name'),
-                TextEntry::make('service'),
+                TextEntry::make('service.name'),
                 TextEntry::make('value')
                     ->getStateUsing(fn ($record): ?string => SecretCopy::decryptForForm($record->value))
                     ->copyable()

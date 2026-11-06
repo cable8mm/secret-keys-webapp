@@ -30,7 +30,7 @@ AI and Infra items live in their own tables (`ai_items`, `infra_items`) with nam
 | id           | id      |                                              |
 | project_id   | FK      | references projects, restrict on delete      |
 | name         | string  | required                                     |
-| service      | string  | nullable, suggestion list, free text allowed |
+| service_id   | FK      | nullable, references services, null on delete |
 | environment  | string  | nullable, one of live / test / dev / none    |
 | kind         | string  | nullable, one of token / password / pem / other |
 | tags         | text    | nullable, free text                          |
@@ -45,13 +45,25 @@ AI and Infra items live in their own tables (`ai_items`, `infra_items`) with nam
 
 Minimal shape: name and value required, service optional, nothing else.
 
-| Column     | Type   | Notes                |
-| ---------- | ------ | -------------------- |
-| id         | id     |                      |
-| name       | string | required             |
-| value      | text   | required, the secret |
-| service    | string | nullable             |
-| timestamps |        |                      |
+| Column     | Type   | Notes                              |
+| ---------- | ------ | ---------------------------------- |
+| id         | id     |                                    |
+| name       | string | required                           |
+| value      | text   | required, the secret               |
+| service_id | FK     | nullable, references services, null on delete |
+| timestamps |        |                                    |
+
+## services
+
+| Column     | Type    | Notes                                    |
+| ---------- | ------- | ---------------------------------------- |
+| id         | id      |                                          |
+| name       | string  | unique, required                         |
+| icon       | string  | nullable, icon URL (image later)         |
+| is_project | boolean | default true, listed in Project Items    |
+| is_ai      | boolean | default true, listed in AI Items         |
+| is_infra   | boolean | default true, listed in Infra Items      |
+| timestamps |         |                                          |
 
 ## Rules
 

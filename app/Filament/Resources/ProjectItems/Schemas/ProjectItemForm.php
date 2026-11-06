@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\ProjectItems\Schemas;
 
 use App\Filament\Resources\SecretCopy;
-use App\Items\ServiceOptions;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -30,8 +29,10 @@ class ProjectItemForm
                     ->relationship('project', 'name')
                     ->default(fn (): ?string => request()->query('project'))
                     ->required(),
-                TextInput::make('service')
-                    ->datalist(ServiceOptions::all()),
+                Select::make('service_id')
+                    ->relationship('service', 'name', modifyQueryUsing: fn ($query) => $query->where('is_project', true))
+                    ->searchable()
+                    ->preload(),
                 Select::make('environment')
                     ->default('none')
                     ->options([
