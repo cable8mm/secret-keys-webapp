@@ -21,9 +21,6 @@ class ProjectsTable
                 TextColumn::make('note')
                     ->limit(50)
                     ->toggleable(isToggledHiddenByDefault: true),
-                IconColumn::make('is_fixed')
-                    ->boolean()
-                    ->label('Fixed'),
                 IconColumn::make('archived')
                     ->boolean(),
             ])
@@ -31,13 +28,12 @@ class ProjectsTable
                 TernaryFilter::make('archived'),
             ])
             ->recordActions([
-                EditAction::make()
-                    ->hidden(fn ($record): bool => (bool) $record->is_fixed),
+                EditAction::make(),
                 Action::make('archive')
                     ->iconButton()
                     ->icon('heroicon-o-archive-box')
                     ->color('gray')
-                    ->hidden(fn ($record): bool => (bool) $record->is_fixed || (bool) $record->archived)
+                    ->hidden(fn ($record): bool => (bool) $record->archived)
                     ->action(function ($record): void {
                         $record->update(['archived' => true]);
 
@@ -50,7 +46,7 @@ class ProjectsTable
                     ->iconButton()
                     ->icon('heroicon-o-arrow-uturn-left')
                     ->color('gray')
-                    ->hidden(fn ($record): bool => (bool) $record->is_fixed || ! (bool) $record->archived)
+                    ->hidden(fn ($record): bool => ! (bool) $record->archived)
                     ->action(function ($record): void {
                         $record->update(['archived' => false]);
 
@@ -64,7 +60,6 @@ class ProjectsTable
                     ->icon('heroicon-o-trash')
                     ->color('danger')
                     ->requiresConfirmation()
-                    ->hidden(fn ($record): bool => (bool) $record->is_fixed)
                     ->action(function ($record): void {
                         if ($record->items()->exists()) {
                             Notification::make()
