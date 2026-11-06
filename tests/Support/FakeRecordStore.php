@@ -8,6 +8,8 @@ use App\Records\ItemRecord;
 use App\Records\ItemWrite;
 use App\Records\ProjectSummary;
 use App\Records\RecordStore;
+use App\Records\SimpleItemRecord;
+use App\Records\SimpleItemWrite;
 use RuntimeException;
 
 final class FakeRecordStore implements RecordStore
@@ -37,6 +39,16 @@ final class FakeRecordStore implements RecordStore
     public int $itemUpdateCalls = 0;
 
     public int $itemDeleteCalls = 0;
+
+    /**
+     * @var list<SimpleItemRecord>
+     */
+    public array $aiItems = [];
+
+    /**
+     * @var list<SimpleItemRecord>
+     */
+    public array $infraItems = [];
 
     public function allProjects(): array
     {
@@ -233,6 +245,143 @@ final class FakeRecordStore implements RecordStore
         foreach ($this->items as $index => $item) {
             if ($item->id === $id) {
                 array_splice($this->items, $index, 1);
+
+                return;
+            }
+        }
+
+        throw new RuntimeException('Item not found.');
+    }
+
+    public function findAiItem(int $id): ?SimpleItemRecord
+    {
+        return $this->findSimpleItem($this->aiItems, $id);
+    }
+
+    public function allAiItems(): array
+    {
+        if ($this->failRead) {
+            throw new RuntimeException('Read failed.');
+        }
+
+        return $this->aiItems;
+    }
+
+    public function createAiItem(SimpleItemWrite $write): int
+    {
+        return $this->createSimpleItem($this->aiItems, $write, 'aiItemCreateCalls');
+    }
+
+    public function updateAiItem(int $id, SimpleItemWrite $write): void
+    {
+        $this->updateSimpleItem($this->aiItems, $id, $write);
+    }
+
+    public function deleteAiItem(int $id): void
+    {
+        $this->deleteSimpleItem($this->aiItems, $id);
+    }
+
+    public function findInfraItem(int $id): ?SimpleItemRecord
+    {
+        return $this->findSimpleItem($this->infraItems, $id);
+    }
+
+    public function allInfraItems(): array
+    {
+        if ($this->failRead) {
+            throw new RuntimeException('Read failed.');
+        }
+
+        return $this->infraItems;
+    }
+
+    public function createInfraItem(SimpleItemWrite $write): int
+    {
+        return $this->createSimpleItem($this->infraItems, $write, 'infraItemCreateCalls');
+    }
+
+    public function updateInfraItem(int $id, SimpleItemWrite $write): void
+    {
+        $this->updateSimpleItem($this->infraItems, $id, $write);
+    }
+
+    public function deleteInfraItem(int $id): void
+    {
+        $this->deleteSimpleItem($this->infraItems, $id);
+    }
+
+    public int $aiItemCreateCalls = 0;
+
+    public int $infraItemCreateCalls = 0;
+
+    /**
+     * @param  list<SimpleItemRecord>  $items
+     */
+    private function findSimpleItem(array $items, int $id): ?SimpleItemRecord
+    {
+        if ($this->failRead) {
+            throw new RuntimeException('Read failed.');
+        }
+
+        foreach ($items as $item) {
+            if ($item->id === $id) {
+                return $item;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param  list<SimpleItemRecord>  $items
+     */
+    private function createSimpleItem(array &$items, SimpleItemWrite $write, string $counter): int
+    {
+        $this->{$counter}++;
+
+        if ($this->failWrite) {
+            throw new RuntimeException('Write failed.');
+        }
+
+        $id = count($items) + 1;
+        $items[] = new SimpleItemRecord($id, $write->name, $write->service, $write->protectedValue);
+
+        return $id;
+    }
+
+    /**
+     * @param  list<SimpleItemRecord>  $items
+     */
+    private function updateSimpleItem(array &$items, int $id, SimpleItemWrite $write): void
+    {
+        if ($this->failWrite) {
+            throw new RuntimeException('Write failed.');
+        }
+
+        foreach ($items as $index => $item) {
+            if ($item->id === $id) {
+                $items[$index] = new SimpleItemRecord($id, $write->name, $write->service, $write->protectedValue);
+
+                return;
+            }
+        }
+
+        throw new RuntimeException('Item not found.');
+    }
+
+    /**
+     * @param  list<SimpleItemRecord>  $items
+     */
+    private function deleteSimpleItem(array &$items, int $id): void
+    {
+        if ($this->failWrite) {
+            throw new RuntimeException('Write failed.');
+        }
+
+        foreach ($items as $index => $item) {
+            if ($item->id === $id) {
+                array_splice($items, $index, 1);
 
                 return;
             }

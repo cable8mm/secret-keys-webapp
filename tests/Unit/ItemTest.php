@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\Item;
+use App\Models\ProjectItem;
 
-it('casts the item issued date as a date', function () {
-    expect((new Item)->getCasts())->toHaveKey('issued_date', 'date');
+it('casts the project item issued date as a date', function () {
+    expect((new ProjectItem)->getCasts())->toHaveKey('issued_date', 'date');
 });

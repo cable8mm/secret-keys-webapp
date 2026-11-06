@@ -7,8 +7,8 @@ use App\Items\FingerprintDeriver;
 use App\Items\ItemFinder;
 use App\Items\ItemInput;
 use App\Items\ItemManager;
-use App\Models\Item;
 use App\Models\Project;
+use App\Models\ProjectItem;
 use App\Records\ProjectSummary;
 use App\Records\RecordStore;
 use App\Values\ValueProtector;
@@ -72,9 +72,9 @@ it('creates an item with the full value and lists its fingerprint', function () 
         ->call('save')
         ->assertRedirect(Items::getUrl());
 
-    expect(Item::count())->toBe(1);
+    expect(ProjectItem::count())->toBe(1);
 
-    $item = Item::first();
+    $item = ProjectItem::first();
     expect($item->name)->toBe(' API Key ')
         ->and($item->service)->toBe('Stripe')
         ->and($item->environment)->toBe('production')
@@ -119,7 +119,7 @@ it('shows raw text is not stored in the database', function () {
         ->set('value', 'super-secret-value-1234')
         ->call('save');
 
-    $raw = DB::table('items')->value('value');
+    $raw = DB::table('project_items')->value('value');
 
     expect($raw)->not->toContain('super-secret-value-1234');
 });
@@ -136,7 +136,7 @@ it('reports ERR-001 for an empty item name and keeps entered input', function ()
         ->assertSeeHtml('data-element="EL-118"')
         ->assertSeeHtml('data-error-codes="ERR-001"');
 
-    expect(Item::count())->toBe(0);
+    expect(ProjectItem::count())->toBe(0);
 });
 
 it('reports ERR-002 for an empty or whitespace-only value', function () {
@@ -150,7 +150,7 @@ it('reports ERR-002 for an empty or whitespace-only value', function () {
         ->assertSee('Value is required.')
         ->assertSeeHtml('data-error-codes="ERR-002"');
 
-    expect(Item::count())->toBe(0);
+    expect(ProjectItem::count())->toBe(0);
 });
 
 it('reports ERR-003 when no project is selected', function () {
@@ -164,7 +164,7 @@ it('reports ERR-003 when no project is selected', function () {
         ->assertSee('Project is required.')
         ->assertSeeHtml('data-error-codes="ERR-003"');
 
-    expect(Item::count())->toBe(0);
+    expect(ProjectItem::count())->toBe(0);
 });
 
 it('reports ERR-003 for a project that no longer exists', function () {
@@ -178,7 +178,7 @@ it('reports ERR-003 for a project that no longer exists', function () {
         ->assertSee('Project is required.')
         ->assertSeeHtml('data-error-codes="ERR-003"');
 
-    expect(Item::count())->toBe(0);
+    expect(ProjectItem::count())->toBe(0);
 });
 
 it('reports every failing condition at once', function () {
@@ -280,7 +280,7 @@ it('stores the selected kind and shows it in edit mode', function () {
         ->call('save')
         ->assertRedirect(Items::getUrl());
 
-    $item = Item::query()->firstWhere('name', 'Deploy Key');
+    $item = ProjectItem::query()->firstWhere('name', 'Deploy Key');
 
     expect($item->kind)->toBe('pem');
 
@@ -317,16 +317,16 @@ it('dispatches pem-normalized text when copying from a list row', function () {
 
     expect($result->success)->toBeTrue();
 
-    $item = Item::query()->firstWhere('name', 'Deploy Key');
+    $item = ProjectItem::query()->firstWhere('name', 'Deploy Key');
 
     Livewire::test(Items::class)
-        ->call('copyValue', $item->id)
+        ->call('copyValue', 'project', $item->id)
         ->assertDispatched('copy-prepared', text: "line1\nline2\n");
 });
 
 it('shows a copy error when the row item cannot be read', function () {
     Livewire::test(Items::class)
-        ->call('copyValue', 999999)
+        ->call('copyValue', 'project', 999999)
         ->assertSee('Copying failed.')
         ->assertSeeHtml('data-element="EL-010"');
 });
@@ -343,7 +343,7 @@ it('stores tags and expiry date and shows them in edit mode', function () {
         ->call('save')
         ->assertRedirect(Items::getUrl());
 
-    $item = Item::query()->firstWhere('name', 'API key');
+    $item = ProjectItem::query()->firstWhere('name', 'API key');
 
     expect($item->tags)->toBe('scope:deploy, server:prod-1')
         ->and($item->expires_at?->toDateString())->toBe('2027-01-31');

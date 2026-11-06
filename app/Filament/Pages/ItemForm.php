@@ -2,6 +2,8 @@
 
 namespace App\Filament\Pages;
 
+use App\Items\AiItemManager;
+use App\Items\InfraItemManager;
 use App\Items\ItemInput;
 use App\Items\ItemManager;
 use App\Projects\ProjectManager;
@@ -18,6 +20,8 @@ class ItemForm extends Page
     protected string $view = 'filament.pages.item-form';
 
     public ?int $itemId = null;
+
+    public string $itemType = 'project';
 
     public string $itemName = '';
 
@@ -67,8 +71,14 @@ class ItemForm extends Page
      */
     public array $projects = [];
 
-    public function mount(ProjectManager $projectManager, ItemManager $itemManager, ?int $itemId = null): void
+    public function mount(ProjectManager $projectManager, ItemManager $itemManager, AiItemManager $aiItemManager, InfraItemManager $infraItemManager, ?int $itemId = null, string $itemType = 'project'): void
     {
+        if (! in_array($itemType, ['project', 'ai', 'infra'], true)) {
+            $itemType = 'project';
+        }
+
+        $this->itemType = $itemType;
+
         if ($itemId !== null) {
             $this->itemId = $itemId;
         }
@@ -94,7 +104,11 @@ class ItemForm extends Page
         if ($this->itemId !== null) {
             $this->loading = true;
             $this->revealed = false;
-            $loadResult = $itemManager->load($this->itemId);
+            $loadResult = match ($this->itemType) {
+                'ai' => $aiItemManager->load($this->itemId),
+                'infra' => $infraItemManager->load($this->itemId),
+                default => $itemManager->load($this->itemId),
+            };
 
             if (! $loadResult->success) {
                 $this->itemLoaded = false;
@@ -126,18 +140,22 @@ class ItemForm extends Page
         }
     }
 
-    public function save(ItemManager $itemManager): ?RedirectResponse
+    public function save(ItemManager $itemManager, AiItemManager $aiItemManager, InfraItemManager $infraItemManager): ?RedirectResponse
     {
         if ($this->itemId === null) {
-            return $this->storeCreate($itemManager);
+            return $this->storeCreate($itemManager, $aiItemManager, $infraItemManager);
         }
 
-        return $this->storeUpdate($itemManager);
+        return $this->storeUpdate($itemManager, $aiItemManager, $infraItemManager);
     }
 
-    private function storeCreate(ItemManager $itemManager): ?RedirectResponse
+    private function storeCreate(ItemManager $itemManager, AiItemManager $aiItemManager, InfraItemManager $infraItemManager): ?RedirectResponse
     {
-        $result = $itemManager->create($this->toInput());
+        $result = match ($this->itemType) {
+            'ai' => $aiItemManager->create($this->itemName, $this->service, $this->value),
+            'infra' => $infraItemManager->create($this->itemName, $this->service, $this->value),
+            default => $itemManager->create($this->toInput()),
+        };
 
         if (! $result->success) {
             $this->formErrors = $result->errors;
@@ -148,9 +166,13 @@ class ItemForm extends Page
         return redirect()->to(Items::getUrl());
     }
 
-    private function storeUpdate(ItemManager $itemManager): ?RedirectResponse
+    private function storeUpdate(ItemManager $itemManager, AiItemManager $aiItemManager, InfraItemManager $infraItemManager): ?RedirectResponse
     {
-        $result = $itemManager->update((int) $this->itemId, $this->toInput());
+        $result = match ($this->itemType) {
+            'ai' => $aiItemManager->update((int) $this->itemId, $this->itemName, $this->service, $this->value),
+            'infra' => $infraItemManager->update((int) $this->itemId, $this->itemName, $this->service, $this->value),
+            default => $itemManager->update((int) $this->itemId, $this->toInput()),
+        };
 
         if (! $result->success) {
             $this->formErrors = $result->errors;
@@ -229,13 +251,17 @@ class ItemForm extends Page
         $this->deleteArmed = false;
     }
 
-    public function confirmDelete(ItemManager $itemManager): ?RedirectResponse
+    public function confirmDelete(ItemManager $itemManager, AiItemManager $aiItemManager, InfraItemManager $infraItemManager): ?RedirectResponse
     {
         if ($this->itemId === null) {
             return null;
         }
 
-        $result = $itemManager->delete($this->itemId);
+        $result = match ($this->itemType) {
+            'ai' => $aiItemManager->delete($this->itemId),
+            'infra' => $infraItemManager->delete($this->itemId),
+            default => $itemManager->delete($this->itemId),
+        };
 
         if (! $result->success) {
             $this->deleteArmed = true;

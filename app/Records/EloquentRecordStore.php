@@ -2,8 +2,10 @@
 
 namespace App\Records;
 
-use App\Models\Item;
+use App\Models\AiItem;
+use App\Models\InfraItem;
 use App\Models\Project;
+use App\Models\ProjectItem;
 use App\Projects\ProjectHasItems;
 use App\Projects\ProjectIsFixed;
 use Illuminate\Support\Carbon;
@@ -103,7 +105,7 @@ final class EloquentRecordStore implements RecordStore
 
     public function findItem(int $id): ?ItemRecord
     {
-        $item = Item::query()->with('project')->find($id);
+        $item = ProjectItem::query()->with('project')->find($id);
 
         if ($item === null) {
             return null;
@@ -131,10 +133,10 @@ final class EloquentRecordStore implements RecordStore
      */
     public function allItems(): array
     {
-        return Item::query()
+        return ProjectItem::query()
             ->with('project')
             ->get()
-            ->map(fn (Item $item): ItemRecord => new ItemRecord(
+            ->map(fn (ProjectItem $item): ItemRecord => new ItemRecord(
                 (int) $item->getKey(),
                 (int) $item->project_id,
                 (string) $item->name,
@@ -154,7 +156,7 @@ final class EloquentRecordStore implements RecordStore
 
     public function createItem(ItemWrite $write): int
     {
-        $item = Item::query()->create([
+        $item = ProjectItem::query()->create([
             'project_id' => $write->projectId,
             'name' => $write->name,
             'service' => $write->service,
@@ -173,7 +175,7 @@ final class EloquentRecordStore implements RecordStore
 
     public function updateItem(int $id, ItemWrite $write): void
     {
-        $item = Item::query()->find($id);
+        $item = ProjectItem::query()->find($id);
 
         if ($item === null) {
             throw new RuntimeException('Item not found.');
@@ -199,7 +201,136 @@ final class EloquentRecordStore implements RecordStore
 
     public function deleteItem(int $id): void
     {
-        $deleted = Item::query()->whereKey($id)->delete();
+        $deleted = ProjectItem::query()->whereKey($id)->delete();
+
+        if ($deleted === 0) {
+            throw new RuntimeException('Item not found.');
+        }
+    }
+
+    public function findAiItem(int $id): ?SimpleItemRecord
+    {
+        return $this->findSimpleItem(AiItem::class, $id);
+    }
+
+    public function allAiItems(): array
+    {
+        return $this->allSimpleItems(AiItem::class);
+    }
+
+    public function createAiItem(SimpleItemWrite $write): int
+    {
+        return $this->createSimpleItem(AiItem::class, $write);
+    }
+
+    public function updateAiItem(int $id, SimpleItemWrite $write): void
+    {
+        $this->updateSimpleItem(AiItem::class, $id, $write);
+    }
+
+    public function deleteAiItem(int $id): void
+    {
+        $this->deleteSimpleItem(AiItem::class, $id);
+    }
+
+    public function findInfraItem(int $id): ?SimpleItemRecord
+    {
+        return $this->findSimpleItem(InfraItem::class, $id);
+    }
+
+    public function allInfraItems(): array
+    {
+        return $this->allSimpleItems(InfraItem::class);
+    }
+
+    public function createInfraItem(SimpleItemWrite $write): int
+    {
+        return $this->createSimpleItem(InfraItem::class, $write);
+    }
+
+    public function updateInfraItem(int $id, SimpleItemWrite $write): void
+    {
+        $this->updateSimpleItem(InfraItem::class, $id, $write);
+    }
+
+    public function deleteInfraItem(int $id): void
+    {
+        $this->deleteSimpleItem(InfraItem::class, $id);
+    }
+
+    /**
+     * @param  class-string<AiItem|InfraItem>  $model
+     */
+    private function findSimpleItem(string $model, int $id): ?SimpleItemRecord
+    {
+        $item = $model::query()->find($id);
+
+        if ($item === null) {
+            return null;
+        }
+
+        return new SimpleItemRecord(
+            (int) $item->getKey(),
+            (string) $item->name,
+            $item->service,
+            (string) $item->value,
+        );
+    }
+
+    /**
+     * @param  class-string<AiItem|InfraItem>  $model
+     * @return list<SimpleItemRecord>
+     */
+    private function allSimpleItems(string $model): array
+    {
+        return $model::query()
+            ->get()
+            ->map(fn ($item): SimpleItemRecord => new SimpleItemRecord(
+                (int) $item->getKey(),
+                (string) $item->name,
+                $item->service,
+                (string) $item->value,
+            ))
+            ->all();
+    }
+
+    /**
+     * @param  class-string<AiItem|InfraItem>  $model
+     */
+    private function createSimpleItem(string $model, SimpleItemWrite $write): int
+    {
+        $item = $model::query()->create([
+            'name' => $write->name,
+            'service' => $write->service,
+            'value' => $write->protectedValue,
+        ]);
+
+        return (int) $item->getKey();
+    }
+
+    /**
+     * @param  class-string<AiItem|InfraItem>  $model
+     */
+    private function updateSimpleItem(string $model, int $id, SimpleItemWrite $write): void
+    {
+        $item = $model::query()->find($id);
+
+        if ($item === null) {
+            throw new RuntimeException('Item not found.');
+        }
+
+        $item->name = $write->name;
+        $item->service = $write->service;
+        $item->value = $write->protectedValue;
+        $item->save();
+    }
+
+    /**
+     * @param  class-string<AiItem|InfraItem>  $model
+     */
+    private function deleteSimpleItem(string $model, int $id): void
+    {
+        $deleted = $model::query()->whereKey($id)->delete();
 
         if ($deleted === 0) {
             throw new RuntimeException('Item not found.');

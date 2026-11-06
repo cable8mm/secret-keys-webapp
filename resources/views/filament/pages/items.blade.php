@@ -55,16 +55,16 @@
                 <table class="min-w-full text-sm divide-y divide-gray-200 dark:divide-white/10">
                     <tbody class="divide-y divide-gray-200 dark:divide-white/10">
                         @foreach ($items as $item)
-                            <tr data-item-id="{{ $item['id'] }}">
+                            <tr data-item-id="{{ $item['type'] }}-{{ $item['id'] }}">
                                 <td class="py-2">
-                                    <a data-element="EL-004-row-link" href="{{ \App\Filament\Pages\ItemForm::getUrl(['item' => $item['id']]) }}">{{ $item['name'] }}</a>
+                                    <a data-element="EL-004-row-link" href="{{ \App\Filament\Pages\ItemForm::getUrl(['item' => $item['id'], 'itemType' => $item['type']]) }}">{{ $item['name'] }}</a>
                                 </td>
                                 <td class="py-2">{{ $item['service'] }}</td>
                                 <td class="py-2">{{ $item['projectName'] }}</td>
                                 <td class="py-2">{{ $item['environment'] }}</td>
                                 <td class="py-2">{{ $item['fingerprint'] }}</td>
                                 <td class="py-2">
-                                    <x-filament::button color="gray" wire:click="copyValue({{ $item['id'] }})" data-element="EL-005">Copy</x-filament::button>
+                                    <x-filament::button color="gray" wire:click="copyValue('{{ $item['type'] }}', {{ $item['id'] }})" data-element="EL-005">Copy</x-filament::button>
                                 </td>
                             </tr>
                         @endforeach

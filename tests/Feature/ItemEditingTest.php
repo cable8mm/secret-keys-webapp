@@ -3,19 +3,21 @@
 use App\Filament\Pages\ItemForm;
 use App\Filament\Pages\Items;
 use App\Items\FingerprintDeriver;
-use App\Models\Item;
 use App\Models\Project;
+use App\Models\ProjectItem;
 use App\Records\ItemRecord;
 use App\Records\ItemWrite;
 use App\Records\ProjectSummary;
 use App\Records\RecordStore;
+use App\Records\SimpleItemRecord;
+use App\Records\SimpleItemWrite;
 use App\Values\ValueProtector;
 use Livewire\Livewire;
 use Tests\Support\FakeRecordStore;
 
 beforeEach(function () {
     $this->project = Project::create(['name' => 'Payments']);
-    $this->item = Item::create([
+    $this->item = ProjectItem::create([
         'project_id' => $this->project->id,
         'name' => ' API key ',
         'service' => 'Stripe',
@@ -133,7 +135,7 @@ it('reports ERR-003 for a missing project in edit mode', function () {
 it('reports ERR-007 when persistence fails during update', function () {
     $store = app(FakeRecordStore::class);
     $store->projects[] = new ProjectSummary($this->project->id, 'Payments');
-    foreach (Item::query()->get() as $model) {
+    foreach (ProjectItem::query()->get() as $model) {
         $store->items[] = new ItemRecord(
             $model->id,
             $model->project_id,
@@ -205,6 +207,44 @@ it('shows a retrieval error when a value cannot be converted', function () {
         public function deleteProject(int $id): void {}
 
         public function setProjectArchived(int $id, bool $archived): void {}
+
+        public function findAiItem(int $id): ?SimpleItemRecord
+        {
+            return null;
+        }
+
+        public function allAiItems(): array
+        {
+            return [];
+        }
+
+        public function createAiItem(SimpleItemWrite $write): int
+        {
+            return 1;
+        }
+
+        public function updateAiItem(int $id, SimpleItemWrite $write): void {}
+
+        public function deleteAiItem(int $id): void {}
+
+        public function findInfraItem(int $id): ?SimpleItemRecord
+        {
+            return null;
+        }
+
+        public function allInfraItems(): array
+        {
+            return [];
+        }
+
+        public function createInfraItem(SimpleItemWrite $write): int
+        {
+            return 1;
+        }
+
+        public function updateInfraItem(int $id, SimpleItemWrite $write): void {}
+
+        public function deleteInfraItem(int $id): void {}
     });
 
     Livewire::test(ItemForm::class, ['itemId' => 1])
