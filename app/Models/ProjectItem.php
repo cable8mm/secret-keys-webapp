@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 
 /**
- * @property Carbon|null $issued_date
  * @property Carbon|null $expires_at
  */
 class ProjectItem extends Model
@@ -28,8 +27,7 @@ class ProjectItem extends Model
         'kind',
         'tags',
         'value',
-        'usage_location',
-        'issued_date',
+        'url',
         'expires_at',
         'memo',
     ];
@@ -40,7 +38,6 @@ class ProjectItem extends Model
     protected function casts(): array
     {
         return [
-            'issued_date' => 'date',
             'expires_at' => 'date',
         ];
     }

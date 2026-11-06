@@ -3,6 +3,8 @@
 namespace App\Filament\Resources\ProjectItems\Schemas;
 
 use App\Filament\Resources\SecretCopy;
+use App\Models\Project;
+use App\Models\Service;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -28,11 +30,28 @@ class ProjectItemForm
                 Select::make('project_id')
                     ->relationship('project', 'name')
                     ->default(fn (): ?string => request()->query('project'))
-                    ->required(),
+                    ->required()
+                    ->createOptionForm([
+                        TextInput::make('name')
+                            ->required()
+                            ->unique(table: Project::class),
+                    ])
+                    ->createOptionUsing(fn (array $data): int => (int) Project::query()->create([
+                        'name' => $data['name'],
+                    ])->getKey()),
                 Select::make('service_id')
                     ->relationship('service', 'name', modifyQueryUsing: fn ($query) => $query->where('is_project', true))
                     ->searchable()
-                    ->preload(),
+                    ->preload()
+                    ->createOptionForm([
+                        TextInput::make('name')
+                            ->required()
+                            ->unique(table: Service::class),
+                    ])
+                    ->createOptionUsing(fn (array $data): int => (int) Service::query()->create([
+                        'name' => $data['name'],
+                        'is_project' => true,
+                    ])->getKey()),
                 Select::make('environment')
                     ->default('none')
                     ->options([
@@ -41,9 +60,9 @@ class ProjectItemForm
                         'dev' => 'dev',
                         'none' => 'none',
                     ]),
-                Textarea::make('usage_location')
+                TextInput::make('url')
+                    ->label('URL')
                     ->columnSpanFull(),
-                DatePicker::make('issued_date'),
                 DatePicker::make('expires_at'),
                 Textarea::make('memo')
                     ->columnSpanFull(),

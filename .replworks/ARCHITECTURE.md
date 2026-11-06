@@ -33,10 +33,9 @@ AI and Infra items live in their own tables (`ai_items`, `infra_items`) with nam
 | service_id   | FK      | nullable, references services, null on delete |
 | environment  | string  | nullable, one of live / test / dev / none    |
 | kind         | string  | nullable, one of token / password / pem / other |
-| tags         | text    | nullable, free text                          |
+| tags         | text    | nullable, free text, comma-separated        |
 | value        | text    | required, the secret                         |
-| usage_location | text  | nullable                                     |
-| issued_date  | date    | nullable                                     |
+| url | text | nullable, URL |
 | expires_at   | date    | nullable, record only                        |
 | memo         | text    | nullable                                     |
 | timestamps   |         |                                              |

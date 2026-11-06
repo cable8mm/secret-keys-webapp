@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\InfraItems\Schemas;
 
 use App\Filament\Resources\SecretCopy;
+use App\Models\Service;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -19,7 +20,16 @@ class InfraItemForm
                 Select::make('service_id')
                     ->relationship('service', 'name', modifyQueryUsing: fn ($query) => $query->where('is_infra', true))
                     ->searchable()
-                    ->preload(),
+                    ->preload()
+                    ->createOptionForm([
+                        TextInput::make('name')
+                            ->required()
+                            ->unique(table: Service::class),
+                    ])
+                    ->createOptionUsing(fn (array $data): int => (int) Service::query()->create([
+                        'name' => $data['name'],
+                        'is_infra' => true,
+                    ])->getKey()),
                 Textarea::make('value')
                     ->required()
                     ->rows(4)
