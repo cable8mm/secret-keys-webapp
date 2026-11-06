@@ -216,7 +216,7 @@
     - Unit tests for the Project delete guard pass.
     - All checks defined in TECH_STACK.md pass.
 
-- [ ] T-013 Fixed Infra and AI containers
+- [x] T-013 Fixed Infra and AI containers
   - Satisfies: PRODUCT_SPEC.md FR-035; SCR-003
   - External boundary: no
   - Acceptance criteria:

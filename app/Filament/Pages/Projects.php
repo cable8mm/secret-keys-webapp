@@ -24,6 +24,8 @@ class Projects extends Page
 
     public ?string $successMessage = null;
 
+    public bool $hasUserProjects = false;
+
     public function deleteAction(): Action
     {
         return Action::make('delete')
@@ -58,7 +60,7 @@ class Projects extends Page
     }
 
     /**
-     * @var list<array{id: int, name: string}>
+     * @var list<array{id: int, name: string, is_fixed: bool}>
      */
     public array $projects = [];
 
@@ -104,9 +106,11 @@ class Projects extends Page
             fn (ProjectSummary $project): array => [
                 'id' => $project->id,
                 'name' => $project->name,
+                'is_fixed' => $project->isFixed,
             ],
             $result->projects,
         );
+        $this->hasUserProjects = collect($result->projects)->contains(fn (ProjectSummary $project): bool => ! $project->isFixed);
         $this->errorCode = null;
         $this->errorMessage = null;
     }

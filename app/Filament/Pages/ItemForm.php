@@ -37,6 +37,8 @@ class ItemForm extends Page
 
     public bool $revealed = false;
 
+    public bool $hasUserProjects = false;
+
     public string $fingerprint = '';
 
     public ?string $copyMessage = null;
@@ -75,6 +77,7 @@ class ItemForm extends Page
                 ],
                 $result->projects,
             );
+            $this->hasUserProjects = collect($result->projects)->contains(fn ($project): bool => ! $project->isFixed);
         } else {
             $this->formErrors = [[
                 'code' => $result->errorCode,

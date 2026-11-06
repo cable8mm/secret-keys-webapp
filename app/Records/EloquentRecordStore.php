@@ -5,6 +5,7 @@ namespace App\Records;
 use App\Models\Item;
 use App\Models\Project;
 use App\Projects\ProjectHasItems;
+use App\Projects\ProjectIsFixed;
 use Illuminate\Support\Carbon;
 use RuntimeException;
 
@@ -20,6 +21,7 @@ final class EloquentRecordStore implements RecordStore
             ->map(fn (Project $project): ProjectSummary => new ProjectSummary(
                 (int) $project->getKey(),
                 (string) $project->name,
+                (bool) $project->is_fixed,
             ))
             ->all();
     }
@@ -44,6 +46,10 @@ final class EloquentRecordStore implements RecordStore
             throw new RuntimeException('Project not found.');
         }
 
+        if ((bool) $project->is_fixed) {
+            throw new ProjectIsFixed('Project is fixed.');
+        }
+
         $project->name = $name;
         $project->save();
     }
@@ -58,6 +64,10 @@ final class EloquentRecordStore implements RecordStore
 
         if ($project->items_count > 0) {
             throw new ProjectHasItems('Project has Items.');
+        }
+
+        if ((bool) $project->is_fixed) {
+            throw new ProjectIsFixed('Project is fixed.');
         }
 
         $project->delete();

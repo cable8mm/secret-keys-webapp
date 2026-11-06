@@ -14,7 +14,7 @@
     <div class="flex justify-between items-end gap-4 mb-6">
         <div>
             <h2 class="text-xl font-semibold">Projects</h2>
-            @if (count($projects) === 0)
+            @if (! $hasUserProjects)
                 <p class="text-sm text-gray-500" data-element="EL-210">No projects yet.</p>
             @endif
         </div>
@@ -44,8 +44,10 @@
                         <tr class="py-4" wire:key="project-{{ $project['id'] }}">
                             <td class="px-4">{{ $project['name'] }}</td>
                             <td class="px-4 text-right space-x-2">
-                                <a href="{{ \App\Filament\Pages\ProjectsEdit::getUrl(['project' => $project['id']]) }}" class="text-sm text-primary-600 hover:underline">Edit</a>
-                                <x-filament::button color="danger" size="sm" wire:click="mountAction('delete', {project: {{ $project['id'] }}})" data-element="EL-206">Delete</x-filament::button>
+                                @if (! $project['is_fixed'])
+                                    <a href="{{ \App\Filament\Pages\ProjectsEdit::getUrl(['project' => $project['id']]) }}" class="text-sm text-primary-600 hover:underline">Edit</a>
+                                    <x-filament::button color="danger" size="sm" wire:click="mountAction('delete', {project: {{ $project['id'] }}})" data-element="EL-206">Delete</x-filament::button>
+                                @endif
                             </td>
                         </tr>
                     @endforeach

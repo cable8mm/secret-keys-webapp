@@ -87,7 +87,7 @@
                 @endif
             @endif
 
-            @if ($itemId === null && $projects === [])
+            @if ($itemId === null && ! $hasUserProjects)
                 <div class="mt-4" data-element="EL-117">
                     <x-filament::button color="gray" wire:click="openProjects">Manage Projects</x-filament::button>
                 </div>

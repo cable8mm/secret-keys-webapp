@@ -133,3 +133,24 @@ it('returns a persistence failure when the project does not exist', function () 
     expect($result->success)->toBeFalse()
         ->and($result->errorCode)->toBe('ERR-007');
 });
+
+it('rejects renaming a fixed container', function () {
+    $store = new FakeRecordStore;
+    $store->projects = [new ProjectSummary(1, 'Infra', true)];
+
+    $result = projectManagerWith($store)->rename(1, 'Changed');
+
+    expect($result->success)->toBeFalse()
+        ->and($result->errorCode)->toBe('ERR-007')
+        ->and($store->projects[0]->name)->toBe('Infra');
+});
+
+it('rejects deleting a fixed container', function () {
+    $store = new FakeRecordStore;
+    $store->projects = [new ProjectSummary(1, 'Infra', true)];
+
+    $result = projectManagerWith($store)->delete(1);
+
+    expect($result->success)->toBeFalse()
+        ->and($result->errorCode)->toBe('ERR-007');
+});
