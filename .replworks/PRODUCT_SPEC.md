@@ -182,40 +182,47 @@ Global rules:
 ### SCR-003
 
 - ID: SCR-003
-- Purpose: create, rename, and delete Projects.
-- Arrangement:
+- Purpose: create, read, update, and delete Projects.
+- Modes: list, create, edit.
+- Arrangement (List mode):
   - EL-201 and EL-202 are grouped at the top.
   - EL-203 is placed below EL-201 and EL-202.
-  - EL-204, EL-205, EL-206 are placed inside each row of EL-203.
-  - EL-209 is placed above EL-201.
-  - EL-211 is placed above EL-203.
+  - EL-206 is placed inside each row of EL-203.
+- Arrangement (Create mode):
+  - EL-201 is placed at the top.
+  - EL-202 is placed below EL-201.
+- Arrangement (Edit mode):
+  - EL-204 is placed at the top.
+  - EL-205 is placed below EL-204.
 - Elements:
   - EL-201: new Project Name input; purpose: enter the Project Name of a new Project; user actions: type text.
   - EL-202: create control; purpose: store the new Project; user actions: activate.
   - EL-203: Project row list; purpose: show every Project; user actions: none.
-  - EL-204: row Project Name input; purpose: edit the Project Name; user actions: type text.
-  - EL-205: row rename control; purpose: store the edited Project Name; user actions: activate.
-  - EL-206: row delete control; purpose: start deleting the Project; user actions: activate.
+  - EL-204: edit Project Name input; purpose: edit the Project Name; user actions: type text.
+  - EL-205: update control; purpose: store the edited Project Name; user actions: activate.
+  - EL-206: row delete control; purpose: delete the Project; user actions: activate; shown inside each row of EL-203.
   - EL-207: delete confirm control; purpose: confirm deletion; user actions: activate; shown after EL-206 is activated.
   - EL-208: delete cancel control; purpose: abort deletion; user actions: activate; shown after EL-206 is activated.
-  - EL-209: back control; purpose: return to the Item list; user actions: activate.
   - EL-210: no-Projects message slot; purpose: indicate that no Project exists; user actions: none.
   - EL-211: Message Slot; purpose: show validation errors and persistence errors; user actions: none.
 - States:
   - Initial: EL-201 is empty; EL-203 shows every Project.
   - Empty: no Project exists; EL-210 is shown; EL-203 is not shown.
   - Populated: EL-203 shows one row per Project.
-  - Loading: none.
   - Error: a validation error or persistence error is shown in EL-211.
   - Disabled: none.
 - Navigation:
-  - activate EL-209 -> SCR-001
+  - activate EL-202 with a non-empty EL-201 -> the Project is created per FR-001 and appears in EL-203.
+  - activate EL-205 with a non-empty EL-204 -> the Project is renamed per FR-003.
+  - activate EL-206 -> EL-207 and EL-208 are shown for that Project.
+  - activate EL-207 -> the Project is deleted per FR-005 and FR-006.
+  - activate EL-208 -> nothing is deleted per FR-007.
 - Interactions:
-  - activate EL-202 with a non-empty EL-201 -> the Project is created per FR-001
-  - activate EL-205 with a non-empty EL-204 -> the Project is renamed per FR-003
-  - activate EL-206 -> EL-207 and EL-208 are shown for that row
-  - activate EL-207 -> the Project is deleted per FR-005 and FR-006
-  - activate EL-208 -> no deletion occurs per FR-007
+  - activate EL-202 with an empty or whitespace-only EL-201 -> creates no Project and shows the error of ERR-004 in EL-211.
+  - activate EL-205 with an empty or whitespace-only EL-204 -> changes no Project and shows the error of ERR-004 in EL-211.
+  - a persistence failure during creation -> shows the error of ERR-007 in EL-211.
+  - a persistence failure during update -> shows the error of ERR-007 in EL-211.
+  - activation of EL-206 for a Project that has at least one Item -> deletes nothing and shows the error of ERR-005 in EL-211.
 
 ## Functional Requirements
 

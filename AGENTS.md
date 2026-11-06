@@ -301,8 +301,6 @@ If a mock's values cannot be traced to a recorded observation or a spec, do not 
 Any code touching an EXTERNAL_BOUNDARY requires at least one live observation before it may be mocked.
 Re-verify mocks when the external system's behavior may have changed.
 
----
-
 ## PROBE_PATHS
 
 A probe is throwaway code run to observe behavior and inform a design or technical decision.
