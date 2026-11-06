@@ -25,13 +25,22 @@
                 </x-filament::fieldset>
                 <x-filament::fieldset label="Service">
                     <x-filament::input.wrapper>
-                        <x-filament::input type="text" wire:model="service" data-element="EL-103" @disabled($loading) />
+                        <x-filament::input type="text" wire:model="service" data-element="EL-103" list="service-options" @disabled($loading) />
+                        <datalist id="service-options">
+                            @foreach (\App\Items\ServiceOptions::all() as $option)
+                                <option value="{{ $option }}"></option>
+                            @endforeach
+                        </datalist>
                     </x-filament::input.wrapper>
                 </x-filament::fieldset>
                 <x-filament::fieldset label="Environment">
-                    <x-filament::input.wrapper>
-                        <x-filament::input type="text" wire:model="environment" data-element="EL-104" @disabled($loading) />
-                    </x-filament::input.wrapper>
+                    <select wire:model="environment" data-element="EL-104" @disabled($loading) class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm dark:border-white/10 dark:bg-white/5">
+                        <option value="">Select an Environment</option>
+                        <option value="live">live</option>
+                        <option value="test">test</option>
+                        <option value="dev">dev</option>
+                        <option value="none">none</option>
+                    </select>
                 </x-filament::fieldset>
                 <x-filament::fieldset label="Kind">
                     <select wire:model="kind" data-element="EL-119" @disabled($loading) class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm dark:border-white/10 dark:bg-white/5">
@@ -74,6 +83,16 @@
                 <x-filament::fieldset label="Memo">
                     <x-filament::input.wrapper>
                         <x-filament::input type="text" wire:model="memo" data-element="EL-111" @disabled($loading) />
+                    </x-filament::input.wrapper>
+                </x-filament::fieldset>
+                <x-filament::fieldset label="Tags">
+                    <x-filament::input.wrapper>
+                        <x-filament::input type="text" wire:model="tags" data-element="EL-120" @disabled($loading) />
+                    </x-filament::input.wrapper>
+                </x-filament::fieldset>
+                <x-filament::fieldset label="Expiry Date">
+                    <x-filament::input.wrapper>
+                        <x-filament::input type="date" wire:model="expiresAt" data-element="EL-121" @disabled($loading) />
                     </x-filament::input.wrapper>
                 </x-filament::fieldset>
             </div>

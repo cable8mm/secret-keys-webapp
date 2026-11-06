@@ -16,13 +16,15 @@ class ProjectsCreate extends Page
 
     public string $projectName = '';
 
+    public string $projectNote = '';
+
     public ?string $errorMessage = null;
 
     public ?string $errorCode = null;
 
     public function createProject(ProjectManager $projectManager): ?RedirectResponse
     {
-        $result = $projectManager->create($this->projectName);
+        $result = $projectManager->create($this->projectName, $this->projectNote === '' ? null : $this->projectNote);
 
         if (! $result->success) {
             $this->errorCode = $result->errorCode;

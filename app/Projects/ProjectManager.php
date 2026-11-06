@@ -30,14 +30,14 @@ final class ProjectManager
         return ProjectListResult::success($projects);
     }
 
-    public function create(string $name): ProjectOperationResult
+    public function create(string $name, ?string $note = null): ProjectOperationResult
     {
         if (trim($name) === '') {
             return ProjectOperationResult::failure('ERR-004', 'Project Name is required.');
         }
 
         try {
-            $this->records->createProject($name);
+            $this->records->createProject($name, $note);
         } catch (Throwable) {
             return ProjectOperationResult::failure('ERR-007', 'The Project could not be saved.');
         }
@@ -45,14 +45,14 @@ final class ProjectManager
         return ProjectOperationResult::success();
     }
 
-    public function rename(int $id, string $name): ProjectOperationResult
+    public function rename(int $id, string $name, ?string $note = null): ProjectOperationResult
     {
         if (trim($name) === '') {
             return ProjectOperationResult::failure('ERR-004', 'Project Name is required.');
         }
 
         try {
-            $this->records->renameProject($id, $name);
+            $this->records->renameProject($id, $name, $note);
         } catch (ProjectIsFixed) {
             return ProjectOperationResult::failure('ERR-007', 'The Project could not be saved.');
         } catch (Throwable) {

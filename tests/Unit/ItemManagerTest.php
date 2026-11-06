@@ -126,3 +126,25 @@ it('returns pem-normalized copy text for a pem item', function () {
 
     expect($result)->toBe("line1\nline2\n");
 });
+
+it('stores tags and expiry date with the item', function () {
+    $store = managerStore();
+
+    $result = itemManagerWith($store)->create(new ItemInput(
+        'API key',
+        1,
+        '',
+        '',
+        'secret',
+        '',
+        '',
+        '',
+        '',
+        'scope:deploy',
+        '2027-01-31',
+    ));
+
+    expect($result->success)->toBeTrue()
+        ->and($store->items[0]->tags)->toBe('scope:deploy')
+        ->and($store->items[0]->expiresAt)->toBe('2027-01-31');
+});

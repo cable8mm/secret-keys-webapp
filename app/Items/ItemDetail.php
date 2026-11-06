@@ -16,5 +16,7 @@ final readonly class ItemDetail
         public string $memo,
         public string $fingerprint,
         public string $kind = '',
+        public string $tags = '',
+        public string $expiresAt = '',
     ) {}
 }

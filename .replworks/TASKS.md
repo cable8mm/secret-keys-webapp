@@ -257,7 +257,7 @@
     - Unit tests for the pem copy rule pass.
     - All checks defined in TECH_STACK.md pass.
 
-- [ ] T-016 Item and Project metadata fields
+- [x] T-016 Item and Project metadata fields
   - Satisfies: PRODUCT_SPEC.md Inputs; FR-025; SCR-002; SCR-003; SCR-001
   - External boundary: no
   - Acceptance criteria:

@@ -27,10 +27,11 @@ final class EloquentRecordStore implements RecordStore
             ->all();
     }
 
-    public function createProject(string $name): ProjectSummary
+    public function createProject(string $name, ?string $note = null): ProjectSummary
     {
         $project = Project::query()->create([
             'name' => $name,
+            'note' => $note,
         ]);
 
         return new ProjectSummary(
@@ -39,7 +40,7 @@ final class EloquentRecordStore implements RecordStore
         );
     }
 
-    public function renameProject(int $id, string $name): void
+    public function renameProject(int $id, string $name, ?string $note = null): void
     {
         $project = Project::query()->find($id);
 
@@ -52,6 +53,11 @@ final class EloquentRecordStore implements RecordStore
         }
 
         $project->name = $name;
+
+        if ($note !== null) {
+            $project->note = $note === '' ? null : $note;
+        }
+
         $project->save();
     }
 
@@ -115,6 +121,8 @@ final class EloquentRecordStore implements RecordStore
             $item->issued_date?->toDateString(),
             $item->memo,
             $item->kind,
+            $item->tags,
+            $item->expires_at?->toDateString(),
         );
     }
 
@@ -138,6 +146,8 @@ final class EloquentRecordStore implements RecordStore
                 $item->issued_date?->toDateString(),
                 $item->memo,
                 $item->kind,
+                $item->tags,
+                $item->expires_at?->toDateString(),
             ))
             ->all();
     }
@@ -151,8 +161,10 @@ final class EloquentRecordStore implements RecordStore
             'environment' => $write->environment,
             'kind' => $write->kind,
             'value' => $write->protectedValue,
+            'tags' => $write->tags,
             'usage_location' => $write->usageLocation,
             'issued_date' => $write->issuedDate,
+            'expires_at' => $write->expiresAt,
             'memo' => $write->memo,
         ]);
 
@@ -172,11 +184,15 @@ final class EloquentRecordStore implements RecordStore
         $item->service = $write->service;
         $item->environment = $write->environment;
         $item->kind = $write->kind;
+        $item->tags = $write->tags;
         $item->value = $write->protectedValue;
         $item->usage_location = $write->usageLocation;
         $item->issued_date = $write->issuedDate === null
             ? null
             : new Carbon($write->issuedDate);
+        $item->expires_at = $write->expiresAt === null
+            ? null
+            : new Carbon($write->expiresAt);
         $item->memo = $write->memo;
         $item->save();
     }

@@ -14,5 +14,7 @@ final readonly class ItemWrite
         public ?string $issuedDate,
         public ?string $memo,
         public ?string $kind = null,
+        public ?string $tags = null,
+        public ?string $expiresAt = null,
     ) {}
 }

@@ -140,7 +140,7 @@ Global rules:
 - Purpose: create an Item, edit an Item, reveal and copy a Value, delete an Item.
 - Modes: create, edit.
 - Arrangement:
-  - EL-101 through EL-111 and EL-119 are arranged in one vertical group in this order: EL-101, EL-102, EL-103, EL-104, EL-119, EL-105, EL-109, EL-110, EL-111.
+  - EL-101 through EL-111 and EL-119 through EL-121 are arranged in one vertical group in this order: EL-101, EL-102, EL-103, EL-104, EL-119, EL-105, EL-109, EL-110, EL-111, EL-120, EL-121.
   - EL-106, EL-107, EL-108 are grouped adjacent to EL-105.
   - EL-112 and EL-113 are grouped below the vertical group.
   - EL-114 is separated from EL-112 and EL-113.
@@ -148,8 +148,8 @@ Global rules:
 - Elements:
   - EL-101: Item Name input; purpose: enter Item Name; user actions: type text.
   - EL-102: Project selection; purpose: choose the Project of the Item; user actions: select one Project.
-  - EL-103: Service input; purpose: enter Service; user actions: type text.
-  - EL-104: Environment input; purpose: enter Environment; user actions: type text.
+  - EL-103: Service input; purpose: enter Service or choose a suggested Service from the fixed set; user actions: type text, choose a suggestion.
+  - EL-104: Environment selection; purpose: choose the Environment of the Item; user actions: select one Environment or no Environment.
   - EL-119: Kind selection; purpose: choose the Kind of the Item; user actions: select one Kind or no Kind.
   - EL-105: Value input; purpose: enter Value; user actions: type text, paste text.
   - EL-106: reveal toggle; purpose: switch EL-105 between masked and unmasked; user actions: activate.
@@ -158,6 +158,8 @@ Global rules:
   - EL-109: Usage Location input; purpose: enter where the Value is used; user actions: type text.
   - EL-110: Issued Date input; purpose: enter the date the Value was issued; user actions: select a date, clear the date.
   - EL-111: Memo input; purpose: enter a Memo; user actions: type text.
+  - EL-120: Tags input; purpose: enter Tags; user actions: type text.
+  - EL-121: Expiry Date input; purpose: enter the date the Value expires; user actions: select a date, clear the date.
   - EL-112: save control; purpose: store the Item; user actions: activate.
   - EL-113: cancel control; purpose: leave without storing; user actions: activate.
   - EL-114: delete control; purpose: start deleting the Item; user actions: activate; shown in edit mode only.
@@ -201,9 +203,11 @@ Global rules:
 - Arrangement (Create mode):
   - EL-201 is placed at the top.
   - EL-202 is placed below EL-201.
+  - EL-214 is placed below EL-202.
 - Arrangement (Edit mode):
   - EL-204 is placed at the top.
   - EL-205 is placed below EL-204.
+  - EL-214 is placed below EL-205.
 - Elements:
   - EL-201: new Project Name input; purpose: enter the Project Name of a new Project; user actions: type text.
   - EL-202: create control; purpose: store the new Project; user actions: activate.
@@ -217,6 +221,7 @@ Global rules:
   - EL-213: row restore control; purpose: restore the archived Project; user actions: activate; shown inside each row of the archive area.
   - EL-210: no-Projects message slot; purpose: indicate that no user-created Project exists; user actions: none.
   - EL-211: Message Slot; purpose: show validation errors and persistence errors; user actions: none.
+  - EL-214: Project Note input; purpose: enter the Project Note; user actions: type text.
 - States:
   - Initial: EL-201 is empty; EL-203 shows every Project.
   - Empty: no user-created Project exists; EL-210 is shown; EL-203 shows only Infra and AI.

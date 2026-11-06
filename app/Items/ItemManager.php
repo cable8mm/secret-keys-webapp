@@ -80,6 +80,8 @@ final class ItemManager
             $record->memo ?? '',
             $this->fingerprint->derive($value),
             $record->kind ?? '',
+            $record->tags ?? '',
+            $record->expiresAt ?? '',
         ));
     }
 
@@ -172,6 +174,8 @@ final class ItemManager
                 $input->issuedDate === '' ? null : $input->issuedDate,
                 $input->memo === '' ? null : $input->memo,
                 $input->kind === '' ? null : $input->kind,
+                $input->tags === '' ? null : $input->tags,
+                $input->expiresAt === '' ? null : $input->expiresAt,
             );
 
             if ($id === null) {

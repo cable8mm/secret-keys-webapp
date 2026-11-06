@@ -14,5 +14,7 @@ final readonly class ItemInput
         public string $issuedDate,
         public string $memo,
         public string $kind = '',
+        public string $tags = '',
+        public string $expiresAt = '',
     ) {}
 }
