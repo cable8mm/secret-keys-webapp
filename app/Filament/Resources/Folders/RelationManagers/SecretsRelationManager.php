@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources\Folders\RelationManagers;
 
-use App\Filament\Resources\Secrets\Schemas\SecretForm;
 use App\Filament\Resources\SecretCopy;
+use App\Filament\Resources\Secrets\Schemas\SecretForm;
 use Filament\Actions\CreateAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
