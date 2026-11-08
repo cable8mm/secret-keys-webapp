@@ -11,25 +11,6 @@ use Throwable;
 
 final class SecretCopy
 {
-    /**
-     * Client-side copy for the value field in create/edit forms.
-     * Same native pattern as TextInput's copyable(): Alpine reads the
-     * displayed textarea, no Livewire roundtrip.
-     */
-    public static function formCopyAction(): Action
-    {
-        return Action::make('copyValue')
-            ->icon('heroicon-o-clipboard-document')
-            ->label('Copy')
-            ->alpineClickHandler(<<<'JS'
-                window.navigator.clipboard.writeText($el.closest('[data-field-wrapper]').querySelector('textarea').value)
-                $tooltip('Copied', {
-                    theme: $store.theme,
-                    timeout: 2000,
-                })
-                JS);
-    }
-
     public static function copyAction(): Action
     {
         return Action::make('copy')
