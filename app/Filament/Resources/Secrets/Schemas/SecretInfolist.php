@@ -1,20 +1,22 @@
 <?php
 
-namespace App\Filament\Resources\ProjectItems\Schemas;
+namespace App\Filament\Resources\Secrets\Schemas;
 
 use App\Filament\Resources\SecretCopy;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
 
-class ProjectItemInfolist
+class SecretInfolist
 {
     public static function configure(Schema $schema): Schema
     {
         return $schema
             ->components([
                 TextEntry::make('name'),
-                TextEntry::make('project.name')
-                    ->label('Project'),
+                TextEntry::make('folder.name')
+                    ->label('Folder'),
+                TextEntry::make('derivedFrom.name')
+                    ->label('Source secret'),
                 TextEntry::make('service.name'),
                 TextEntry::make('environment')
                     ->badge(),

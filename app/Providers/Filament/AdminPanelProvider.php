@@ -2,7 +2,7 @@
 
 namespace App\Providers\Filament;
 
-use App\Filament\Resources\Projects\ProjectResource;
+use App\Filament\Resources\Folders\FolderResource;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\NavigationGroup;
@@ -32,10 +32,10 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->navigationGroups([
-                NavigationGroup::make('Projects'),
+                NavigationGroup::make('Vault'),
                 NavigationGroup::make('Data'),
             ])
-            ->homeUrl(fn (): string => ProjectResource::getUrl('index'))
+            ->homeUrl(fn (): string => FolderResource::getUrl('index'))
             ->viteTheme('resources/css/filament/admin/theme.css')
             ->sidebarCollapsibleOnDesktop()
             ->sidebarWidth('16rem')

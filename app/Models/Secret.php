@@ -6,24 +6,24 @@ use App\Models\Concerns\HasSecretValue;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 
 /**
  * @property Carbon|null $expires_at
  */
-class ProjectItem extends Model
+class Secret extends Model
 {
     use HasSecretValue;
-
-    protected $table = 'project_items';
 
     /**
      * @var list<string>
      */
     protected $fillable = [
-        'project_id',
+        'folder_id',
         'name',
         'service_id',
+        'derived_from_id',
         'environment',
         'kind',
         'value',
@@ -42,12 +42,37 @@ class ProjectItem extends Model
         ];
     }
 
-    /**
-     * @return BelongsTo<Project, $this>
-     */
-    public function project(): BelongsTo
+    protected static function booted(): void
     {
-        return $this->belongsTo(Project::class);
+        static::saving(function (Secret $secret): void {
+            if ($secret->derived_from_id !== null && (string) $secret->derived_from_id === (string) $secret->getKey()) {
+                $secret->derived_from_id = null;
+            }
+        });
+    }
+
+    /**
+     * @return BelongsTo<Folder, $this>
+     */
+    public function folder(): BelongsTo
+    {
+        return $this->belongsTo(Folder::class);
+    }
+
+    /**
+     * @return BelongsTo<Secret, $this>
+     */
+    public function derivedFrom(): BelongsTo
+    {
+        return $this->belongsTo(Secret::class, 'derived_from_id');
+    }
+
+    /**
+     * @return HasMany<Secret, $this>
+     */
+    public function derivedSecrets(): HasMany
+    {
+        return $this->hasMany(Secret::class, 'derived_from_id');
     }
 
     /**
@@ -55,7 +80,7 @@ class ProjectItem extends Model
      */
     public function tags(): BelongsToMany
     {
-        return $this->belongsToMany(Tag::class, 'project_item_tag');
+        return $this->belongsToMany(Tag::class, 'secret_tag');
     }
 
     /**

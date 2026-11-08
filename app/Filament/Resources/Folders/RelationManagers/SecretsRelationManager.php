@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Filament\Resources\Tags\RelationManagers;
+namespace App\Filament\Resources\Folders\RelationManagers;
 
-use App\Filament\Resources\ProjectItems\ProjectItemResource;
-use App\Filament\Resources\ProjectItems\Schemas\ProjectItemForm;
+use App\Filament\Resources\Secrets\Schemas\SecretForm;
+use App\Filament\Resources\SecretCopy;
 use Filament\Actions\CreateAction;
+use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
@@ -12,9 +13,11 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 
-class ProjectItemsRelationManager extends RelationManager
+class SecretsRelationManager extends RelationManager
 {
-    protected static string $relationship = 'projectItems';
+    protected static string $relationship = 'secrets';
+
+    protected static bool $isLazy = false;
 
     public function isReadOnly(): bool
     {
@@ -28,7 +31,7 @@ class ProjectItemsRelationManager extends RelationManager
 
     public function form(Schema $schema): Schema
     {
-        return ProjectItemForm::configure($schema);
+        return SecretForm::configure($schema);
     }
 
     public function table(Table $table): Table
@@ -38,20 +41,16 @@ class ProjectItemsRelationManager extends RelationManager
             ->columns([
                 TextColumn::make('name')
                     ->searchable(),
-                TextColumn::make('project.name')
-                    ->label('Project')
-                    ->searchable(),
                 TextColumn::make('service.name')
                     ->searchable(),
-                TextColumn::make('environment')
-                    ->badge(),
             ])
             ->headerActions([
                 CreateAction::make(),
             ])
             ->recordActions([
-                ViewAction::make()
-                    ->url(fn ($record): string => ProjectItemResource::getUrl('view', ['record' => $record])),
+                ViewAction::make(),
+                SecretCopy::copyAction(),
+                EditAction::make(),
             ]);
     }
 }

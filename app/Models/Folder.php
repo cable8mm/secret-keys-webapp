@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Project extends Model
+class Folder extends Model
 {
     /**
      * @var list<string>
@@ -28,10 +28,10 @@ class Project extends Model
     }
 
     /**
-     * @return HasMany<ProjectItem, $this>
+     * @return HasMany<Secret, $this>
      */
-    public function items(): HasMany
+    public function secrets(): HasMany
     {
-        return $this->hasMany(ProjectItem::class);
+        return $this->hasMany(Secret::class);
     }
 }

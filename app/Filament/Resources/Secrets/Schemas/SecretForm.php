@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Filament\Resources\ProjectItems\Schemas;
+namespace App\Filament\Resources\Secrets\Schemas;
 
 use App\Filament\Resources\SecretCopy;
-use App\Models\Project;
+use App\Models\Folder;
 use App\Models\Service;
 use App\Models\Tag;
 use Filament\Forms\Components\DatePicker;
@@ -12,8 +12,9 @@ use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
+use Illuminate\Database\Eloquent\Model;
 
-class ProjectItemForm
+class SecretForm
 {
     public static function configure(Schema $schema): Schema
     {
@@ -25,24 +26,25 @@ class ProjectItemForm
                     ->required()
                     ->rows(4)
                     ->columnSpanFull()
+                    ->hintAction(SecretCopy::formCopyAction())
                     ->dehydrateStateUsing(fn (?string $state): ?string => SecretCopy::encryptForStorage($state))
                     ->afterStateHydrated(function (Textarea $component, ?string $state): void {
                         $component->state(SecretCopy::decryptForForm($state));
                     }),
-                Select::make('project_id')
-                    ->relationship('project', 'name')
-                    ->default(fn (): ?string => request()->query('project'))
+                Select::make('folder_id')
+                    ->relationship('folder', 'name')
+                    ->default(fn (): ?string => request()->query('folder'))
                     ->required()
                     ->createOptionForm([
                         TextInput::make('name')
                             ->required()
-                            ->unique(table: Project::class),
+                            ->unique(table: Folder::class),
                     ])
-                    ->createOptionUsing(fn (array $data): int => (int) Project::query()->create([
+                    ->createOptionUsing(fn (array $data): int => (int) Folder::query()->create([
                         'name' => $data['name'],
                     ])->getKey()),
                 Select::make('service_id')
-                    ->relationship('service', 'name', modifyQueryUsing: fn ($query) => $query->where('is_project', true))
+                    ->relationship('service', 'name', modifyQueryUsing: fn ($query) => $query->where('is_secret', true))
                     ->searchable()
                     ->preload()
                     ->createOptionForm([
@@ -52,8 +54,21 @@ class ProjectItemForm
                     ])
                     ->createOptionUsing(fn (array $data): int => (int) Service::query()->create([
                         'name' => $data['name'],
-                        'is_project' => true,
+                        'is_secret' => true,
                     ])->getKey()),
+                Select::make('derived_from_id')
+                    ->label('Source secret')
+                    ->relationship('derivedFrom', 'name', modifyQueryUsing: function ($query, Select $component) {
+                        $record = $component->getRecord();
+
+                        if ($record instanceof Model && $record->exists) {
+                            $query->whereKeyNot($record->getKey());
+                        }
+
+                        return $query;
+                    })
+                    ->searchable()
+                    ->preload(),
                 Select::make('environment')
                     ->default('none')
                     ->options([
@@ -61,6 +76,13 @@ class ProjectItemForm
                         'test' => 'test',
                         'dev' => 'dev',
                         'none' => 'none',
+                    ]),
+                Select::make('kind')
+                    ->options([
+                        'token' => 'token',
+                        'password' => 'password',
+                        'pem' => 'pem',
+                        'other' => 'other',
                     ]),
                 TextInput::make('url')
                     ->label('URL')

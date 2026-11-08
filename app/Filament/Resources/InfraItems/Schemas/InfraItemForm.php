@@ -34,6 +34,7 @@ class InfraItemForm
                     ->required()
                     ->rows(4)
                     ->columnSpanFull()
+                    ->hintAction(SecretCopy::formCopyAction())
                     ->dehydrateStateUsing(fn (?string $state): ?string => SecretCopy::encryptForStorage($state))
                     ->afterStateHydrated(function (Textarea $component, ?string $state): void {
                         $component->state(SecretCopy::decryptForForm($state));

@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Filament\Resources\Projects\Pages;
+namespace App\Filament\Resources\Folders\Pages;
 
-use App\Filament\Resources\Projects\ProjectResource;
+use App\Filament\Resources\Folders\FolderResource;
 use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
 
-class ViewProject extends ViewRecord
+class ViewFolder extends ViewRecord
 {
-    protected static string $resource = ProjectResource::class;
+    protected static string $resource = FolderResource::class;
 
     protected function getHeaderActions(): array
     {

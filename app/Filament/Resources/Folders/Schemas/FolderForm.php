@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Filament\Resources\Projects\Schemas;
+namespace App\Filament\Resources\Folders\Schemas;
 
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
-class ProjectForm
+class FolderForm
 {
     public static function configure(Schema $schema): Schema
     {

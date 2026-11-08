@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Filament\Resources\Projects\RelationManagers;
+namespace App\Filament\Resources\Tags\RelationManagers;
 
-use App\Filament\Resources\ProjectItems\Schemas\ProjectItemForm;
-use App\Filament\Resources\SecretCopy;
+use App\Filament\Resources\Secrets\Schemas\SecretForm;
+use App\Filament\Resources\Secrets\SecretResource;
 use Filament\Actions\CreateAction;
-use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
@@ -13,11 +12,9 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 
-class ItemsRelationManager extends RelationManager
+class SecretsRelationManager extends RelationManager
 {
-    protected static string $relationship = 'items';
-
-    protected static bool $isLazy = false;
+    protected static string $relationship = 'secrets';
 
     public function isReadOnly(): bool
     {
@@ -31,7 +28,7 @@ class ItemsRelationManager extends RelationManager
 
     public function form(Schema $schema): Schema
     {
-        return ProjectItemForm::configure($schema);
+        return SecretForm::configure($schema);
     }
 
     public function table(Table $table): Table
@@ -41,16 +38,20 @@ class ItemsRelationManager extends RelationManager
             ->columns([
                 TextColumn::make('name')
                     ->searchable(),
+                TextColumn::make('folder.name')
+                    ->label('Folder')
+                    ->searchable(),
                 TextColumn::make('service.name')
                     ->searchable(),
+                TextColumn::make('environment')
+                    ->badge(),
             ])
             ->headerActions([
                 CreateAction::make(),
             ])
             ->recordActions([
-                ViewAction::make(),
-                SecretCopy::copyAction(),
-                EditAction::make(),
+                ViewAction::make()
+                    ->url(fn ($record): string => SecretResource::getUrl('view', ['record' => $record])),
             ]);
     }
 }

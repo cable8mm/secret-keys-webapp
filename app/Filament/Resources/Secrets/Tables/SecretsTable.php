@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\ProjectItems\Tables;
+namespace App\Filament\Resources\Secrets\Tables;
 
 use App\Filament\Resources\SecretCopy;
 use Filament\Actions\EditAction;
@@ -9,13 +9,13 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
-class ProjectItemsTable
+class SecretsTable
 {
     public static function configure(Table $table): Table
     {
         return $table
             ->columns([
-                TextColumn::make('project.name')
+                TextColumn::make('folder.name')
                     ->searchable(),
                 TextColumn::make('name')
                     ->searchable(),
@@ -28,8 +28,8 @@ class ProjectItemsTable
                     ->sortable(),
             ])
             ->filters([
-                SelectFilter::make('project')
-                    ->relationship('project', 'name'),
+                SelectFilter::make('folder')
+                    ->relationship('folder', 'name'),
                 SelectFilter::make('environment')
                     ->options([
                         'live' => 'live',

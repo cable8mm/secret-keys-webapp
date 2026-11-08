@@ -3,10 +3,10 @@
 ## Purpose
 
 - A single-user vault for secret credentials used by the user's software services.
-- Items are grouped by container: user Projects, plus separate AI and Infra item tables.
-- Project Items use the full field set below. AI and Infra Items use name, value, and service only.
-- Other containers are user-created Projects (e.g. one per repository).
-- Archived Projects are hidden from the default list, shown in an archive area, and can be restored. Their Items still appear in search.
+- Items are grouped by container: user Folders, plus separate AI and Infra item tables.
+- Secrets use the full field set below. AI and Infra Items use name, value, and service only.
+- Other containers are user-created Folders (e.g. one per repository, or one for an organization).
+- Archived Folders are hidden from the default list, shown in an archive area, and can be restored. Their Secrets still appear in search.
 
 ## Item fields
 
@@ -24,11 +24,11 @@
 - Copying never changes the stored Value.
 - kind (optional): token, password, pem, or other. Decides the copy rule.
 
-## Project rules
+## Folder rules
 
-- Projects can be created, renamed, deleted, archived, and restored.
-- A Project with Items cannot be deleted.
-- Archiving and restoring change no names and no Items.
+- Folders can be created, renamed, deleted, archived, and restored.
+- A Folder with Secrets cannot be deleted.
+- Archiving and restoring change no names and no Secrets.
 
 ## Non-goals
 

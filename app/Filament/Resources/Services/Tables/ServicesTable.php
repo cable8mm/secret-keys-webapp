@@ -20,9 +20,9 @@ class ServicesTable
                 TextColumn::make('icon')
                     ->limit(40)
                     ->toggleable(isToggledHiddenByDefault: true),
-                IconColumn::make('is_project')
+                IconColumn::make('is_secret')
                     ->boolean()
-                    ->label('Projects'),
+                    ->label('Secrets'),
                 IconColumn::make('is_ai')
                     ->boolean()
                     ->label('AI'),

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Resources\Projects\Tables;
+namespace App\Filament\Resources\Folders\Tables;
 
-use App\Filament\Resources\ProjectItems\ProjectItemResource;
+use App\Filament\Resources\Secrets\SecretResource;
 use Filament\Actions\Action;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
@@ -12,7 +12,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 
-class ProjectsTable
+class FoldersTable
 {
     public static function configure(Table $table): Table
     {
@@ -35,11 +35,11 @@ class ProjectsTable
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),
-                Action::make('addItem')
+                Action::make('addSecret')
                     ->iconButton()
                     ->icon('heroicon-o-plus')
-                    ->tooltip('New item in this project')
-                    ->url(fn ($record): string => ProjectItemResource::getUrl('create', ['project' => $record->getKey()])),
+                    ->tooltip('New secret in this folder')
+                    ->url(fn ($record): string => SecretResource::getUrl('create', ['folder' => $record->getKey()])),
                 Action::make('archive')
                     ->iconButton()
                     ->icon('heroicon-o-archive-box')
@@ -49,7 +49,7 @@ class ProjectsTable
                         $record->update(['archived' => true]);
 
                         Notification::make()
-                            ->title('Project archived.')
+                            ->title('Folder archived.')
                             ->success()
                             ->send();
                     }),
@@ -62,7 +62,7 @@ class ProjectsTable
                         $record->update(['archived' => false]);
 
                         Notification::make()
-                            ->title('Project restored.')
+                            ->title('Folder restored.')
                             ->success()
                             ->send();
                     }),
@@ -72,9 +72,9 @@ class ProjectsTable
                     ->color('danger')
                     ->requiresConfirmation()
                     ->action(function ($record): void {
-                        if ($record->items()->exists()) {
+                        if ($record->secrets()->exists()) {
                             Notification::make()
-                                ->title('The Project has Items.')
+                                ->title('The Folder has Secrets.')
                                 ->danger()
                                 ->send();
 
@@ -84,7 +84,7 @@ class ProjectsTable
                         $record->delete();
 
                         Notification::make()
-                            ->title('Project deleted.')
+                            ->title('Folder deleted.')
                             ->success()
                             ->send();
                     }),
