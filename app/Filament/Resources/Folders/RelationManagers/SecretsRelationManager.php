@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Filament\Resources\Projects\RelationManagers;
+namespace App\Filament\Resources\Folders\RelationManagers;
 
-use App\Filament\Resources\ProjectItems\Schemas\ProjectItemForm;
 use App\Filament\Resources\SecretCopy;
+use App\Filament\Resources\Secrets\Schemas\SecretForm;
 use Filament\Actions\CreateAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
@@ -13,9 +13,9 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 
-class ItemsRelationManager extends RelationManager
+class SecretsRelationManager extends RelationManager
 {
-    protected static string $relationship = 'items';
+    protected static string $relationship = 'secrets';
 
     protected static bool $isLazy = false;
 
@@ -31,7 +31,7 @@ class ItemsRelationManager extends RelationManager
 
     public function form(Schema $schema): Schema
     {
-        return ProjectItemForm::configure($schema);
+        return SecretForm::configure($schema);
     }
 
     public function table(Table $table): Table

@@ -18,8 +18,8 @@ class ServiceForm
                 TextInput::make('icon')
                     ->label('Icon URL')
                     ->columnSpanFull(),
-                Toggle::make('is_project')
-                    ->label('Show in Projects'),
+                Toggle::make('is_secret')
+                    ->label('Show in Secrets'),
                 Toggle::make('is_ai')
                     ->label('Show in AI'),
                 Toggle::make('is_infra')

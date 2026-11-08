@@ -4,7 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Models\AiItem;
 use App\Models\InfraItem;
-use App\Models\ProjectItem;
+use App\Models\Secret;
 use App\Values\ValueProtector;
 use Filament\Actions\Action;
 use Throwable;
@@ -16,7 +16,7 @@ final class SecretCopy
         return Action::make('copy')
             ->iconButton()
             ->icon('heroicon-o-clipboard-document')
-            ->action(function (ProjectItem|AiItem|InfraItem $record, $livewire): void {
+            ->action(function (Secret|AiItem|InfraItem $record, $livewire): void {
                 try {
                     $text = $record->secretValue();
                 } catch (Throwable) {

@@ -12,11 +12,11 @@ class Tag extends Model
     ];
 
     /**
-     * @return BelongsToMany<ProjectItem, $this>
+     * @return BelongsToMany<Secret, $this>
      */
-    public function projectItems(): BelongsToMany
+    public function secrets(): BelongsToMany
     {
-        return $this->belongsToMany(ProjectItem::class, 'project_item_tag');
+        return $this->belongsToMany(Secret::class, 'secret_tag');
     }
 
     /**

@@ -6,7 +6,7 @@ use App\Filament\Resources\Tags\Pages\CreateTag;
 use App\Filament\Resources\Tags\Pages\EditTag;
 use App\Filament\Resources\Tags\Pages\ListTags;
 use App\Filament\Resources\Tags\Pages\ViewTag;
-use App\Filament\Resources\Tags\RelationManagers\ProjectItemsRelationManager;
+use App\Filament\Resources\Tags\RelationManagers\SecretsRelationManager;
 use App\Filament\Resources\Tags\Schemas\TagForm;
 use App\Filament\Resources\Tags\Schemas\TagInfolist;
 use App\Filament\Resources\Tags\Tables\TagsTable;
@@ -47,7 +47,7 @@ class TagResource extends Resource
     public static function getRelations(): array
     {
         return [
-            ProjectItemsRelationManager::class,
+            SecretsRelationManager::class,
         ];
     }
 

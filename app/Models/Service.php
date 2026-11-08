@@ -10,7 +10,7 @@ class Service extends Model
     protected $fillable = [
         'name',
         'icon',
-        'is_project',
+        'is_secret',
         'is_ai',
         'is_infra',
     ];
@@ -21,18 +21,18 @@ class Service extends Model
     protected function casts(): array
     {
         return [
-            'is_project' => 'boolean',
+            'is_secret' => 'boolean',
             'is_ai' => 'boolean',
             'is_infra' => 'boolean',
         ];
     }
 
     /**
-     * @return HasMany<ProjectItem, $this>
+     * @return HasMany<Secret, $this>
      */
-    public function projectItems(): HasMany
+    public function secrets(): HasMany
     {
-        return $this->hasMany(ProjectItem::class);
+        return $this->hasMany(Secret::class);
     }
 
     /**

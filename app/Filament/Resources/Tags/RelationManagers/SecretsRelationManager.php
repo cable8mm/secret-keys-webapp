@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources\Tags\RelationManagers;
 
-use App\Filament\Resources\ProjectItems\ProjectItemResource;
-use App\Filament\Resources\ProjectItems\Schemas\ProjectItemForm;
+use App\Filament\Resources\Secrets\Schemas\SecretForm;
+use App\Filament\Resources\Secrets\SecretResource;
 use Filament\Actions\CreateAction;
 use Filament\Actions\ViewAction;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -12,9 +12,9 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 
-class ProjectItemsRelationManager extends RelationManager
+class SecretsRelationManager extends RelationManager
 {
-    protected static string $relationship = 'projectItems';
+    protected static string $relationship = 'secrets';
 
     public function isReadOnly(): bool
     {
@@ -28,7 +28,7 @@ class ProjectItemsRelationManager extends RelationManager
 
     public function form(Schema $schema): Schema
     {
-        return ProjectItemForm::configure($schema);
+        return SecretForm::configure($schema);
     }
 
     public function table(Table $table): Table
@@ -38,8 +38,8 @@ class ProjectItemsRelationManager extends RelationManager
             ->columns([
                 TextColumn::make('name')
                     ->searchable(),
-                TextColumn::make('project.name')
-                    ->label('Project')
+                TextColumn::make('folder.name')
+                    ->label('Folder')
                     ->searchable(),
                 TextColumn::make('service.name')
                     ->searchable(),
@@ -51,7 +51,7 @@ class ProjectItemsRelationManager extends RelationManager
             ])
             ->recordActions([
                 ViewAction::make()
-                    ->url(fn ($record): string => ProjectItemResource::getUrl('view', ['record' => $record])),
+                    ->url(fn ($record): string => SecretResource::getUrl('view', ['record' => $record])),
             ]);
     }
 }
