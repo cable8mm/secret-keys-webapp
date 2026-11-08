@@ -23,6 +23,10 @@ final class SecretCopy
             ->label('Copy')
             ->alpineClickHandler(<<<'JS'
                 window.navigator.clipboard.writeText($el.closest('[data-field-wrapper]').querySelector('textarea').value)
+                $tooltip('Copied', {
+                    theme: $store.theme,
+                    timeout: 2000,
+                })
                 JS);
     }
 
