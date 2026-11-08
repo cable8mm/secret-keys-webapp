@@ -20,6 +20,8 @@ class ServiceResource extends Resource
 
     protected static ?string $navigationLabel = 'Services';
 
+    protected static string|\UnitEnum|null $navigationGroup = 'Data';
+
     protected static ?int $navigationSort = 5;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;

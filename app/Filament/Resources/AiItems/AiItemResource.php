@@ -20,6 +20,8 @@ class AiItemResource extends Resource
 {
     protected static ?string $navigationLabel = 'AI Items';
 
+    protected static string|\UnitEnum|null $navigationGroup = 'Projects';
+
     protected static ?int $navigationSort = 3;
 
     protected static ?string $model = AiItem::class;

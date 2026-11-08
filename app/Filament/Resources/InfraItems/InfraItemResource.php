@@ -20,6 +20,8 @@ class InfraItemResource extends Resource
 {
     protected static ?string $navigationLabel = 'Infra Items';
 
+    protected static string|\UnitEnum|null $navigationGroup = 'Projects';
+
     protected static ?int $navigationSort = 4;
 
     protected static ?string $model = InfraItem::class;
