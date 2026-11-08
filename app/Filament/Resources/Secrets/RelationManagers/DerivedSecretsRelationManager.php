@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Secrets\RelationManagers;
 use App\Filament\Resources\SecretCopy;
 use App\Filament\Resources\Secrets\Schemas\SecretForm;
 use App\Filament\Resources\Secrets\SecretResource;
+use App\Models\Secret;
 use Filament\Actions\CreateAction;
 use Filament\Actions\ViewAction;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -66,6 +67,7 @@ class DerivedSecretsRelationManager extends RelationManager
     protected function getDerivedDefaults(): array
     {
         $parent = $this->getOwnerRecord();
+        assert($parent instanceof Secret);
 
         return [
             'derived_from_id' => $parent->getKey(),
