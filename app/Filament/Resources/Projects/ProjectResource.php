@@ -21,6 +21,8 @@ class ProjectResource extends Resource
 {
     protected static ?string $navigationLabel = 'Projects';
 
+    protected static string|\UnitEnum|null $navigationGroup = 'Projects';
+
     protected static ?int $navigationSort = 1;
 
     protected static ?string $model = Project::class;
