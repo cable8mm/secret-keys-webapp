@@ -17,6 +17,9 @@ class InfraSecretInfolist
                     ->label('Infra'),
                 TextEntry::make('region.name')
                     ->label('Region'),
+                TextEntry::make('folder.name')
+                    ->label('Project')
+                    ->placeholder('Global'),
                 TextEntry::make('value')
                     ->getStateUsing(fn ($record): ?string => SecretCopy::decryptForForm($record->value))
                     ->copyable()

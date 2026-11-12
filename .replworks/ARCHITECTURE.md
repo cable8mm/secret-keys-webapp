@@ -6,6 +6,7 @@ Data relationships only. The app is built with Filament Resources on top of thes
 
 ```
 folders 1 ──< secrets (folder_id, restrict on delete)
+folders 1 ──< infra_secrets (folder_id, optional project scope, restrict on delete)
 infras 1 ──< infra_secrets (infra_id, restrict on delete)
 infras 1 ──< infra_regions
 infra_regions 1 ──< infra_secrets (region_id, null on delete)
@@ -77,13 +78,14 @@ Minimal shape: name and value required, service optional.
 
 ## infra_secrets
 
-Minimal shape: name and value required, infra required, region optional.
+Minimal shape: name and value required, infra required, region and project optional.
 
 | Column     | Type   | Notes                              |
 | ---------- | ------ | ---------------------------------- |
 | id         | id     |                                    |
 | infra_id   | FK     | references infras, restrict on delete |
 | region_id  | FK     | nullable, references infra_regions, null on delete |
+| folder_id  | FK     | nullable, references folders, restrict on delete; null = global |
 | name       | string | required                           |
 | value      | text   | required, the secret               |
 | url        | text   | nullable                           |
@@ -108,5 +110,7 @@ Minimal shape: name and value required, infra required, region optional.
 - Archived Folders are hidden from the default list; their Secrets remain searchable.
 - Every Infra Secret belongs to exactly one Infra.
 - An Infra Secret may optionally point to one Region of its Infra.
+- An Infra Secret without a Folder is global; with a Folder, it is scoped to that project.
 - An Infra with Infra Secrets cannot be deleted.
+- A Folder with Secrets or Infra Secrets cannot be deleted.
 - Copy Text is derived at read time, never stored.
