@@ -44,14 +44,14 @@ AI and Infra items live in their own tables (`ai_items`, `infra_items`) with nam
 ## ai_items / infra_items
 
 Minimal shape: name and value required, service optional, nothing else.
-`ai_items` additionally has nullable `url`.
+Both tables have a nullable `url`, the page where the key was issued.
 
 | Column     | Type   | Notes                              |
 | ---------- | ------ | ---------------------------------- |
 | id         | id     |                                    |
 | name       | string | required                           |
 | value      | text   | required, the secret               |
-| url        | text   | nullable, ai_items only            |
+| url        | text   | nullable                           |
 | service_id | FK     | nullable, references services, null on delete |
 | timestamps |        |                                      |
 
