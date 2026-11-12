@@ -23,6 +23,7 @@ class SecretInfolist
                 TextEntry::make('value')
                     ->getStateUsing(fn ($record): ?string => SecretCopy::decryptForForm($record->value))
                     ->copyable()
+                    ->extraAttributes(['style' => 'white-space: pre-wrap'])
                     ->columnSpanFull(),
                 TextEntry::make('url'),
                 TextEntry::make('expires_at')
