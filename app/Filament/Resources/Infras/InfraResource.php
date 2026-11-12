@@ -7,6 +7,7 @@ use App\Filament\Resources\Infras\Pages\EditInfra;
 use App\Filament\Resources\Infras\Pages\ListInfras;
 use App\Filament\Resources\Infras\Pages\ViewInfra;
 use App\Filament\Resources\Infras\RelationManagers\InfraSecretsRelationManager;
+use App\Filament\Resources\Infras\RelationManagers\RegionsRelationManager;
 use App\Filament\Resources\Infras\Schemas\InfraForm;
 use App\Filament\Resources\Infras\Schemas\InfraInfolist;
 use App\Filament\Resources\Infras\Tables\InfrasTable;
@@ -47,6 +48,7 @@ class InfraResource extends Resource
     public static function getRelations(): array
     {
         return [
+            RegionsRelationManager::class,
             InfraSecretsRelationManager::class,
         ];
     }

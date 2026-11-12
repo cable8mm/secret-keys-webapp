@@ -17,6 +17,9 @@ class InfraSecretsTable
             ->columns([
                 TextColumn::make('infra.name')
                     ->searchable(),
+                TextColumn::make('region.name')
+                    ->label('Region')
+                    ->searchable(),
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('url')
@@ -26,6 +29,8 @@ class InfraSecretsTable
             ->filters([
                 SelectFilter::make('infra')
                     ->relationship('infra', 'name'),
+                SelectFilter::make('region')
+                    ->relationship('region', 'name'),
             ])
             ->recordActions([
                 SecretCopy::copyAction(),

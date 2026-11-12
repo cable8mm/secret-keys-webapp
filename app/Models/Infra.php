@@ -35,4 +35,12 @@ class Infra extends Model
     {
         return $this->hasMany(InfraSecret::class, 'infra_id');
     }
+
+    /**
+     * @return HasMany<InfraRegion, $this>
+     */
+    public function regions(): HasMany
+    {
+        return $this->hasMany(InfraRegion::class, 'infra_id');
+    }
 }
