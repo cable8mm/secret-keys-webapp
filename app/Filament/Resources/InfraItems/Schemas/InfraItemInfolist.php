@@ -18,6 +18,8 @@ class InfraItemInfolist
                     ->getStateUsing(fn ($record): ?string => SecretCopy::decryptForForm($record->value))
                     ->copyable()
                     ->columnSpanFull(),
+                TextEntry::make('url')
+                    ->url(fn ($record): ?string => $record->url, shouldOpenInNewTab: true),
             ]);
     }
 }

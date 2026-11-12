@@ -18,6 +18,7 @@ class InfraItem extends Model
     protected $fillable = [
         'name',
         'value',
+        'url',
         'service_id',
     ];
 
