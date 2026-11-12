@@ -3,14 +3,19 @@
 namespace App\Filament\Resources\Folders\Tables;
 
 use App\Filament\Resources\Secrets\SecretResource;
+use App\Models\Folder;
+use App\Services\GitHubRepositoryService;
 use Filament\Actions\Action;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
+use Filament\Forms\Components\CheckboxList;
+use Filament\Forms\Components\Placeholder;
 use Filament\Notifications\Notification;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
+use Throwable;
 
 class FoldersTable
 {
@@ -31,6 +36,117 @@ class FoldersTable
             ])
             ->filters([
                 TernaryFilter::make('archived'),
+            ])
+            ->headerActions([
+                Action::make('importFromGitHub')
+                    ->label('Import from GitHub')
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->modalHeading('Import repositories from GitHub')
+                    ->modalDescription('Selected repositories become folders named owner/repo.')
+                    ->schema(function (): array {
+                        $service = app(GitHubRepositoryService::class);
+
+                        if (! $service->isConfigured()) {
+                            return [
+                                Placeholder::make('notConfigured')
+                                    ->content('Set GITHUB_TOKEN in .env to import repositories.'),
+                            ];
+                        }
+
+                        try {
+                            $repositories = $service->repositories();
+                        } catch (Throwable $exception) {
+                            return [
+                                Placeholder::make('failed')
+                                    ->content('GitHub request failed: '.$exception->getMessage()),
+                            ];
+                        }
+
+                        if ($repositories === []) {
+                            return [
+                                Placeholder::make('empty')
+                                    ->content('No repositories found.'),
+                            ];
+                        }
+
+                        return [
+                            CheckboxList::make('repositories')
+                                ->label('Repositories')
+                                ->options(collect($repositories)
+                                    ->mapWithKeys(fn (array $repository): array => [
+                                        $repository['full_name'] => $repository['full_name'],
+                                    ])
+                                    ->all())
+                                ->searchable()
+                                ->bulkToggleable()
+                                ->required()
+                                ->columnSpanFull(),
+                        ];
+                    })
+                    ->action(function (array $data): void {
+                        $selected = array_values(array_unique($data['repositories'] ?? []));
+
+                        if ($selected === []) {
+                            return;
+                        }
+
+                        try {
+                            $repositories = app(GitHubRepositoryService::class)->repositories();
+                        } catch (Throwable $exception) {
+                            Notification::make()
+                                ->title('GitHub request failed.')
+                                ->body($exception->getMessage())
+                                ->danger()
+                                ->send();
+
+                            return;
+                        }
+
+                        $existingUrls = Folder::query()
+                            ->whereIn('url', collect($selected)
+                                ->map(fn (string $name): ?string => $repositories[$name]['html_url'] ?? null)
+                                ->filter()
+                                ->all())
+                            ->pluck('url')
+                            ->all();
+
+                        $created = 0;
+                        $skipped = 0;
+
+                        foreach ($selected as $name) {
+                            $repository = $repositories[$name] ?? null;
+
+                            if (
+                                ($repository === null) ||
+                                (
+                                    filled($repository['html_url']) &&
+                                    in_array($repository['html_url'], $existingUrls, true)
+                                )
+                            ) {
+                                $skipped++;
+
+                                continue;
+                            }
+
+                            Folder::query()->create([
+                                'name' => $repository['full_name'],
+                                'url' => $repository['html_url'],
+                                'note' => $repository['description'],
+                            ]);
+
+                            if (filled($repository['html_url'])) {
+                                $existingUrls[] = $repository['html_url'];
+                            }
+
+                            $created++;
+                        }
+
+                        Notification::make()
+                            ->title("Imported {$created} folder(s).")
+                            ->body($skipped > 0 ? "Skipped {$skipped} existing folder(s)." : null)
+                            ->success()
+                            ->send();
+                    }),
             ])
             ->recordActions([
                 ViewAction::make(),
