@@ -13,10 +13,12 @@ class InfraSecretInfolist
         return $schema
             ->components([
                 TextEntry::make('name'),
-                TextEntry::make('infra.name'),
+                TextEntry::make('infra.name')
+                    ->label('Infra'),
                 TextEntry::make('value')
                     ->getStateUsing(fn ($record): ?string => SecretCopy::decryptForForm($record->value))
                     ->copyable()
+                    ->extraAttributes(['style' => 'white-space: pre-wrap'])
                     ->columnSpanFull(),
                 TextEntry::make('url')
                     ->url(fn ($record): ?string => $record->url, shouldOpenInNewTab: true),
