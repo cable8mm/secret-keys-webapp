@@ -17,6 +17,7 @@ class InfraSecret extends Model
      */
     protected $fillable = [
         'infra_id',
+        'region_id',
         'name',
         'value',
         'url',
@@ -28,5 +29,13 @@ class InfraSecret extends Model
     public function infra(): BelongsTo
     {
         return $this->belongsTo(Infra::class, 'infra_id');
+    }
+
+    /**
+     * @return BelongsTo<InfraRegion, $this>
+     */
+    public function region(): BelongsTo
+    {
+        return $this->belongsTo(InfraRegion::class, 'region_id');
     }
 }

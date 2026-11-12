@@ -41,6 +41,9 @@ class InfraSecretsRelationManager extends RelationManager
             ->columns([
                 TextColumn::make('name')
                     ->searchable(),
+                TextColumn::make('region.name')
+                    ->label('Region')
+                    ->searchable(),
                 TextColumn::make('url')
                     ->limit(50)
                     ->toggleable(isToggledHiddenByDefault: true),

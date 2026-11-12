@@ -4,7 +4,7 @@
 
 - A single-user vault for secret credentials used by the user's software services.
 - Items are grouped by container: user Folders, Infra, and AI Items.
-- Secrets use the full field set below. Infra Secrets use name, value, and url inside an Infra. AI Items use name, value, url, and service.
+- Secrets use the full field set below. Infra Secrets use name, value, url, and an optional region inside an Infra. AI Items use name, value, url, and service.
 - Other containers are user-created Folders (e.g. one per repository, or one for an organization).
 - Archived Folders are hidden from the default list, shown in an archive area, and can be restored. Their Secrets still appear in search.
 
@@ -29,7 +29,7 @@
 - Folders can be created, renamed, deleted, archived, and restored.
 - A Folder with Secrets cannot be deleted.
 - Archiving and restoring change no names and no Secrets.
-- Infra groups Infra Secrets and supports note and archive.
+- Infra groups Infra Secrets and their optional Regions, and supports note and archive.
 - An Infra with Infra Secrets cannot be deleted.
 
 ## Non-goals
