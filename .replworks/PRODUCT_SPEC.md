@@ -27,6 +27,7 @@
 ## Folder rules
 
 - Folders can be created, renamed, deleted, archived, and restored.
+- Folders can be imported from GitHub repositories (Name = owner/repo, URL, Note = repo description), individually on the create form or in bulk from the Folders list.
 - A Folder with Secrets or Infra Secrets cannot be deleted.
 - Archiving and restoring change no names and no Secrets.
 - Infra Secrets may be global or scoped to one project Folder.
