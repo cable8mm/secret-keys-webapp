@@ -34,4 +34,12 @@ class Folder extends Model
     {
         return $this->hasMany(Secret::class);
     }
+
+    /**
+     * @return HasMany<InfraSecret, $this>
+     */
+    public function infraSecrets(): HasMany
+    {
+        return $this->hasMany(InfraSecret::class, 'folder_id');
+    }
 }

@@ -20,6 +20,10 @@ class InfraSecretsTable
                 TextColumn::make('region.name')
                     ->label('Region')
                     ->searchable(),
+                TextColumn::make('folder.name')
+                    ->label('Project')
+                    ->placeholder('Global')
+                    ->searchable(),
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('url')
@@ -31,6 +35,9 @@ class InfraSecretsTable
                     ->relationship('infra', 'name'),
                 SelectFilter::make('region')
                     ->relationship('region', 'name'),
+                SelectFilter::make('folder')
+                    ->label('Project')
+                    ->relationship('folder', 'name'),
             ])
             ->recordActions([
                 SecretCopy::copyAction(),

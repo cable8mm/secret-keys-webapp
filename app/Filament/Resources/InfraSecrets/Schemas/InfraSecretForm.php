@@ -65,6 +65,13 @@ class InfraSecretForm
                         ])->getKey();
                     })
                     ->createOptionAction(fn (Action $action, Get $get): Action => $action->hidden(blank($get('infra_id')))),
+                Select::make('folder_id')
+                    ->label('Project')
+                    ->relationship('folder', 'name')
+                    ->searchable()
+                    ->preload()
+                    ->placeholder('Global')
+                    ->helperText('Leave empty to use in all projects.'),
                 TextInput::make('url')
                     ->label('URL')
                     ->columnSpanFull(),

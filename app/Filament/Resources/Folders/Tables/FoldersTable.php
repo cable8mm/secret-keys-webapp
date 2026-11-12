@@ -72,9 +72,9 @@ class FoldersTable
                     ->color('danger')
                     ->requiresConfirmation()
                     ->action(function ($record): void {
-                        if ($record->secrets()->exists()) {
+                        if ($record->secrets()->exists() || $record->infraSecrets()->exists()) {
                             Notification::make()
-                                ->title('The Folder has Secrets.')
+                                ->title('The Folder has Secrets or Infra secrets.')
                                 ->danger()
                                 ->send();
 
