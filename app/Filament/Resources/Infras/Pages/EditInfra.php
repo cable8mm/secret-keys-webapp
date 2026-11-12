@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Filament\Resources\InfraItems\Pages;
+namespace App\Filament\Resources\Infras\Pages;
 
-use App\Filament\Resources\InfraItems\InfraItemResource;
+use App\Filament\Resources\Infras\InfraResource;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
 
-class EditInfraItem extends EditRecord
+class EditInfra extends EditRecord
 {
-    protected static string $resource = InfraItemResource::class;
+    protected static string $resource = InfraResource::class;
 
     protected function getHeaderActions(): array
     {

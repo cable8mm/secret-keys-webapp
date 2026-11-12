@@ -12,7 +12,6 @@ class Service extends Model
         'icon',
         'is_secret',
         'is_ai',
-        'is_infra',
     ];
 
     /**
@@ -23,7 +22,6 @@ class Service extends Model
         return [
             'is_secret' => 'boolean',
             'is_ai' => 'boolean',
-            'is_infra' => 'boolean',
         ];
     }
 
@@ -41,13 +39,5 @@ class Service extends Model
     public function aiItems(): HasMany
     {
         return $this->hasMany(AiItem::class);
-    }
-
-    /**
-     * @return HasMany<InfraItem, $this>
-     */
-    public function infraItems(): HasMany
-    {
-        return $this->hasMany(InfraItem::class);
     }
 }

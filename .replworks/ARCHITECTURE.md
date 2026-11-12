@@ -6,8 +6,8 @@ Data relationships only. The app is built with Filament Resources on top of thes
 
 ```
 folders 1 ──< secrets (folder_id, restrict on delete)
+infras 1 ──< infra_secrets (infra_id, restrict on delete)
 ai_items (standalone, always in the AI container)
-infra_items (standalone, always in the Infra container)
 ```
 
 ## folders
@@ -21,7 +21,7 @@ infra_items (standalone, always in the Infra container)
 | archived   | boolean | default false                  |
 | timestamps |         |                                |
 
-AI and Infra items live in their own tables (`ai_items`, `infra_items`) with name, value, and service only.
+AI items live in their own table (`ai_items`). Infra secrets are grouped by `infras`.
 
 ## secrets
 
@@ -41,10 +41,9 @@ AI and Infra items live in their own tables (`ai_items`, `infra_items`) with nam
 | memo         | text    | nullable                                     |
 | timestamps   |         |                                              |
 
-## ai_items / infra_items
+## ai_items
 
-Minimal shape: name and value required, service optional, nothing else.
-Both tables have a nullable `url`, the page where the key was issued.
+Minimal shape: name and value required, service optional.
 
 | Column     | Type   | Notes                              |
 | ---------- | ------ | ---------------------------------- |
@@ -55,6 +54,29 @@ Both tables have a nullable `url`, the page where the key was issued.
 | service_id | FK     | nullable, references services, null on delete |
 | timestamps |        |                                      |
 
+## infras
+
+| Column     | Type    | Notes                          |
+| ---------- | ------- | ------------------------------ |
+| id         | id      |                                |
+| name       | string  | required                       |
+| note       | text    | nullable                       |
+| archived   | boolean | default false                  |
+| timestamps |         |                                |
+
+## infra_secrets
+
+Minimal shape: name and value required, infra required.
+
+| Column     | Type   | Notes                              |
+| ---------- | ------ | ---------------------------------- |
+| id         | id     |                                    |
+| infra_id   | FK     | references infras, restrict on delete |
+| name       | string | required                           |
+| value      | text   | required, the secret               |
+| url        | text   | nullable                           |
+| timestamps |        |                                    |
+
 ## services
 
 | Column     | Type    | Notes                                    |
@@ -64,7 +86,6 @@ Both tables have a nullable `url`, the page where the key was issued.
 | icon       | string  | nullable, icon URL (image later)         |
 | is_secret  | boolean | default true, listed in Secrets          |
 | is_ai      | boolean | default true, listed in AI Items         |
-| is_infra   | boolean | default true, listed in Infra Items      |
 | timestamps |         |                                          |
 
 ## Rules
@@ -73,4 +94,6 @@ Both tables have a nullable `url`, the page where the key was issued.
 - A Secret may point to a Source Secret it was derived from (e.g. repo keys derived from a PAT). Deleting the source clears the link.
 - A Folder with Secrets cannot be deleted.
 - Archived Folders are hidden from the default list; their Secrets remain searchable.
+- Every Infra Secret belongs to exactly one Infra.
+- An Infra with Infra Secrets cannot be deleted.
 - Copy Text is derived at read time, never stored.

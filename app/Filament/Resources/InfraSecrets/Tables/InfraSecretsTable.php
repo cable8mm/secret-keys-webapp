@@ -1,26 +1,31 @@
 <?php
 
-namespace App\Filament\Resources\InfraItems\Tables;
+namespace App\Filament\Resources\InfraSecrets\Tables;
 
 use App\Filament\Resources\SecretCopy;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
-class InfraItemsTable
+class InfraSecretsTable
 {
     public static function configure(Table $table): Table
     {
         return $table
             ->columns([
+                TextColumn::make('infra.name')
+                    ->searchable(),
                 TextColumn::make('name')
                     ->searchable(),
-                TextColumn::make('service.name')
-                    ->searchable(),
+                TextColumn::make('url')
+                    ->limit(50)
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                SelectFilter::make('infra')
+                    ->relationship('infra', 'name'),
             ])
             ->recordActions([
                 SecretCopy::copyAction(),
