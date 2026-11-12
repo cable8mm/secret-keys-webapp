@@ -22,8 +22,6 @@ class ServiceForm
                     ->label('Show in Secrets'),
                 Toggle::make('is_ai')
                     ->label('Show in AI'),
-                Toggle::make('is_infra')
-                    ->label('Show in Infra'),
             ]);
     }
 }

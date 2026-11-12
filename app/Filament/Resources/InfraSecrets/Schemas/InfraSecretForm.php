@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Filament\Resources\InfraItems\Schemas;
+namespace App\Filament\Resources\InfraSecrets\Schemas;
 
 use App\Filament\Resources\SecretCopy;
-use App\Models\Service;
+use App\Models\Infra;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
-class InfraItemForm
+class InfraSecretForm
 {
     public static function configure(Schema $schema): Schema
     {
@@ -17,19 +17,6 @@ class InfraItemForm
             ->components([
                 TextInput::make('name')
                     ->required(),
-                Select::make('service_id')
-                    ->relationship('service', 'name', modifyQueryUsing: fn ($query) => $query->where('is_infra', true))
-                    ->searchable()
-                    ->preload()
-                    ->createOptionForm([
-                        TextInput::make('name')
-                            ->required()
-                            ->unique(table: Service::class),
-                    ])
-                    ->createOptionUsing(fn (array $data): int => (int) Service::query()->create([
-                        'name' => $data['name'],
-                        'is_infra' => true,
-                    ])->getKey()),
                 Textarea::make('value')
                     ->required()
                     ->rows(4)
@@ -38,6 +25,18 @@ class InfraItemForm
                     ->afterStateHydrated(function (Textarea $component, ?string $state): void {
                         $component->state(SecretCopy::decryptForForm($state));
                     }),
+                Select::make('infra_id')
+                    ->relationship('infra', 'name')
+                    ->default(fn (): ?string => request()->query('infra'))
+                    ->required()
+                    ->createOptionForm([
+                        TextInput::make('name')
+                            ->required()
+                            ->unique(table: Infra::class),
+                    ])
+                    ->createOptionUsing(fn (array $data): int => (int) Infra::query()->create([
+                        'name' => $data['name'],
+                    ])->getKey()),
                 TextInput::make('url')
                     ->label('URL')
                     ->columnSpanFull(),

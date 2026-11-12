@@ -6,27 +6,27 @@ use App\Models\Concerns\HasSecretValue;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class InfraItem extends Model
+class InfraSecret extends Model
 {
     use HasSecretValue;
 
-    protected $table = 'infra_items';
+    protected $table = 'infra_secrets';
 
     /**
      * @var list<string>
      */
     protected $fillable = [
+        'infra_id',
         'name',
         'value',
         'url',
-        'service_id',
     ];
 
     /**
-     * @return BelongsTo<Service, $this>
+     * @return BelongsTo<Infra, $this>
      */
-    public function service(): BelongsTo
+    public function infra(): BelongsTo
     {
-        return $this->belongsTo(Service::class);
+        return $this->belongsTo(Infra::class, 'infra_id');
     }
 }

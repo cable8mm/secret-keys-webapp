@@ -26,9 +26,6 @@ class ServicesTable
                 IconColumn::make('is_ai')
                     ->boolean()
                     ->label('AI'),
-                IconColumn::make('is_infra')
-                    ->boolean()
-                    ->label('Infra'),
             ])
             ->filters([
                 //
