@@ -11,6 +11,7 @@ use Illuminate\Support\Carbon;
 
 /**
  * @property Carbon|null $expires_at
+ * @property int|null $service_id
  */
 class Secret extends Model
 {

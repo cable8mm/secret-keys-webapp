@@ -26,6 +26,8 @@ class InfraSecretResource extends Resource
 
     protected static ?string $model = InfraSecret::class;
 
+    protected static ?string $recordTitleAttribute = 'name';
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedKey;
 
     public static function form(Schema $schema): Schema
