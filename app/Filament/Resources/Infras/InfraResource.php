@@ -28,6 +28,8 @@ class InfraResource extends Resource
 
     protected static ?string $model = Infra::class;
 
+    protected static ?string $recordTitleAttribute = 'name';
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedServerStack;
 
     public static function form(Schema $schema): Schema

@@ -34,6 +34,12 @@
 - Infra groups Infra Secrets and their optional Regions, and supports note and archive.
 - An Infra with Infra Secrets cannot be deleted.
 
+## Global search
+
+- Global search finds records by name across all containers: Secrets, Folders, Infras, Infra Secrets, AI Items, Services, and Tags.
+- Secret values are never searchable.
+- Global search results open the matching record.
+
 ## Non-goals
 
 - Expiry badges and notifications.
