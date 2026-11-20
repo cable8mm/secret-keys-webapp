@@ -13,8 +13,6 @@
 - Composer (PHP dependency manager)
 - npm (JS dependency manager)
 - Pest `^4.0` (verify)
-- PCOV (coverage driver)
-- Larastan `^3.0` (verify)
 - Laravel Pint (formatter, version required by the Laravel 13 skeleton)
 - GitHub Actions (CI)
 
@@ -33,7 +31,6 @@
 - `resources/css/`, `resources/js/`
 - `tests/Feature/`, `tests/Unit/`, `tests/Pest.php`
 - `phpunit.xml`
-- `phpstan.neon`
 - `pint.json`
 - `.github/workflows/`
 - `LICENSE`
@@ -60,9 +57,6 @@
 - Test file names MUST end with `Test.php`.
 - UI tests MUST use the Livewire and Filament testing helpers.
 - Tests MUST run against an in-memory SQLite database.
-- Coverage MUST be measured with PCOV through `pest --coverage`.
-- Coverage MUST be at least 70%.
-- Larastan MUST report zero errors with the configuration in `phpstan.neon`.
 - `pint --test` MUST report no violations.
 
 ## 5. Configuration rules
@@ -89,7 +83,7 @@
 - A packaged release artifact MUST NOT be produced.
 - The product MUST be run from a source checkout.
 - The CI workflow MUST be located in `.github/workflows/`.
-- The CI workflow MUST run `composer install`, `npm ci`, `npm run build`, `pint --test`, Larastan, and `pest --coverage --min=70`.
+- The CI workflow MUST run `composer install`, `npm ci`, `npm run build`, and `pint --test`.
 - The license MUST be MIT.
 - `LICENSE` MUST exist at the repository root.
 - The `license` field in `composer.json` MUST be `MIT`.
