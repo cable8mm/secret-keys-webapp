@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\AiItems\Tables;
 
 use App\Filament\Resources\SecretCopy;
+use App\Models\AiItem;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
@@ -23,7 +24,8 @@ class AiItemsTable
                 //
             ])
             ->recordActions([
-                SecretCopy::copyAction(),
+                SecretCopy::copyAction()->hidden(fn (AiItem $record): bool => $record->manifest_key !== null),
+                SecretCopy::copyKeyAction()->visible(fn (AiItem $record): bool => $record->manifest_key !== null),
                 ViewAction::make(),
                 EditAction::make(),
             ])

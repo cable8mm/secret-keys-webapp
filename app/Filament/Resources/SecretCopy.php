@@ -37,12 +37,12 @@ final class SecretCopy
             ->iconButton()
             ->icon('heroicon-o-clipboard-document')
             ->tooltip('Copy a key')
-            ->form(fn (Secret $record): array => [
+            ->form(fn (Secret|AiItem $record): array => [
                 Select::make('key')
                     ->options(CredentialSet::fieldLabels($record))
                     ->required(),
             ])
-            ->action(function (Secret $record, array $data, $livewire): void {
+            ->action(function (Secret|AiItem $record, array $data, $livewire): void {
                 $values = CredentialSet::decode($record->value);
 
                 $livewire->dispatch('copy-prepared', text: $values[$data['key']] ?? '');

@@ -19,6 +19,17 @@ it('resolves services, sets, and versions from the manifest', function (): void 
     expect(ServiceManifest::definition('x/app', 99))->toBeNull();
 });
 
+it('filters sets by container', function (): void {
+    $aiSets = ServiceManifest::setOptions('ai_items');
+
+    expect($aiSets)->toHaveKey('openai/api_key')
+        ->toHaveKey('custom/values')
+        ->not->toHaveKey('x/app');
+
+    expect(ServiceManifest::setOptions('secrets'))->toHaveKey('x/app')
+        ->not->toHaveKey('openai/api_key');
+});
+
 it('rejects a manifest without labels', function (): void {
     ServiceManifest::validate([
         'x' => [

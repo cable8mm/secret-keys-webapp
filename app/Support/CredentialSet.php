@@ -2,6 +2,7 @@
 
 namespace App\Support;
 
+use App\Models\AiItem;
 use App\Models\Secret;
 use App\Values\ValueProtector;
 use Throwable;
@@ -38,7 +39,7 @@ final class CredentialSet
     /**
      * @return array<string, string>
      */
-    public static function fieldLabels(Secret $record): array
+    public static function fieldLabels(Secret|AiItem $record): array
     {
         if ($record->manifest_key === null) {
             return [];
