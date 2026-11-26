@@ -41,7 +41,7 @@ class SecretsRelationManager extends RelationManager
                 TextColumn::make('folder.name')
                     ->label('Folder')
                     ->searchable(),
-                TextColumn::make('service.name')
+                TextColumn::make('manifest_key')
                     ->searchable(),
                 TextColumn::make('environment')
                     ->badge(),

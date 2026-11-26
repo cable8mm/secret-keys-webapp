@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Models\Concerns\HasSecretValue;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class AiItem extends Model
 {
@@ -19,14 +18,7 @@ class AiItem extends Model
         'name',
         'value',
         'url',
-        'service_id',
+        'manifest_key',
+        'manifest_version',
     ];
-
-    /**
-     * @return BelongsTo<Service, $this>
-     */
-    public function service(): BelongsTo
-    {
-        return $this->belongsTo(Service::class);
-    }
 }

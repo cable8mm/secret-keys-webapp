@@ -12,15 +12,33 @@
 
 - name (required): shown in the list.
 - value (required): the secret. Never shown in lists; never stored as readable plain text in earlier product versions (research tool: plain storage is acceptable while iterating on structure).
-- service (optional): chosen from the Services list. Each service opts in per container type.
+- service (optional): chosen from services defined in the manifest. Each service opts in per container type in the manifest.
 - environment (optional): live, test, dev, none, or unset.
 - tags (optional): free text, comma-separated.
 - url, expiry date, memo, note (all optional).
 - Folders have an optional note.
 
+## Service manifests
+
+- Services and the credentials they issue are defined in a version-controlled manifest, not created inside the app.
+- A service defines one or more credential sets. Each set is identified by a service key and a set key, for example `x/app` and `x/api_key`.
+- A credential set defines the keys it issues, in order. Each key has an identifier, a display label, its purpose, and a kind.
+- A set may be available in one or more containers: Secrets or AI Items.
+- Different sets of one service may issue different numbers of keys. Creating an X app issues three keys; obtaining a standalone X API key issues one.
+- A service absent from the manifest is handled by a `custom` set in which the user defines keys and values directly.
+
+## Credential sets
+
+- A user creates a credential set by choosing a service, choosing one of its sets, naming the instance, and entering a value for each defined key.
+- A credential set instance is one record. An X app produces one set with three values; a standalone X API key produces one set with one value.
+- Every instance records which manifest key and version it was created from.
+- Editing and deleting apply to the whole set at once.
+- Copying is per key and puts that key's stored value on the clipboard unchanged.
+- Set names are searchable; values are never searchable.
+
 ## Copy
 
-- Copying puts the stored Value on the clipboard unchanged.
+- Copying puts the stored Value, or a selected key's value inside a credential set, on the clipboard unchanged.
 - Copying never changes the stored Value.
 - kind (optional): token, password, pem, or other. Decides the copy rule.
 
@@ -36,7 +54,7 @@
 
 ## Global search
 
-- Global search finds records by name across all containers: Secrets, Folders, Infras, Infra Secrets, AI Items, Services, and Tags.
+- Global search finds records by name across all containers: Secrets, Folders, Infras, Infra Secrets, AI Items, and Tags.
 - Secret values are never searchable.
 - Global search results open the matching record.
 

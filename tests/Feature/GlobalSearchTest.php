@@ -5,14 +5,12 @@ use App\Filament\Resources\Folders\FolderResource;
 use App\Filament\Resources\Infras\InfraResource;
 use App\Filament\Resources\InfraSecrets\InfraSecretResource;
 use App\Filament\Resources\Secrets\SecretResource;
-use App\Filament\Resources\Services\ServiceResource;
 use App\Filament\Resources\Tags\TagResource;
 use App\Models\AiItem;
 use App\Models\Folder;
 use App\Models\Infra;
 use App\Models\InfraSecret;
 use App\Models\Secret;
-use App\Models\Service;
 use App\Models\Tag;
 use Filament\Facades\Filament;
 use Filament\Livewire\GlobalSearch;
@@ -29,7 +27,6 @@ it('finds records by name across all containers', function (): void {
     Secret::create(['folder_id' => $folder->id, 'name' => 'GlobalSearchSecret', 'value' => 'secret-value']);
     InfraSecret::create(['infra_id' => $infra->id, 'name' => 'GlobalSearchInfraSecret', 'value' => 'secret-value']);
     AiItem::create(['name' => 'GlobalSearchAiItem', 'value' => 'secret-value']);
-    Service::create(['name' => 'GlobalSearchService']);
     Tag::create(['name' => 'GlobalSearchTag']);
 
     foreach ([
@@ -38,7 +35,6 @@ it('finds records by name across all containers', function (): void {
         InfraResource::class,
         InfraSecretResource::class,
         AiItemResource::class,
-        ServiceResource::class,
         TagResource::class,
     ] as $resource) {
         expect($resource::canGloballySearch())->toBeTrue()

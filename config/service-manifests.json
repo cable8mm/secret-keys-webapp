@@ -1,0 +1,42 @@
+{
+    "x": {
+        "label": "X",
+        "containers": ["secrets"],
+        "sets": {
+            "app": {
+                "1": {
+                    "label": "X app",
+                    "version": 1,
+                    "fields": [
+                        { "key": "api_key", "label": "API Key", "purpose": "Identifies the app", "kind": "token" },
+                        { "key": "api_secret", "label": "API Secret", "purpose": "Authenticates the app", "kind": "password" },
+                        { "key": "bearer_token", "label": "Bearer Token", "purpose": "Calls the API on behalf of the app", "kind": "token" }
+                    ]
+                }
+            },
+            "api_key": {
+                "1": {
+                    "label": "X API key",
+                    "version": 1,
+                    "fields": [
+                        { "key": "token", "label": "API Key", "purpose": "Single key for direct API calls", "kind": "token" }
+                    ]
+                }
+            }
+        }
+    },
+    "custom": {
+        "label": "Custom",
+        "containers": ["secrets"],
+        "sets": {
+            "values": {
+                "1": {
+                    "label": "Custom keys",
+                    "version": 1,
+                    "fields": [],
+                    "customKeys": true
+                }
+            }
+        }
+    }
+}

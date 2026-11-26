@@ -5,13 +5,19 @@ Data relationships only. The app is built with Filament Resources on top of thes
 ## Diagram
 
 ```
+manifest service 1 ──< manifest set ──< manifest field
 folders 1 ──< secrets (folder_id, restrict on delete)
+secrets >── manifest definition (service + set + version)
 folders 1 ──< infra_secrets (folder_id, optional project scope, restrict on delete)
 infras 1 ──< infra_secrets (infra_id, restrict on delete)
 infras 1 ──< infra_regions
 infra_regions 1 ──< infra_secrets (region_id, null on delete)
-ai_items (standalone, always in the AI container)
+ai_items (standalone) >── manifest definition
 ```
+
+## Manifest definitions
+
+A service owns one or more credential sets. A set owns an ordered list of fields. A field carries an identifier, label, purpose, and kind. Definitions are not user records; they are resolved by key and version. Instances reference the definition they were created from.
 
 ## folders
 
@@ -33,12 +39,13 @@ AI items live in their own table (`ai_items`). Infra secrets are grouped by `inf
 | id           | id      |                                              |
 | folder_id    | FK      | references folders, restrict on delete       |
 | name         | string  | required                                     |
-| service_id   | FK      | nullable, references services, null on delete |
+| manifest_key | string  | nullable, service + set key, e.g. x/app        |
+| manifest_version | string | nullable, definition version the instance was created from |
 | derived_from_id | FK   | nullable, self-reference to secrets, the source key this was derived from, null on delete |
 | environment  | string  | nullable, one of live / test / dev / none    |
 | kind         | string  | nullable, one of token / password / pem / other |
 | tags         | text    | nullable, free text, comma-separated        |
-| value        | text    | required, the secret                         |
+| value        | text    | required, holds one value per defined field key |
 | url | text | nullable, URL |
 | expires_at   | date    | nullable, record only                        |
 | memo         | text    | nullable                                     |
@@ -52,9 +59,10 @@ Minimal shape: name and value required, service optional.
 | ---------- | ------ | ---------------------------------- |
 | id         | id     |                                    |
 | name       | string | required                           |
-| value      | text   | required, the secret               |
+| value      | text   | required, holds one value per defined field key |
 | url        | text   | nullable                           |
-| service_id | FK     | nullable, references services, null on delete |
+| manifest_key | string | nullable, service + set key, e.g. x/app |
+| manifest_version | string | nullable, definition version the instance was created from |
 | timestamps |        |                                      |
 
 ## infras
@@ -91,17 +99,6 @@ Minimal shape: name and value required, infra required, region and project optio
 | url        | text   | nullable                           |
 | timestamps |        |                                    |
 
-## services
-
-| Column     | Type    | Notes                                    |
-| ---------- | ------- | ---------------------------------------- |
-| id         | id      |                                          |
-| name       | string  | unique, required                         |
-| icon       | string  | nullable, icon URL (image later)         |
-| is_secret  | boolean | default true, listed in Secrets          |
-| is_ai      | boolean | default true, listed in AI Items         |
-| timestamps |         |                                          |
-
 ## Rules
 
 - Every Secret belongs to exactly one Folder.
@@ -113,4 +110,7 @@ Minimal shape: name and value required, infra required, region and project optio
 - An Infra Secret without a Folder is global; with a Folder, it is scoped to that project.
 - An Infra with Infra Secrets cannot be deleted.
 - A Folder with Secrets or Infra Secrets cannot be deleted.
+- A credential set instance resolves to exactly one manifest definition by key and version.
+- The set's value holds one entry per field of that definition version.
+- Definitions are not stored as user records.
 - Copy Text is derived at read time, never stored.

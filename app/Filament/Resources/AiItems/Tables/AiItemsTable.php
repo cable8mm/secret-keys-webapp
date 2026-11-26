@@ -16,7 +16,7 @@ class AiItemsTable
             ->columns([
                 TextColumn::make('name')
                     ->searchable(),
-                TextColumn::make('service.name')
+                TextColumn::make('manifest_key')
                     ->searchable(),
             ])
             ->filters([

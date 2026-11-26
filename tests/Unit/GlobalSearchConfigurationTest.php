@@ -5,7 +5,6 @@ use App\Filament\Resources\Folders\FolderResource;
 use App\Filament\Resources\Infras\InfraResource;
 use App\Filament\Resources\InfraSecrets\InfraSecretResource;
 use App\Filament\Resources\Secrets\SecretResource;
-use App\Filament\Resources\Services\ServiceResource;
 use App\Filament\Resources\Tags\TagResource;
 
 it('enables global search by name on every resource', function (string $resource): void {
@@ -17,6 +16,5 @@ it('enables global search by name on every resource', function (string $resource
     InfraResource::class,
     InfraSecretResource::class,
     AiItemResource::class,
-    ServiceResource::class,
     TagResource::class,
 ]);
