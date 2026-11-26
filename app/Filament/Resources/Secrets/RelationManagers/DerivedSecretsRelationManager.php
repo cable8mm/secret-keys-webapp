@@ -45,7 +45,7 @@ class DerivedSecretsRelationManager extends RelationManager
                 TextColumn::make('folder.name')
                     ->label('Folder')
                     ->searchable(),
-                TextColumn::make('service.name')
+                TextColumn::make('manifest_key')
                     ->searchable(),
             ])
             ->headerActions([
@@ -72,7 +72,8 @@ class DerivedSecretsRelationManager extends RelationManager
         return [
             'derived_from_id' => $parent->getKey(),
             'value' => SecretCopy::decryptForForm($parent->value),
-            'service_id' => $parent->service_id,
+            'manifest_key' => $parent->manifest_key,
+            'manifest_version' => $parent->manifest_version,
             'environment' => $parent->environment,
             'kind' => $parent->kind,
             'expires_at' => $parent->expires_at?->format('Y-m-d'),

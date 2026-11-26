@@ -41,7 +41,7 @@ class SecretsRelationManager extends RelationManager
             ->columns([
                 TextColumn::make('name')
                     ->searchable(),
-                TextColumn::make('service.name')
+                TextColumn::make('manifest_key')
                     ->searchable(),
             ])
             ->headerActions([

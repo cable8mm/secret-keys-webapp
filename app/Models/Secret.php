@@ -11,7 +11,8 @@ use Illuminate\Support\Carbon;
 
 /**
  * @property Carbon|null $expires_at
- * @property int|null $service_id
+ * @property string|null $manifest_key
+ * @property string|null $manifest_version
  */
 class Secret extends Model
 {
@@ -23,7 +24,8 @@ class Secret extends Model
     protected $fillable = [
         'folder_id',
         'name',
-        'service_id',
+        'manifest_key',
+        'manifest_version',
         'derived_from_id',
         'environment',
         'kind',
@@ -82,13 +84,5 @@ class Secret extends Model
     public function tags(): BelongsToMany
     {
         return $this->belongsToMany(Tag::class, 'secret_tag');
-    }
-
-    /**
-     * @return BelongsTo<Service, $this>
-     */
-    public function service(): BelongsTo
-    {
-        return $this->belongsTo(Service::class);
     }
 }

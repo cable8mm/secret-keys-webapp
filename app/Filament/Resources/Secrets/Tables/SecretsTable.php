@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Secrets\Tables;
 
 use App\Filament\Resources\SecretCopy;
+use App\Models\Secret;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
@@ -19,7 +20,7 @@ class SecretsTable
                     ->searchable(),
                 TextColumn::make('name')
                     ->searchable(),
-                TextColumn::make('service.name')
+                TextColumn::make('manifest_key')
                     ->searchable(),
                 TextColumn::make('environment')
                     ->badge(),
@@ -40,7 +41,8 @@ class SecretsTable
             ])
             ->recordActions([
                 ViewAction::make(),
-                SecretCopy::copyAction(),
+                SecretCopy::copyAction()->hidden(fn (Secret $record): bool => $record->manifest_key !== null),
+                SecretCopy::copyKeyAction()->visible(fn (Secret $record): bool => $record->manifest_key !== null),
                 EditAction::make(),
             ])
             ->toolbarActions([]);

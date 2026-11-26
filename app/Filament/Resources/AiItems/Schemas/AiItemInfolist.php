@@ -13,7 +13,7 @@ class AiItemInfolist
         return $schema
             ->components([
                 TextEntry::make('name'),
-                TextEntry::make('service.name'),
+                TextEntry::make('manifest_key'),
                 TextEntry::make('value')
                     ->getStateUsing(fn ($record): ?string => SecretCopy::decryptForForm($record->value))
                     ->copyable()

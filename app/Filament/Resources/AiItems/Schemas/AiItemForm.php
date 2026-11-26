@@ -3,8 +3,6 @@
 namespace App\Filament\Resources\AiItems\Schemas;
 
 use App\Filament\Resources\SecretCopy;
-use App\Models\Service;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
@@ -17,19 +15,6 @@ class AiItemForm
             ->components([
                 TextInput::make('name')
                     ->required(),
-                Select::make('service_id')
-                    ->relationship('service', 'name', modifyQueryUsing: fn ($query) => $query->where('is_ai', true))
-                    ->searchable()
-                    ->preload()
-                    ->createOptionForm([
-                        TextInput::make('name')
-                            ->required()
-                            ->unique(table: Service::class),
-                    ])
-                    ->createOptionUsing(fn (array $data): int => (int) Service::query()->create([
-                        'name' => $data['name'],
-                        'is_ai' => true,
-                    ])->getKey()),
                 Textarea::make('value')
                     ->required()
                     ->rows(4)
