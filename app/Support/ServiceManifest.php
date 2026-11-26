@@ -106,11 +106,15 @@ final class ServiceManifest
     /**
      * @return array<string, string>
      */
-    public static function setOptions(): array
+    public static function setOptions(?string $container = null): array
     {
         $options = [];
 
         foreach (self::all() as $serviceKey => $service) {
+            if ($container !== null && ! in_array($container, $service['containers'] ?? [], true)) {
+                continue;
+            }
+
             foreach ($service['sets'] ?? [] as $setName => $versions) {
                 $latest = (string) max(array_map('intval', array_keys($versions)));
                 $options["{$serviceKey}/{$setName}"] = "{$service['label']} — {$versions[$latest]['label']}";

@@ -21,3 +21,13 @@
     - Services absent from the manifest are handled by a custom set.
     - Manifest validation and resolution are covered by unit tests.
     - `pint --test` passes.
+
+- [x] T-037 Wire credential sets into AI Items
+  - Satisfies: PRODUCT_SPEC.md Service manifests; Credential sets
+  - External boundary: no
+  - Acceptance criteria:
+    - The AI Item form offers only sets whose service allows the ai_items container.
+    - Selecting a set renders its keys with labels and purposes; only values are entered.
+    - Each AI Item instance records its manifest key and version; editing and deleting apply to the whole set.
+    - Copying is per key and leaves stored values unchanged.
+    - Manifest container filtering is covered by unit tests and AI set creation by a feature test.

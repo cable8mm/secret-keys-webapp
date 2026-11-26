@@ -25,9 +25,24 @@
             }
         }
     },
+    "openai": {
+        "label": "OpenAI",
+        "containers": ["ai_items"],
+        "sets": {
+            "api_key": {
+                "1": {
+                    "label": "OpenAI API key",
+                    "version": 1,
+                    "fields": [
+                        { "key": "token", "label": "API Key", "purpose": "Authenticates API requests", "kind": "token" }
+                    ]
+                }
+            }
+        }
+    },
     "custom": {
         "label": "Custom",
-        "containers": ["secrets"],
+        "containers": ["secrets", "ai_items"],
         "sets": {
             "values": {
                 "1": {

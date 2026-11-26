@@ -1,8 +1,11 @@
 <?php
 
+use App\Filament\Resources\AiItems\Pages\CreateAiItem;
+use App\Filament\Resources\AiItems\Pages\ListAiItems;
 use App\Filament\Resources\Secrets\Pages\CreateSecret;
 use App\Filament\Resources\Secrets\Pages\EditSecret;
 use App\Filament\Resources\Secrets\Pages\ListSecrets;
+use App\Models\AiItem;
 use App\Models\Folder;
 use App\Models\Secret;
 use App\Support\CredentialSet;
@@ -100,6 +103,27 @@ it('edits the whole set and keeps its definition reference', function (): void {
             'api_secret' => 'old-secret',
             'bearer_token' => 'old-token',
         ]);
+});
+
+it('creates an AI Item set and copies its key', function (): void {
+    Livewire::test(CreateAiItem::class)
+        ->fillForm([
+            'name' => 'OpenAI key',
+            'definition' => 'openai/api_key',
+            'values.token' => 'sk-test',
+        ])
+        ->call('create')
+        ->assertHasNoFormErrors();
+
+    $item = AiItem::query()->firstOrFail();
+
+    expect($item->manifest_key)->toBe('openai/api_key')
+        ->and($item->manifest_version)->toBe('1')
+        ->and(CredentialSet::decode($item->value))->toBe(['token' => 'sk-test']);
+
+    Livewire::test(ListAiItems::class)
+        ->callTableAction('copyKey', $item, ['key' => 'token'])
+        ->assertDispatched('copy-prepared', text: 'sk-test');
 });
 
 it('copies one key without changing stored values', function (): void {
