@@ -31,3 +31,12 @@
     - Each AI Item instance records its manifest key and version; editing and deleting apply to the whole set.
     - Copying is per key and leaves stored values unchanged.
     - Manifest container filtering is covered by unit tests and AI set creation by a feature test.
+
+- [x] T-038 Add read-only manifest viewer
+  - Satisfies: PRODUCT_SPEC.md Manifest viewer
+  - External boundary: no
+  - Acceptance criteria:
+    - The admin lists services, sets, versions, and field definitions from the manifest.
+    - Each field shows its key, label, purpose, and kind.
+    - The viewer provides no edit or write action.
+    - A feature test verifies the viewer renders manifest definitions.
