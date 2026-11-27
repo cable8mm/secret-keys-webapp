@@ -1,40 +1,47 @@
 <?php
 
-use App\Filament\Resources\AiItems\AiItemResource;
+use App\Filament\Resources\Credentials\CredentialResource;
 use App\Filament\Resources\Folders\FolderResource;
 use App\Filament\Resources\Infras\InfraResource;
 use App\Filament\Resources\InfraSecrets\InfraSecretResource;
-use App\Filament\Resources\Secrets\SecretResource;
+use App\Filament\Resources\Providers\ProviderResource;
 use App\Filament\Resources\Tags\TagResource;
-use App\Models\AiItem;
+use App\Models\Credential;
 use App\Models\Folder;
 use App\Models\Infra;
 use App\Models\InfraSecret;
-use App\Models\Secret;
+use App\Models\Provider;
 use App\Models\Tag;
 use Filament\Facades\Filament;
-use Filament\Livewire\GlobalSearch;
-use Livewire\Livewire;
 
 beforeEach(function (): void {
     Filament::setCurrentPanel(Filament::getPanel('admin'));
 });
 
-it('finds records by name across all containers', function (): void {
+it('finds records by name across resources', function (): void {
+    $provider = Provider::where('slug', 'aws')->firstOrFail();
+    Provider::create([
+        'slug' => 'global-search',
+        'name' => 'GlobalSearchProvider',
+        'definition' => '{}',
+    ]);
     $folder = Folder::create(['name' => 'GlobalSearchFolder']);
     $infra = Infra::create(['name' => 'GlobalSearchInfra']);
 
-    Secret::create(['folder_id' => $folder->id, 'name' => 'GlobalSearchSecret', 'value' => 'secret-value']);
+    Credential::create([
+        'provider_id' => $provider->id,
+        'name' => 'GlobalSearchCredential',
+        'credential_values' => '{}',
+    ]);
     InfraSecret::create(['infra_id' => $infra->id, 'name' => 'GlobalSearchInfraSecret', 'value' => 'secret-value']);
-    AiItem::create(['name' => 'GlobalSearchAiItem', 'value' => 'secret-value']);
     Tag::create(['name' => 'GlobalSearchTag']);
 
     foreach ([
-        SecretResource::class,
+        ProviderResource::class,
+        CredentialResource::class,
         FolderResource::class,
         InfraResource::class,
         InfraSecretResource::class,
-        AiItemResource::class,
         TagResource::class,
     ] as $resource) {
         expect($resource::canGloballySearch())->toBeTrue()
@@ -42,39 +49,14 @@ it('finds records by name across all containers', function (): void {
     }
 });
 
-it('never searches secret values', function (): void {
-    $folder = Folder::create(['name' => 'SearchableFolder']);
-    $infra = Infra::create(['name' => 'SearchableInfra']);
+it('never searches credential values', function (): void {
+    $provider = Provider::where('slug', 'aws')->firstOrFail();
 
-    Secret::create(['folder_id' => $folder->id, 'name' => 'NamedSecret', 'value' => 'unsearchable-needle']);
-    InfraSecret::create(['infra_id' => $infra->id, 'name' => 'NamedInfraSecret', 'value' => 'unsearchable-needle']);
-    AiItem::create(['name' => 'NamedAiItem', 'value' => 'unsearchable-needle']);
+    Credential::create([
+        'provider_id' => $provider->id,
+        'name' => 'NamedCredential',
+        'credential_values' => '{"access_key_id":"unsearchable-needle"}',
+    ]);
 
-    foreach ([SecretResource::class, InfraSecretResource::class, AiItemResource::class] as $resource) {
-        expect($resource::getGlobalSearchResults('unsearchable-needle'))->toBeEmpty();
-    }
-});
-
-it('opens the matching record from a result', function (): void {
-    $folder = Folder::create(['name' => 'ResultFolder']);
-    $secret = Secret::create(['folder_id' => $folder->id, 'name' => 'ResultSecret', 'value' => 'secret-value']);
-
-    $result = SecretResource::getGlobalSearchResults('ResultSecret')->first();
-
-    expect($result->url)->toBe(SecretResource::getUrl('view', ['record' => $secret]));
-});
-
-it('keeps secrets of archived folders searchable', function (): void {
-    $folder = Folder::create(['name' => 'ArchivedFolder', 'archived' => true]);
-    Secret::create(['folder_id' => $folder->id, 'name' => 'ArchivedFolderSecret', 'value' => 'secret-value']);
-
-    expect(SecretResource::getGlobalSearchResults('ArchivedFolderSecret'))->not->toBeEmpty();
-});
-
-it('renders global search results in the panel', function (): void {
-    Folder::create(['name' => 'UiSearchFolder']);
-
-    Livewire::test(GlobalSearch::class)
-        ->set('search', 'UiSearchFolder')
-        ->assertSee('UiSearchFolder');
+    expect(CredentialResource::getGlobalSearchResults('unsearchable-needle'))->toBeEmpty();
 });

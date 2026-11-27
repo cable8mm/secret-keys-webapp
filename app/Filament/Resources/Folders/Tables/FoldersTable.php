@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\Folders\Tables;
 
-use App\Filament\Resources\Secrets\SecretResource;
 use App\Models\Folder;
 use App\Services\GitHubRepositoryService;
 use Filament\Actions\Action;
@@ -151,11 +150,6 @@ class FoldersTable
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),
-                Action::make('addSecret')
-                    ->iconButton()
-                    ->icon('heroicon-o-plus')
-                    ->tooltip('New secret in this folder')
-                    ->url(fn ($record): string => SecretResource::getUrl('create', ['folder' => $record->getKey()])),
                 Action::make('archive')
                     ->iconButton()
                     ->icon('heroicon-o-archive-box')

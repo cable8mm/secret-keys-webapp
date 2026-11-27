@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\Tags\RelationManagers;
 
 use App\Filament\Resources\Secrets\Schemas\SecretForm;
-use App\Filament\Resources\Secrets\SecretResource;
 use Filament\Actions\CreateAction;
 use Filament\Actions\ViewAction;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -50,8 +49,7 @@ class SecretsRelationManager extends RelationManager
                 CreateAction::make(),
             ])
             ->recordActions([
-                ViewAction::make()
-                    ->url(fn ($record): string => SecretResource::getUrl('view', ['record' => $record])),
+                ViewAction::make(),
             ]);
     }
 }

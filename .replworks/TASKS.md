@@ -40,3 +40,16 @@
     - Each field shows its key, label, purpose, and kind.
     - The viewer provides no edit or write action.
     - A feature test verifies the viewer renders manifest definitions.
+
+- [x] T-039 Implement provider-based credential system
+  - Satisfies: PRODUCT_SPEC.md Provider definitions; Credentials; Storage constraints
+  - External boundary: no
+  - Acceptance criteria:
+    - Providers are created in the admin and stored as JSON definitions in SQLite.
+    - Invalid provider definitions are rejected with useful messages.
+    - Credential forms render from the selected provider definition and validate input.
+    - Multiple credentials can be created for one provider.
+    - Sensitive values are encrypted individually; non-sensitive values remain JSON text.
+    - Adding a sample provider requires no application code change.
+    - Tests cover definition validation, required fields, optional fields, sensitive fields, creation, editing, multiple instances, and a new provider.
+    - `pint --test` passes.

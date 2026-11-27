@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Filament\Resources\AiItems\Pages;
+namespace App\Filament\Resources\Providers\Pages;
 
-use App\Filament\Resources\AiItems\AiItemResource;
+use App\Filament\Resources\Providers\ProviderResource;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 
-class ListAiItems extends ListRecords
+class ListProviders extends ListRecords
 {
-    protected static string $resource = AiItemResource::class;
+    protected static string $resource = ProviderResource::class;
 
     protected function getHeaderActions(): array
     {

@@ -5,112 +5,41 @@ Data relationships only. The app is built with Filament Resources on top of thes
 ## Diagram
 
 ```
-manifest service 1 ──< manifest set ──< manifest field
-folders 1 ──< secrets (folder_id, restrict on delete)
-secrets >── manifest definition (service + set + version)
-folders 1 ──< infra_secrets (folder_id, optional project scope, restrict on delete)
-infras 1 ──< infra_secrets (infra_id, restrict on delete)
-infras 1 ──< infra_regions
-infra_regions 1 ──< infra_secrets (region_id, null on delete)
-ai_items (standalone) >── manifest definition
+providers 1 ──< credentials (provider_id, restrict on delete)
+legacy: folders 1 ──< secrets, folders 1 ──< infra_secrets, infras 1 ──< infra_secrets
+infras 1 ──< infra_regions, infra_regions 1 ──< infra_secrets
+tags <──> secrets (legacy)
 ```
 
-## Manifest definitions
+## providers
 
-A service owns one or more credential sets. A set owns an ordered list of fields. A field carries an identifier, label, purpose, and kind. Definitions are not user records; they are resolved by key and version. Instances reference the definition they were created from.
+| Column      | Type    | Notes                                   |
+| ----------- | ------- | --------------------------------------- |
+| id          | id      |                                         |
+| slug        | string  | unique, required, definition id         |
+| name        | string  | required, searchable                    |
+| description | text    | nullable                                |
+| category    | string  | nullable, searchable metadata           |
+| definition  | text    | required, JSON provider definition      |
+| timestamps  |         |                                         |
 
-## folders
+## credentials
 
-| Column     | Type    | Notes                          |
-| ---------- | ------- | ------------------------------ |
-| id         | id      |                                |
-| name       | string  | required                       |
-| note       | text    | nullable                       |
-| url        | string  | nullable, folder homepage      |
-| archived   | boolean | default false                  |
-| timestamps |         |                                |
-
-AI items live in their own table (`ai_items`). Infra secrets are grouped by `infras`.
-
-## secrets
-
-| Column       | Type    | Notes                                        |
-| ------------ | ------- | -------------------------------------------- |
-| id           | id      |                                              |
-| folder_id    | FK      | references folders, restrict on delete       |
-| name         | string  | required                                     |
-| manifest_key | string  | nullable, service + set key, e.g. x/app        |
-| manifest_version | string | nullable, definition version the instance was created from |
-| derived_from_id | FK   | nullable, self-reference to secrets, the source key this was derived from, null on delete |
-| environment  | string  | nullable, one of live / test / dev / none    |
-| kind         | string  | nullable, one of token / password / pem / other |
-| tags         | text    | nullable, free text, comma-separated        |
-| value        | text    | required, holds one value per defined field key |
-| url | text | nullable, URL |
-| expires_at   | date    | nullable, record only                        |
-| memo         | text    | nullable                                     |
-| timestamps   |         |                                              |
-
-## ai_items
-
-Minimal shape: name and value required, service optional.
-
-| Column     | Type   | Notes                              |
-| ---------- | ------ | ---------------------------------- |
-| id         | id     |                                    |
-| name       | string | required                           |
-| value      | text   | required, holds one value per defined field key |
-| url        | text   | nullable                           |
-| manifest_key | string | nullable, service + set key, e.g. x/app |
-| manifest_version | string | nullable, definition version the instance was created from |
-| timestamps |        |                                      |
-
-## infras
-
-| Column     | Type    | Notes                          |
-| ---------- | ------- | ------------------------------ |
-| id         | id      |                                |
-| name       | string  | required                       |
-| note       | text    | nullable                       |
-| archived   | boolean | default false                  |
-| timestamps |         |                                |
-
-## infra_regions
-
-| Column     | Type   | Notes                              |
-| ---------- | ------ | ---------------------------------- |
-| id         | id     |                                    |
-| infra_id   | FK     | references infras, cascade on delete |
-| name       | string | required, unique per infra        |
-| timestamps |        |                                    |
-
-## infra_secrets
-
-Minimal shape: name and value required, infra required, region and project optional.
-
-| Column     | Type   | Notes                              |
-| ---------- | ------ | ---------------------------------- |
-| id         | id     |                                    |
-| infra_id   | FK     | references infras, restrict on delete |
-| region_id  | FK     | nullable, references infra_regions, null on delete |
-| folder_id  | FK     | nullable, references folders, restrict on delete; null = global |
-| name       | string | required                           |
-| value      | text   | required, the secret               |
-| url        | text   | nullable                           |
-| timestamps |        |                                    |
+| Column            | Type    | Notes                                      |
+| ----------------- | ------- | ------------------------------------------ |
+| id                | id      |                                            |
+| provider_id       | FK      | references providers, restrict on delete   |
+| name              | string  | required, searchable                       |
+| description       | text    | nullable                                   |
+| credential_values | text    | required, JSON keyed by provider field keys |
+| timestamps        |         |                                            |
 
 ## Rules
 
-- Every Secret belongs to exactly one Folder.
-- A Secret may point to a Source Secret it was derived from (e.g. repo keys derived from a PAT). Deleting the source clears the link.
-- A Folder with Secrets cannot be deleted.
-- Archived Folders are hidden from the default list; their Secrets remain searchable.
-- Every Infra Secret belongs to exactly one Infra.
-- An Infra Secret may optionally point to one Region of its Infra.
-- An Infra Secret without a Folder is global; with a Folder, it is scoped to that project.
-- An Infra with Infra Secrets cannot be deleted.
-- A Folder with Secrets or Infra Secrets cannot be deleted.
-- A credential set instance resolves to exactly one manifest definition by key and version.
-- The set's value holds one entry per field of that definition version.
-- Definitions are not stored as user records.
+- A credential resolves its fields from the definition of its provider.
+- A credential's value object holds one entry per field key of that definition.
+- Sensitive field values are encrypted individually before persistence; non-sensitive values stay as JSON text.
+- Encryption and decryption are performed by a storage service independent of Eloquent and the database.
+- Removing a provider with credentials is prevented.
+- Legacy `secrets`, `ai_items`, `infras`, `infra_secrets`, `folders`, and `tags` tables remain unchanged; no conversion is performed.
 - Copy Text is derived at read time, never stored.
