@@ -23,7 +23,6 @@
 - `vite.config.js`
 - `.env`, `.env.example`
 - `config/`
-- `config/service-manifests.json`
 - `database/migrations/`
 - `database/database.sqlite`
 - `app/Models/`
@@ -50,7 +49,8 @@
 - Tailwind CSS MUST be built through Vite.
 - Database access MUST use Eloquent models.
 - Database schema changes MUST be made through Laravel migrations.
-- Credential set forms MUST be built with Filament components driven by manifest definitions.
+- Credential forms MUST be generated from provider definitions stored as JSON.
+- Provider definitions MUST NOT require changes to application code when added.
 
 ## 4. Testing rules
 
@@ -59,7 +59,7 @@
 - Test file names MUST end with `Test.php`.
 - UI tests MUST use the Livewire and Filament testing helpers.
 - Tests MUST run against an in-memory SQLite database.
-- Manifest validation and definition resolution MUST be covered by unit tests.
+- Provider definition validation and credential value validation MUST be covered by unit tests.
 - `pint --test` MUST report no violations.
 
 ## 5. Configuration rules
@@ -74,10 +74,12 @@
 - `APP_KEY` MUST be backed up separately from `database/database.sqlite`.
 - The Filament panel MUST be configured without a login page.
 - The Filament panel MUST be configured without authentication middleware.
-- Service definitions MUST live in a single version-controlled manifest under `config/`.
-- The manifest MUST NOT contain secret values.
-- Published manifest versions MUST be immutable: a change MUST be added as a new version, never applied to an existing one.
-- Every credential set instance MUST record the manifest key and version it was created from.
+- Provider definitions MUST be stored as JSON in SQLite.
+- Searchable provider and credential metadata MUST live in regular columns.
+- Credential values MUST be stored as JSON keyed by provider field keys.
+- Sensitive credential values MUST be encrypted individually with the existing encryption mechanism.
+- Encryption and decryption MUST be isolated from the database layer in a storage service.
+- `APP_KEY` MUST remain in `.env` and MUST be backed up separately from the SQLite file.
 
 ## 6. Build, packaging, and release rules
 
@@ -104,6 +106,7 @@
 - Values MUST NOT be written to Laravel logs.
 - `APP_DEBUG` MUST be `false` in any run that holds real Values.
 - `database/database.sqlite` MUST be git-ignored.
+- Plaintext secret values MUST NOT be written to SQLite.
 
 ## 8. Non-goals (technologies and tools explicitly excluded)
 

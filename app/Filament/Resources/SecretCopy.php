@@ -5,10 +5,8 @@ namespace App\Filament\Resources;
 use App\Models\AiItem;
 use App\Models\InfraSecret;
 use App\Models\Secret;
-use App\Support\CredentialSet;
 use App\Values\ValueProtector;
 use Filament\Actions\Action;
-use Filament\Forms\Components\Select;
 use Throwable;
 
 final class SecretCopy
@@ -28,24 +26,6 @@ final class SecretCopy
                 }
 
                 $livewire->dispatch('copy-prepared', text: $text);
-            });
-    }
-
-    public static function copyKeyAction(): Action
-    {
-        return Action::make('copyKey')
-            ->iconButton()
-            ->icon('heroicon-o-clipboard-document')
-            ->tooltip('Copy a key')
-            ->form(fn (Secret|AiItem $record): array => [
-                Select::make('key')
-                    ->options(CredentialSet::fieldLabels($record))
-                    ->required(),
-            ])
-            ->action(function (Secret|AiItem $record, array $data, $livewire): void {
-                $values = CredentialSet::decode($record->value);
-
-                $livewire->dispatch('copy-prepared', text: $values[$data['key']] ?? '');
             });
     }
 
