@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Pages\ManifestViewer;
 use App\Filament\Resources\Folders\FolderResource;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -31,6 +32,9 @@ class AdminPanelProvider extends PanelProvider
                 'primary' => Color::Amber,
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
+            ->pages([
+                ManifestViewer::class,
+            ])
             ->navigationGroups([
                 NavigationGroup::make('Vault'),
                 NavigationGroup::make('Data'),

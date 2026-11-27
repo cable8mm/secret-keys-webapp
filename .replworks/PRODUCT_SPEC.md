@@ -36,6 +36,11 @@
 - Copying is per key and puts that key's stored value on the clipboard unchanged.
 - Set names are searchable; values are never searchable.
 
+## Manifest viewer
+
+- The admin shows a read-only view of the service manifest: services, their sets, versions, and field definitions with labels, purposes, and kinds.
+- The manifest cannot be edited from the admin. Changes are made in the manifest file and reviewed through version control.
+
 ## Copy
 
 - Copying puts the stored Value, or a selected key's value inside a credential set, on the clipboard unchanged.
